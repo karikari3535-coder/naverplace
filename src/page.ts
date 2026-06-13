@@ -42,7 +42,7 @@ export function renderHome(): string {
 
   <!-- ============ 로딩 ============ -->
   <section class="stage" id="loadingScreen">
-    <div class="hero-logo" aria-hidden="true"><img src="/static/sellerlabs-bird-white.svg" alt="" width="42" height="48"></div>
+    <div class="hero-logo" aria-hidden="true"><img src="/static/sellerlabs-bird.svg" alt="" width="44" height="50"></div>
     <div class="ai-loading-card">
       <div class="ai-loading-head">
         <div class="ai-loading-orb"></div>

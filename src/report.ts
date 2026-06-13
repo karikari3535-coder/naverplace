@@ -197,14 +197,14 @@ function renderReport(result){
           '<button type="button" class="coach-tip-toggle" onclick="toggleTip(this)">'+
             '<span class="coach-tip-caret">▶</span> 셀러랩스의 실전 팁</button>'+
           '<div class="coach-tip-body">'+
-            '<div class="coach-tip-row"><div class="bubble-logo-sm"><img src="/static/sellerlabs-bird-white.svg" alt="셀러랩스"></div>'+
+            '<div class="coach-tip-row"><div class="bubble-logo-sm"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스"></div>'+
             '<div class="coach-tip-text">'+escapeHtml(tip)+'</div></div></div></div>';
       }
       itemsHTML+='<div class="item-card">'+
         '<div class="item-top"><span class="item-name">'+escapeHtml(item.name)+'</span>'+
         '<span class="item-badge '+badge+'">'+badgeText+'</span></div>'+
         '<div class="item-detail">'+escapeHtml(item.detail)+'</div>'+
-        '<div class="item-comment-wrap"><div class="bubble-logo-sm"><img src="/static/sellerlabs-bird-white.svg" alt="셀러랩스"></div>'+
+        '<div class="item-comment-wrap"><div class="bubble-logo-sm"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스"></div>'+
         '<div class="item-comment">'+escapeHtml(item.comment)+'</div></div>'+
         tipHTML+'</div>';
     }
@@ -283,7 +283,7 @@ function renderReport(result){
       '<div class="persona-name">'+escapeHtml(result.persona)+'</div>'+
       '<div class="persona-desc">'+escapeHtml(result.personaDesc)+'</div></div>'+
 
-    '<div class="main-bubble-wrap"><div class="bubble-logo"><img src="/static/sellerlabs-bird-white.svg" alt="셀러랩스"></div>'+
+    '<div class="main-bubble-wrap"><div class="bubble-logo"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스"></div>'+
       '<div class="speech-bubble">'+escapeHtml(result.gradeComment)+'</div></div>'+
 
     naNotice+
@@ -312,7 +312,7 @@ function renderReport(result){
 
     '<div class="restart-wrap"><button class="btn-secondary" onclick="restart()">다른 가게 진단하기</button></div>'+
     '<div class="report-footer">본 진단은 네이버 플레이스 공개 정보를 기반으로 한 참고용 분석입니다.<br>실제 노출 순위는 네이버 알고리즘에 따라 달라질 수 있어요.'+
-      '<div class="footer-brand"><img src="/static/sellerlabs-logo.svg" alt="셀러랩스" width="104" height="20"><br>'+
+      '<div class="footer-brand"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스" width="28" height="32"><br>'+
       '<a href="https://sellerlabs.co.kr" target="_blank" rel="noopener">sellerlabs.co.kr</a> · 스마트스토어·플레이스 순위 추적 솔루션</div></div>';
 
   // 애니메이션

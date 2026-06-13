@@ -21,10 +21,10 @@ a { color: inherit; text-decoration: none; }
   width: 110px; height: 110px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 52px; margin-bottom: 28px;
-  background: linear-gradient(135deg, #6100FF, #8A4DFF);
-  box-shadow: 0 0 40px rgba(97, 0, 255, 0.3);
+  background: linear-gradient(135deg, #FFFFFF, #F2ECFF);
+  box-shadow: 0 0 40px rgba(97, 0, 255, 0.25);
 }
-.hero-logo img { width: 42px; height: 48px; }
+.hero-logo img { width: 48px; height: 55px; }
 #stage1 h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; text-align: center; letter-spacing: -0.5px; }
 #stage1 .subtitle, #stage2 .subtitle { color: #6B635A; margin-bottom: 36px; text-align: center; line-height: 1.7; font-size: 16px; }
 .input-group { display: flex; gap: 12px; width: 100%; max-width: 600px; }
@@ -140,10 +140,10 @@ a { color: inherit; text-decoration: none; }
 .score-stat-label { font-size: 11px; color: #A39A8E; margin-top: 2px; font-weight: 500; }
 
 .main-bubble-wrap { display: flex; align-items: flex-start; gap: 12px; margin: 24px 0 0; }
-.bubble-logo { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, #6100FF, #8A4DFF); }
-.bubble-logo img { width: 22px; height: 25px; }
-.bubble-logo-sm { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, #6100FF, #8A4DFF); }
-.bubble-logo-sm img { width: 14px; height: 16px; }
+.bubble-logo { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, #FFFFFF, #F2ECFF); border: 1px solid #EDE5FF; }
+.bubble-logo img { width: 24px; height: 27px; }
+.bubble-logo-sm { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, #FFFFFF, #F2ECFF); border: 1px solid #EDE5FF; }
+.bubble-logo-sm img { width: 16px; height: 18px; }
 .speech-bubble { position: relative; background: #FFFFFF; border: 1px solid #DCD6CB; border-radius: 4px 16px 16px 16px; padding: 16px 20px; font-size: 15px; line-height: 1.8; color: #1A1714; flex: 1; }
 
 .section-divider { border: none; border-top: 1px solid #ECE8E1; margin: 40px 0; }
