@@ -1,0 +1,315 @@
+export const RENDER_REPORT = String.raw`
+const CAT_META = {
+  review:{label:'리뷰 & 신뢰', dataCat:'review'},
+  system:{label:'시스템 & 결제', dataCat:'system'},
+  basic:{label:'기본정보', dataCat:'basic'},
+  content:{label:'콘텐츠 & 운영', dataCat:'content'}
+};
+const CAT_ORDER=['review','system','basic','content'];
+
+// 셀러랩스의 실전 팁 — 항목별 실무 노하우 (2~4문장, 구체적 숫자 + 행동 + 동기부여)
+const TIPS = {
+  recent7:"리뷰는 최신성이 핵심이에요. 아무리 리뷰가 1,000개여도 최근 3개월 리뷰가 없으면 고객은 '이 가게 아직 영업해?'라고 생각해요. 리뷰 가이드를 만들어서 결제 후 바로 보여주세요. '이런 내용을 적어주시면 감사하겠습니다'라고 구체적으로 안내하면 리뷰 작성률이 3배 이상 올라가요. 리뷰 잘 받는 사장님들의 공통점은 단 하나, '작성 부탁한다'입니다.",
+  recent30:"한 달에 리뷰가 10개는 꾸준히 쌓여야 네이버가 '살아있는 가게'로 인식해요. 리뷰는 몰아서 한 번에 받는 것보다 매일 1~2개씩 꾸준히 받는 게 훨씬 효과적이에요. 결제 직후가 리뷰를 부탁하기 가장 좋은 타이밍입니다. 직원분들에게도 '리뷰 한 번만 부탁드린다'는 멘트를 루틴으로 만들어 보세요.",
+  totalReview:"리뷰 100개가 넘어야 작은 키워드에서 경쟁할 수 있어요. 300개가 넘으면 중형 키워드도 도전 가능하고요. 영수증 리뷰, 블로그 체험단, 꽝 없는 뽑기 이벤트를 동시에 늘리세요. 핵심은 '리뷰 하나 따기'가 아니라 '리뷰 시스템'을 만드는 거예요.",
+  starRating:"별점은 4.5점 이상을 유지하는 게 좋아요. 4.0점 밑으로 떨어지면 클릭률이 눈에 띄게 줄어들어요. 낮은 별점 리뷰에는 반드시 정중하게 답글을 달고, 개선 의지를 보여주세요. 사장님의 진심 어린 답글 하나가 다음 고객의 신뢰를 만듭니다.",
+  blogReview:"블로그 리뷰는 검색 노출의 숨은 무기예요. 체험단 1명부터 시작해도 충분해요. 동네 맛집·핫플 블로거에게 먼저 DM을 보내거나, 작은 체험단 플랫폼을 활용해 보세요. 블로그 리뷰 5개만 쌓여도 검색 결과에서 가게가 훨씬 풍성하게 보여요.",
+  reviewMix:"리뷰도 '종류의 균형'이 중요해요. 영수증 리뷰, 블로그 리뷰, 사진 리뷰, 예약 리뷰가 골고루 쌓여야 네이버가 건강한 가게로 인식해요. 한 종류만 몰리면 오히려 어뷰징으로 의심받을 수 있어요. 영수증·블로그·사진 리뷰를 동시에 굴리는 '리뷰 포트폴리오'를 만들어 보세요.",
+  aiBriefing:"요즘 네이버는 AI가 리뷰를 요약해서 'AI 브리핑'으로 보여줘요. 여기에 우리 가게 강점이 잘 뽑히려면, 고객 리뷰에 '메뉴명·분위기·재방문' 같은 핵심 단어가 자연스럽게 담겨야 해요. 리뷰 가이드에 '어떤 메뉴가 좋았는지 적어주세요'를 넣으면 AI 브리핑 품질이 올라갑니다.",
+  reviewReply:"리뷰 답글은 사장님의 '태도'를 보여주는 창구예요. 특히 낮은 별점 리뷰에 정중하게 답글을 달면, 그걸 보는 다음 고객의 신뢰가 올라가요. 좋은 리뷰엔 감사를, 아쉬운 리뷰엔 개선 의지를 보여주세요. 답글 다는 가게와 안 다는 가게는 재방문율이 확연히 달라집니다.",
+  saveCount:"'저장(즐겨찾기)'은 고객이 '나중에 또 올게요'라고 찜해두는 신호예요. 저장 수가 많을수록 네이버는 인기 가게로 판단해요. 'OO 저장하고 방문하면 음료 서비스' 같은 작은 이벤트로 저장을 유도해 보세요. 저장한 고객에겐 소식 알림이 가니 재방문 유도에도 효과적입니다.",
+  photoReview:"사진이 있는 리뷰가 글만 있는 리뷰보다 5배 더 신뢰받아요. 고객에게 '사진 한 장만 같이 올려주시면 음료 서비스'처럼 작은 보상을 제안해 보세요. 메뉴가 잘 나오는 포토존을 만들면 자연스럽게 사진 리뷰가 늘어납니다.",
+  npay:"네이버페이를 연결하면 결제 단계에서 이탈하는 고객을 잡을 수 있어요. 별도 회원가입 없이 바로 결제되니 전환율이 올라가요. 무엇보다 네이버페이 사용 가게는 검색 노출에서도 가점을 받습니다. 아직 연결 안 하셨다면 오늘 바로 신청하세요.",
+  booking:"네이버 예약은 전화 응대 부담을 줄여주는 최고의 도구예요. 고객이 영업시간 외에도 알아서 예약하니, 놓치는 손님이 사라져요. 예약 시 간단한 안내 메시지를 자동 발송하도록 설정하면 노쇼도 크게 줄어듭니다.",
+  smartcall:"스마트콜(안심번호)을 쓰면 누가, 언제, 몇 번 전화했는지 데이터로 쌓여요. 통화 연결이 안 된 고객에게 다시 연락하면 그게 곧 매출이 됩니다. 개인번호 노출도 막아주니 사장님 사생활도 지킬 수 있어요.",
+  talktalk:"톡톡은 고객이 가장 편하게 문의하는 채널이에요. 자주 묻는 질문은 자동응답으로 세팅해 두면 응대 시간이 절반으로 줄어요. 응답이 빠른 가게일수록 고객 만족도와 재방문율이 높아집니다.",
+  coupon:"쿠폰은 첫 방문 고객을 단골로 만드는 가장 쉬운 방법이에요. '첫 방문 10% 할인'이나 '리뷰 작성 시 음료 서비스' 쿠폰을 걸어보세요. 쿠폰을 받은 고객은 사용하려고 다시 찾아오니 재방문율이 자연스럽게 올라갑니다.",
+  imageCount:"대표 사진 10장 이상은 기본이에요. 첫 화면에 보이는 대표 이미지가 클릭률을 좌우해요. 음식·공간·외관·디테일을 골고루 보여주고, 밝고 선명한 사진으로 채우세요. 사진이 많을수록 고객은 '여기 믿을만하다'고 느낍니다.",
+  convenience:"주차, 와이파이, 반려동물 동반 같은 편의시설 정보는 꼭 체크해 두세요. 고객은 이 정보를 보고 방문 여부를 결정해요. 특히 '주차 가능' 여부는 방문 결정에 가장 큰 영향을 줍니다. 해당되는 항목은 빠짐없이 등록하세요.",
+  menuPrice:"메뉴와 가격은 정확하고 빠짐없이 등록하세요. 가격 정보가 없으면 고객은 '비쌀 것 같다'며 그냥 넘어가요. 대표 메뉴 3~5개는 사진과 함께 강조하고, 가격 변동이 생기면 바로 업데이트하세요.",
+  menuPhoto:"메뉴 사진은 매출과 직결돼요. 글로만 적힌 메뉴보다 사진이 있는 메뉴의 주문율이 훨씬 높아요. 스마트폰으로 찍더라도 자연광에서 밝게 찍으면 충분해요. 대표 메뉴부터 하나씩 사진을 채워 나가세요.",
+  roomCount:"객실은 타입별로 빠짐없이 등록하세요. 스탠다드·디럭스·복층 등 객실 종류가 다양할수록 고객의 선택폭이 넓어지고 예약 전환율이 올라가요. 각 객실마다 최대 인원, 평수, 침대 구성을 명확히 적어주면 문의가 크게 줄어듭니다.",
+  roomPrice:"객실 가격은 반드시 공개하세요. 가격이 없으면 고객은 '비쌀 것 같다'며 그냥 다른 숙소로 넘어가요. 주중·주말·성수기 요금을 구분해서 표기하면 신뢰가 올라가고, 예약 전에 가격 문의 전화가 확 줄어듭니다.",
+  checkInOut:"체크인/체크아웃 시간은 꼭 명시하세요. 입실·퇴실 시간이 불분명하면 도착 후 혼란이 생기고 나쁜 리뷰로 이어져요. '체크인 15:00 / 체크아웃 11:00'처럼 명확히 적고, 얼리 체크인·레이트 체크아웃 가능 여부도 함께 안내하면 만족도가 높아집니다.",
+  businessHours:"영업시간은 정확하게, 그리고 휴무일도 빠짐없이 등록하세요. 헛걸음한 고객은 다시 오지 않을 뿐 아니라 나쁜 리뷰를 남길 수 있어요. 명절·임시휴무는 미리 공지로 안내하면 신뢰가 올라갑니다.",
+  keywords:"대표 키워드는 고객이 검색하는 단어로 정해야 해요. '맛집'처럼 막연한 단어보다 '강남 데이트 코스', '회사 회식 장소'처럼 구체적인 키워드가 효과적이에요. 우리 가게의 강점과 고객의 검색어를 연결하는 게 핵심입니다.",
+  description:"상세 설명은 가게의 첫인상이에요. 400자 이상으로 우리 가게만의 이야기, 대표 메뉴, 분위기를 충실히 담으세요. 고객이 찾는 키워드를 자연스럽게 녹여 쓰면 검색 노출에도 도움이 돼요. 텅 빈 설명은 기회를 버리는 거예요.",
+  direction:"찾아오는 길 안내는 친절할수록 좋아요. '○○역 3번 출구에서 도보 5분', '○○건물 맞은편'처럼 구체적으로 적으세요. 주차 정보, 대중교통 동선까지 안내하면 고객의 방문 결심이 훨씬 쉬워집니다.",
+  news:"소식(공지)을 꾸준히 올리는 가게는 '관리되고 있다'는 인상을 줘요. 신메뉴, 이벤트, 휴무 안내를 정기적으로 올리세요. 한 달에 2~3개만 꾸준히 올려도 단골과의 소통 창구가 되고, 노출에도 긍정적입니다.",
+  specialDescription:"학원·중개 같은 업종은 메뉴 사진보다 '소개글'이 가장 큰 설득 수단이에요. 500자 이상으로 수업 과정, 전문 분야, 경력·수상 이력, 상담 절차를 구체적으로 적으세요. 학부모·고객이 전화 전에 소개글만 읽고도 '여기 믿을 만하다'고 느끼게 만드는 게 핵심입니다.",
+  specialMenu:"수강 프로그램이나 취급 매물 유형을 메뉴처럼 나눠서 등록하세요. '초등 영어 정규반', '아파트 전세 전문'처럼 세분화할수록 고객이 전문 분야를 빨리 이해하고 비교하기 쉬워져요. 5개 이상으로 나눠두면 검색 노출에도 도움이 됩니다.",
+  consultBooking:"체험수업·방문상담 예약 경로를 꼭 열어두세요. 학원·중개는 '바로 결제'가 아니라 '상담 → 등록' 흐름이라, 예약 버튼 하나가 문의 전환을 크게 좌우해요. 네이버 예약이나 톡톡 상담 예약을 연결하면 영업시간 외 문의도 놓치지 않습니다."
+};
+
+// 액션플랜 처방 — 항목별 '구체적 실천 행동(todo)'과 '왜 먼저 해야 하는지(why)'
+const ACTIONS = {
+  recent7:{todo:"오늘부터 결제 직후 '리뷰 한 번만 부탁드린다'를 멘트로 만드세요. 리뷰 가이드를 출력해 계산대 옆에 두세요.", why:"최신 리뷰가 끊기면 네이버는 '활동 없는 가게'로 판단해 노출을 줄입니다. 가장 빠르게 살릴 수 있는 영역이에요."},
+  recent30:{todo:"한 달 리뷰 10개를 목표로 매일 1~2명에게 직접 부탁하세요. 영수증 리뷰 이벤트를 동시에 여세요.", why:"꾸준한 리뷰 흐름이 검색 노출의 핵심 신호입니다. 지금 시작하면 한 달 뒤 순위가 달라져요."},
+  totalReview:{todo:"영수증 리뷰·블로그 체험단·뽑기 이벤트를 동시에 돌려 리뷰 100개를 먼저 넘기세요.", why:"리뷰 100개가 작은 키워드 경쟁의 최소 기준이에요. 리뷰 수가 곧 신뢰이자 노출 경쟁력입니다."},
+  blogReview:{todo:"동네 블로거 1명에게 체험단을 제안하거나, 소규모 체험단 플랫폼에 등록하세요.", why:"블로그 리뷰는 검색 결과를 풍성하게 만들어 클릭률을 끌어올리는 숨은 무기예요."},
+  npay:{todo:"네이버페이를 연결하세요. 신청 후 영업일 기준 며칠이면 활성화됩니다.", why:"결제 단계 이탈을 막고, 네이버페이 사용 가게는 노출에서도 가점을 받습니다."},
+  booking:{todo:"네이버 예약을 연결하고, 객실·시간 옵션과 자동 안내 메시지를 설정하세요.", why:"고객이 영업시간 밖에도 알아서 예약하니, 놓치는 손님이 사라지고 전환율이 크게 올라가요."},
+  smartcall:{todo:"스마트콜(안심번호)을 신청해 전화 문의를 데이터로 남기세요.", why:"누가·언제·몇 번 전화했는지 쌓여, 놓친 전화에 다시 연락하면 그게 곧 매출이 됩니다."},
+  talktalk:{todo:"네이버 톡톡을 켜고, 자주 묻는 질문은 자동응답으로 세팅하세요. 3분이면 됩니다.", why:"영업시간 이후 문의도 받을 수 있고, 응답이 빠른 가게일수록 만족도와 재방문율이 올라갑니다."},
+  coupon:{todo:"'첫 방문 10% 할인' 또는 '리뷰 작성 시 음료 서비스' 쿠폰을 발행하세요.", why:"쿠폰은 첫 방문을 단골로 바꾸는 가장 쉬운 장치예요. 받은 고객은 쓰려고 다시 옵니다."},
+  imageCount:{todo:"음식·공간·외관·디테일 사진을 골고루 10장 이상 밝게 찍어 올리세요.", why:"첫 화면 대표 이미지가 클릭률을 좌우해요. 사진이 많을수록 '믿을만한 가게'로 보입니다."},
+  convenience:{todo:"주차·와이파이·예약 등 해당되는 편의시설을 빠짐없이 체크하세요.", why:"고객은 이 정보로 방문을 결정해요. 특히 '주차 가능'은 방문 결정에 가장 큰 영향을 줍니다."},
+  menuPrice:{todo:"대표 메뉴 3~5개를 가격과 함께 등록하고, 빠진 가격을 채우세요.", why:"가격 정보가 없으면 고객은 '비쌀 것 같다'며 그냥 넘어가요. 가격 공개가 문의를 줄입니다."},
+  menuPhoto:{todo:"대표 메뉴부터 자연광에서 밝게 찍어 사진을 채우세요.", why:"사진이 있는 메뉴의 주문율이 훨씬 높아요. 메뉴 사진은 매출과 직결됩니다."},
+  businessHours:{todo:"플레이스 앱에서 영업시간을 요일별로 정확히 입력하세요. 3분이면 됩니다.", why:"영업시간이 없으면 손님이 '지금 운영하나?' 확인이 안 돼 헛걸음하거나 그냥 떠납니다. 가장 먼저 해야 할 1순위예요."},
+  roomCount:{todo:"객실 타입별로 최대 인원·평수·침대 구성을 모두 등록하세요.", why:"객실 종류가 다양할수록 고객 선택폭이 넓어지고 예약 전환율이 올라갑니다."},
+  roomPrice:{todo:"주중·주말·성수기 요금을 구분해 모든 객실 가격을 공개하세요.", why:"가격이 없으면 고객은 다른 숙소로 넘어가요. 가격 표기가 예약 전환에 큰 도움이 됩니다."},
+  checkInOut:{todo:"'체크인 15:00 / 체크아웃 11:00'처럼 명확히 적고 얼리/레이트 가능 여부도 안내하세요.", why:"입실·퇴실 시간이 불분명하면 도착 후 혼란과 나쁜 리뷰로 이어집니다."},
+  keywords:{todo:"손님이 검색할 단어로 대표키워드 5개를 꽉 채우세요. (예: 지역명+업종, 상황 키워드)", why:"비어 있는 키워드 칸은 노출 기회를 그냥 버리는 거예요. 5개를 다 쓰는 게 좋습니다."},
+  description:{todo:"고객이 전화로 가장 많이 묻는 5가지를 상세설명에 적어보세요. 주차, 가격, 예약, 위치, 메뉴 순으로.", why:"상세설명은 고객의 탐색 과정에서 가장 중요하게 작용하는 정보 영역입니다."},
+  direction:{todo:"'○○역 3번 출구 도보 5분', 주차 정보, 대중교통 동선을 구체적으로 적으세요.", why:"찾아오는 길이 친절할수록 방문 결심이 쉬워지고 헛걸음이 줄어듭니다."},
+  news:{todo:"신메뉴·이벤트·휴무 안내를 한 달에 2~3개 꾸준히 올리세요.", why:"소식을 올리는 가게는 '관리되는 가게'로 보여요. 단골 소통 창구가 되고 노출에도 긍정적입니다."},
+  reviewMix:{todo:"영수증·블로그·사진·예약 리뷰를 동시에 굴리는 '리뷰 포트폴리오'를 만드세요.", why:"리뷰 종류가 한쪽에 몰리면 어뷰징 의심을 받아요. 균형이 건강한 가게 신호입니다."},
+  aiBriefing:{todo:"리뷰 가이드에 '어떤 메뉴가 좋았는지 적어주세요'를 넣어 핵심 단어가 담기게 하세요.", why:"네이버 AI 브리핑이 우리 가게 강점을 잘 뽑아내려면 리뷰에 구체적 단어가 필요합니다."},
+  reviewReply:{todo:"낮은 별점 리뷰엔 정중한 답글을, 좋은 리뷰엔 감사 답글을 다세요.", why:"답글은 다음 고객이 보는 사장님의 '태도'예요. 재방문율이 확연히 달라집니다."},
+  saveCount:{todo:"'저장하고 방문하면 음료 서비스' 같은 작은 이벤트로 저장을 유도하세요.", why:"저장 수가 많을수록 네이버는 인기 가게로 판단하고, 저장 고객에겐 소식 알림이 갑니다."},
+  starRating:{todo:"낮은 별점 리뷰의 불만을 분석해 개선하고, 정중히 답글을 다세요.", why:"별점이 4.0 밑으로 떨어지면 클릭률이 눈에 띄게 줄어듭니다. 4.5 이상 유지가 좋아요."},
+  photoReview:{todo:"'사진 한 장 올려주시면 음료 서비스'처럼 작은 보상으로 사진 리뷰를 유도하세요.", why:"사진 리뷰가 글만 있는 리뷰보다 5배 더 신뢰받아요. 메뉴가 먹음직스럽게 보입니다."},
+  specialDescription:{todo:"소개글을 500자 이상으로, 수업 과정·전문 분야·경력·상담 절차를 구체적으로 채우세요.", why:"학원·중개는 메뉴 사진이 없는 대신 소개글이 가장 큰 설득 수단이에요. 고객은 소개글만 읽고 전화 여부를 결정합니다."},
+  specialMenu:{todo:"수강 프로그램·취급 매물 유형을 메뉴처럼 5개 이상으로 세분화해 등록하세요.", why:"전문 분야가 한눈에 보여야 고객이 비교·신뢰할 수 있어요. 세분화할수록 검색 노출도 유리합니다."},
+  consultBooking:{todo:"체험수업·방문상담 예약 경로(네이버 예약/톡톡 상담)를 열어두세요.", why:"학원·중개는 '상담→등록' 흐름이라 예약 버튼 하나가 문의 전환을 크게 좌우합니다. 영업시간 외 문의도 잡을 수 있어요."}
+};
+
+function toggleTip(btn){
+  const tip=btn.closest('.coach-tip');
+  if(tip) tip.classList.toggle('open');
+}
+
+// 간단한 토스트 알림
+function showToast(msg){
+  let t=document.getElementById('reportToast');
+  if(!t){ t=document.createElement('div'); t.id='reportToast'; t.className='report-toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>{ t.classList.remove('show'); }, 2600);
+}
+
+// 리포트 PDF 다운로드 (html2pdf.js 사용)
+function downloadReportPDF(){
+  const el=document.getElementById('reportContainer');
+  if(!el){ showToast('리포트를 찾을 수 없어요'); return; }
+  const r=window.__lastReport||{};
+  const safeName=(r.name||'플레이스').replace(/[\\/:*?"<>|\s]+/g,'_');
+  if(typeof window.html2pdf==='undefined'){
+    showToast('PDF 모듈을 불러오는 중이에요. 잠시 후 다시 눌러주세요');
+    return;
+  }
+  // 다운로드 중에는 버튼 영역을 숨겨 PDF에 포함되지 않게 함
+  const actions=el.querySelector('.report-actions');
+  if(actions) actions.style.visibility='hidden';
+  showToast('PDF를 만들고 있어요...');
+  const opt={
+    margin:[8,8,8,8],
+    filename:'플레이스진단_'+safeName+'.pdf',
+    image:{type:'jpeg',quality:0.95},
+    html2canvas:{scale:2,useCORS:true,backgroundColor:'#FBF7F0',scrollY:0},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['css','legacy']}
+  };
+  window.html2pdf().set(opt).from(el).save().then(()=>{
+    if(actions) actions.style.visibility='visible';
+  }).catch(()=>{
+    if(actions) actions.style.visibility='visible';
+    showToast('PDF 생성에 실패했어요. 다시 시도해주세요');
+  });
+}
+
+// 내 점수 공유하기 (Web Share API → 실패 시 클립보드 복사)
+async function shareScore(){
+  const r=window.__lastReport||{};
+  const text='['+(r.name||'우리 가게')+'] 네이버 플레이스 진단 결과: '+(r.score!=null?r.score:'-')+'점 ('+(r.grade||'-')+' 등급)\n셀러랩스 플레이스 진단으로 확인해보세요 👇';
+  const url=window.location.href.split('#')[0];
+  const shareData={ title:'네이버 플레이스 진단 결과', text:text, url:url };
+  try{
+    if(navigator.share){ await navigator.share(shareData); return; }
+  }catch(e){ if(e&&e.name==='AbortError') return; }
+  // 폴백: 클립보드 복사
+  try{
+    await navigator.clipboard.writeText(text+'\n'+url);
+    showToast('점수 내용을 클립보드에 복사했어요!');
+  }catch(e){
+    showToast('공유를 지원하지 않는 환경이에요');
+  }
+}
+
+function renderReport(result){
+  const c=document.getElementById('reportContainer');
+  // 공유·PDF 다운로드용 전역 저장
+  window.__lastReport={ name:result.name, score:result.displayScore, grade:result.grade, category:result.category };
+  const now=new Date();
+  const dateStr=now.getFullYear()+'년 '+(now.getMonth()+1)+'월 '+now.getDate()+'일 '+
+    String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+
+  // 게이지
+  const R=90, CIRC=2*Math.PI*R;
+  const offset=CIRC*(1-result.displayScore/100);
+
+  // 카테고리 요약
+  const catSum={};
+  let summaryHTML='';
+  for(const ck of CAT_ORDER){
+    const ci=result.items.filter(i=>i.cat===ck);
+    const scored=ci.reduce((a,i)=>a+(i.na?0:i.score),0);
+    const maxable=ci.reduce((a,i)=>a+(i.na?0:i.max),0);
+    catSum[ck]={scored,maxable};
+    const pct=maxable>0?Math.round(scored/maxable*100):0;
+    summaryHTML+='<div class="summary-card" data-cat="'+CAT_META[ck].dataCat+'">'+
+      '<div class="sc-name">'+CAT_META[ck].label+'</div>'+
+      '<div class="sc-score">'+(Math.round(scored*10)/10)+'<span style="font-size:14px;font-weight:500;color:#A39A8E;">점</span></div>'+
+      '<div class="sc-max">/ '+maxable+'점 만점</div>'+
+      '<div class="summary-bar"><div class="summary-bar-fill" data-pct="'+pct+'"></div></div></div>';
+  }
+
+  // 항목 상세
+  let detailHTML='';
+  for(const ck of CAT_ORDER){
+    const ci=result.items.filter(i=>i.cat===ck);
+    if(!ci.length) continue;
+    const cs=catSum[ck];
+    let itemsHTML='';
+    for(const item of ci){
+      const ratio=item.max>0?item.score/item.max:0;
+      let badge='badge-good';
+      if(item.na)badge='badge-na';
+      else if(ratio<0.4)badge='badge-bad';
+      else if(ratio<0.7)badge='badge-warn';
+      const badgeText=item.na?'N/A':(Math.round(item.score*10)/10)+' / '+item.max;
+      const tip=TIPS[item.key];
+      let tipHTML='';
+      if(tip){
+        tipHTML='<div class="coach-tip">'+
+          '<button type="button" class="coach-tip-toggle" onclick="toggleTip(this)">'+
+            '<span class="coach-tip-caret">▶</span> 셀러랩스의 실전 팁</button>'+
+          '<div class="coach-tip-body">'+
+            '<div class="coach-tip-row"><div class="bubble-logo-sm"><img src="/static/sellerlabs-bird-white.svg" alt="셀러랩스"></div>'+
+            '<div class="coach-tip-text">'+escapeHtml(tip)+'</div></div></div></div>';
+      }
+      itemsHTML+='<div class="item-card">'+
+        '<div class="item-top"><span class="item-name">'+escapeHtml(item.name)+'</span>'+
+        '<span class="item-badge '+badge+'">'+badgeText+'</span></div>'+
+        '<div class="item-detail">'+escapeHtml(item.detail)+'</div>'+
+        '<div class="item-comment-wrap"><div class="bubble-logo-sm"><img src="/static/sellerlabs-bird-white.svg" alt="셀러랩스"></div>'+
+        '<div class="item-comment">'+escapeHtml(item.comment)+'</div></div>'+
+        tipHTML+'</div>';
+    }
+    detailHTML+='<div class="cat-section"><div class="cat-header" data-cat="'+CAT_META[ck].dataCat+'">'+
+      '<span class="cat-dot"></span><span class="cat-label">'+CAT_META[ck].label+'</span>'+
+      '<span class="cat-score-label">'+(Math.round(cs.scored*10)/10)+' / '+cs.maxable+'점</span></div>'+
+      itemsHTML+'</div>';
+  }
+
+  // 액션플랜: 점수 비율 낮은 항목 top3 (N/A 제외)
+  const weak=result.items.filter(i=>!i.na && i.max>0).map(i=>({...i,ratio:i.score/i.max}))
+    .sort((a,b)=>a.ratio-b.ratio).slice(0,3);
+  let actionHTML='';
+  weak.forEach((it,i)=>{
+    const act=ACTIONS[it.key];
+    const todoText=act?act.todo:it.comment;
+    const whyText=act?act.why:'';
+    const scoreLabel=(Math.round(it.score*10)/10)+'/'+it.max+'점';
+    actionHTML+='<div class="action-card"><div class="action-number">'+(i+1)+'</div>'+
+      '<div class="action-body">'+
+        '<div class="action-item-name">'+escapeHtml(it.name)+' <span class="action-item-score">('+scoreLabel+')</span></div>'+
+        '<div class="action-current">현재: '+escapeHtml(it.detail)+'</div>'+
+        '<div class="action-todo">'+escapeHtml(todoText)+'</div>'+
+        (whyText?'<div class="action-why"><span class="action-why-label">왜 먼저?</span> '+escapeHtml(whyText)+'</div>':'')+
+      '</div></div>';
+  });
+
+  // 의료기관 안내 (병원·의원은 의료광고법 사전심의 대상 → 일부 항목 진단 제외)
+  const ind=result.industry||{};
+  const medicalNotice = ind.isMedical
+    ? '<div class="medical-notice">🏥 <b>의료기관 안내</b> — 병원·의원은 의료광고 사전심의 대상이라, 시술 사진·소식·체험단·할인(쿠폰) 권유는 진단에서 제외했어요. 허용되는 건 명칭·진료과목·의료진·진료시간·위치·예약 같은 <b>사실정보</b>와 <b>병원 공간·시설 사진</b>이에요.</div>'
+    : '';
+
+  // 일부 항목 제외 안내 (N/A 항목이 있을 때) — 참조 사이트와 동일
+  const naNotice = (result.naMaxScore>0)
+    ? '<div class="na-notice">일부 항목(리뷰 상세 데이터 또는 업종에 해당 없는 항목)을 점수에서 제외하고 나머지 항목 기준으로 환산했습니다.</div>'
+    : '';
+
+  // 통계 — 참조 사이트와 동일하게 N/A 포함 전체 항목 기준으로 집계
+  const goodCount = result.items.filter(i=>i.score>=i.max*0.7).length;
+  const badCount  = result.items.filter(i=>i.score<i.max*0.4).length;
+  const totalCount= result.items.length;
+
+  c.innerHTML=
+    '<div class="report-header">'+
+      '<div class="shop-name">'+escapeHtml(result.name)+'</div>'+
+      '<div class="shop-meta">'+escapeHtml(result.category)+(result.address?(' · '+escapeHtml(result.address)):'')+'</div>'+
+      '<div class="report-date">진단일시: '+dateStr+'</div>'+
+    '</div>'+
+
+    medicalNotice+
+
+    '<div class="score-section">'+
+      '<div class="score-gauge-container">'+
+        '<svg viewBox="0 0 240 240">'+
+          '<circle class="gauge-track" cx="120" cy="120" r="'+R+'"></circle>'+
+          '<circle class="gauge-fill" cx="120" cy="120" r="'+R+'" '+
+            'stroke="'+result.gradeColor+'" '+
+            'stroke-dasharray="'+CIRC+'" stroke-dashoffset="'+CIRC+'" '+
+            'transform="rotate(-90 120 120)" id="gaugeFill"></circle>'+
+        '</svg>'+
+        '<div class="score-text"><div class="score-label">PLACE SCORE</div>'+
+          '<div class="score-number" style="color:'+result.gradeColor+'">'+result.displayScore+'</div>'+
+          '<div class="score-max">/ 100점</div></div>'+
+      '</div>'+
+      '<div class="grade-badge" style="background:'+result.gradeColor+'">'+result.grade+' 등급</div>'+
+      '<div class="score-stats">'+
+        '<div class="score-stat"><div class="score-stat-value">'+goodCount+'</div><div class="score-stat-label">잘하는 항목</div></div>'+
+        '<div class="score-stat"><div class="score-stat-value">'+badCount+'</div><div class="score-stat-label">보완 필요</div></div>'+
+        '<div class="score-stat"><div class="score-stat-value">'+totalCount+'</div><div class="score-stat-label">진단 항목</div></div>'+
+      '</div>'+
+    '</div>'+
+
+    '<div class="persona-card"><div class="persona-icon">'+result.personaIcon+'</div>'+
+      '<div class="persona-label">사장님 유형</div>'+
+      '<div class="persona-name">'+escapeHtml(result.persona)+'</div>'+
+      '<div class="persona-desc">'+escapeHtml(result.personaDesc)+'</div></div>'+
+
+    '<div class="main-bubble-wrap"><div class="bubble-logo"><img src="/static/sellerlabs-bird-white.svg" alt="셀러랩스"></div>'+
+      '<div class="speech-bubble">'+escapeHtml(result.gradeComment)+'</div></div>'+
+
+    naNotice+
+
+    '<div class="report-actions">'+
+      '<button type="button" class="report-action-btn" onclick="downloadReportPDF()">'+
+        '<span class="ra-icon">📄</span> 리포트 PDF 다운로드</button>'+
+      '<button type="button" class="report-action-btn" onclick="shareScore()">'+
+        '<span class="ra-icon">🔗</span> 내 점수 공유하기</button>'+
+    '</div>'+
+
+    '<hr class="section-divider">'+
+    '<div class="section-title">카테고리별 점수</div>'+
+    '<div class="section-subtitle">4개 영역으로 나눠서 점수를 매겼어요</div>'+
+    '<div class="summary-grid">'+summaryHTML+'</div>'+
+
+    '<hr class="section-divider">'+
+    '<div class="section-title">셀러랩스라면, 이 3가지부터 시작하겠어요</div>'+
+    '<div class="section-subtitle">점수 낮은 순서대로 마이마이가 처방한 우선순위예요 — 현장형으로 자세하게</div>'+
+    '<div class="action-section">'+actionHTML+'</div>'+
+
+    '<hr class="section-divider">'+
+    '<div class="section-title">항목별 상세 진단</div>'+
+    '<div class="section-subtitle">'+result.items.length+'개 항목을 하나하나 살펴봤어요</div>'+
+    detailHTML+
+
+    '<div class="restart-wrap"><button class="btn-secondary" onclick="restart()">다른 가게 진단하기</button></div>'+
+    '<div class="report-footer">본 진단은 네이버 플레이스 공개 정보를 기반으로 한 참고용 분석입니다.<br>실제 노출 순위는 네이버 알고리즘에 따라 달라질 수 있어요.'+
+      '<div class="footer-brand"><img src="/static/sellerlabs-logo.svg" alt="셀러랩스" width="104" height="20"><br>'+
+      '<a href="https://sellerlabs.co.kr" target="_blank" rel="noopener">sellerlabs.co.kr</a> · 스마트스토어·플레이스 순위 추적 솔루션</div></div>';
+
+  // 애니메이션
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      const g=document.getElementById('gaugeFill'); if(g) g.setAttribute('stroke-dashoffset', String(offset));
+      document.querySelectorAll('.summary-bar-fill').forEach(el=>{ el.style.width=(el.dataset.pct||0)+'%'; });
+    },100);
+  });
+}
+`
