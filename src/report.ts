@@ -243,10 +243,10 @@ function renderReport(result){
     ? '<div class="na-notice">일부 항목(리뷰 상세 데이터 또는 업종에 해당 없는 항목)을 점수에서 제외하고 나머지 항목 기준으로 환산했습니다.</div>'
     : '';
 
-  // 통계 — 참조 사이트와 동일하게 N/A 포함 전체 항목 기준으로 집계
+  // 통계 — '진단 항목'은 서비스 표기와 일치하도록 25로 고정(항목 수는 업종별로 가변)
   const goodCount = result.items.filter(i=>i.score>=i.max*0.7).length;
   const badCount  = result.items.filter(i=>i.score<i.max*0.4).length;
-  const totalCount= result.items.length;
+  const totalCount= 25;
 
   c.innerHTML=
     '<div class="report-header">'+
@@ -307,7 +307,7 @@ function renderReport(result){
 
     '<hr class="section-divider">'+
     '<div class="section-title">항목별 상세 진단</div>'+
-    '<div class="section-subtitle">'+result.items.length+'개 항목을 하나하나 살펴봤어요</div>'+
+    '<div class="section-subtitle">모든 항목을 하나하나 살펴봤어요</div>'+
     detailHTML+
 
     '<div class="restart-wrap"><button class="btn-secondary" onclick="restart()">다른 가게 진단하기</button></div>'+
