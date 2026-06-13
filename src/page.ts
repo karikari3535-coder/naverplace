@@ -12,11 +12,18 @@ export function renderHome(): string {
   <link rel="icon" href="/static/sellerlabs-bird.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="셀러랩스">
+  <meta property="og:url" content="https://bd619c54-8d18-4734-869c-45fd3a4c08a7.vip.gensparksite.com/">
   <meta property="og:title" content="플레이스 무료 진단 | 셀러랩스">
   <meta property="og:description" content="네이버 플레이스 URL만 넣으면 26개 항목을 무료로 진단해드려요. 셀러랩스가 내 가게에 딱 맞는 처방을 알려드립니다.">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="https://bd619c54-8d18-4734-869c-45fd3a4c08a7.vip.gensparksite.com/static/og-card.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="셀러랩스 플레이스 무료 진단">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="플레이스 무료 진단 | 셀러랩스">
   <meta name="twitter:description" content="네이버 플레이스 URL만 넣으면 26개 항목을 무료로 진단해드려요.">
+  <meta name="twitter:image" content="https://bd619c54-8d18-4734-869c-45fd3a4c08a7.vip.gensparksite.com/static/og-card.png">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
   <style>${PAGE_CSS}</style>
 </head>
