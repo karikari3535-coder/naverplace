@@ -8,15 +8,15 @@ export function renderHome(): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>플레이스 무료 진단 | 셀러랩스</title>
-  <meta name="description" content="네이버 플레이스 URL만 넣으면 23개 항목을 무료로 진단해드려요. 셀러랩스가 내 가게에 딱 맞는 처방을 알려드립니다.">
+  <meta name="description" content="네이버 플레이스 URL만 넣으면 25개 항목을 무료로 진단해드려요. 셀러랩스가 내 가게에 딱 맞는 처방을 알려드립니다.">
   <link rel="icon" href="/static/sellerlabs-bird.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="셀러랩스">
   <meta property="og:title" content="플레이스 무료 진단 | 셀러랩스">
-  <meta property="og:description" content="네이버 플레이스 URL만 넣으면 23개 항목을 무료로 진단해드려요. 셀러랩스가 내 가게에 딱 맞는 처방을 알려드립니다.">
+  <meta property="og:description" content="네이버 플레이스 URL만 넣으면 25개 항목을 무료로 진단해드려요. 셀러랩스가 내 가게에 딱 맞는 처방을 알려드립니다.">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="플레이스 무료 진단 | 셀러랩스">
-  <meta name="twitter:description" content="네이버 플레이스 URL만 넣으면 23개 항목을 무료로 진단해드려요.">
+  <meta name="twitter:description" content="네이버 플레이스 URL만 넣으면 25개 항목을 무료로 진단해드려요.">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
   <style>${PAGE_CSS}</style>
 </head>
@@ -24,11 +24,10 @@ export function renderHome(): string {
   <!-- ============ Stage 1: URL 입력 ============ -->
   <main class="stage active" id="stage1">
     <div class="brand-row">
-      <img class="brand-logo" src="/static/sellerlabs-logo.svg" alt="셀러랩스" width="132" height="26">
+      <img class="brand-logo" src="/static/sellerlabs-bird.svg" alt="셀러랩스" width="64" height="73">
     </div>
-    <div class="hero-logo" aria-hidden="true"><img src="/static/sellerlabs-bird-white.svg" alt="" width="42" height="48"></div>
     <h1>내 플레이스, 몇 점일까요?</h1>
-    <p class="subtitle">네이버 플레이스 URL을 넣으면<br>23개 항목을 무료로 진단해드려요</p>
+    <p class="subtitle">네이버 플레이스 URL을 넣으면<br>25개 항목을 무료로 진단해드려요</p>
     <div class="input-group">
       <input type="text" id="urlInput" placeholder="플레이스 URL 또는 공유 링크를 붙여넣으세요">
       <button class="btn-primary" id="diagnoseBtn" onclick="startDiagnosis()">진단하기</button>
@@ -36,7 +35,7 @@ export function renderHome(): string {
     <p class="error-msg" id="errorMsg"></p>
     <p class="hero-hint">플레이스 앱에서 공유 버튼 누른 링크(naver.me/...)도 가능해요</p>
     <div class="hero-note">
-      <strong>23개 진단 항목</strong>을 기반으로<br>
+      <strong>25개 진단 항목</strong>을 기반으로<br>
       내 가게에 딱 맞는 처방을 드려요
     </div>
   </main>
@@ -49,7 +48,7 @@ export function renderHome(): string {
         <div class="ai-loading-orb"></div>
         <div>
           <div class="ai-loading-title" id="aiLoadingTitle">AI가 매장을 분석하고 있어요</div>
-          <div class="ai-loading-sub" id="aiLoadingSub">네이버 플레이스 23개 항목 · 실시간 진단</div>
+          <div class="ai-loading-sub" id="aiLoadingSub">네이버 플레이스 25개 항목 · 실시간 진단</div>
         </div>
       </div>
       <div class="ai-step-list" id="aiStepList"></div>

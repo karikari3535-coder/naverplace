@@ -15,8 +15,8 @@ a { color: inherit; text-decoration: none; }
 
 /* Stage 1 */
 #stage1 { flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 24px 20px; }
-.brand-row { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
-.brand-logo { height: 26px; width: auto; }
+.brand-row { display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
+.brand-logo { height: 80px; width: auto; }
 .hero-logo {
   width: 110px; height: 110px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
