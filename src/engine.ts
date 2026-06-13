@@ -37,51 +37,51 @@ function analyzePlaceData(api, user){
   // #1 최근 7일 리뷰 (10/13)
   if(hasReviewDetail){
     const r7=api.last7DaysReviews||0; let s,c;
-    if(r7>=40){s=PTS_RECENT7;c='사장님 이거 비결이 뭐예요? 저한테도 알려주세요';}
-    else if(r7>=35){s=isNonBeautyT2?12:9;c='대단하세요. 이 페이스면 플레이스 상위권 유지됩니다';}
-    else if(r7>=30){s=isNonBeautyT2?10:8;c='참 잘하고 계세요! 리뷰가 쌓이는 게 눈에 보여요';}
-    else if(r7>=25){s=isNonBeautyT2?9:7;c='좋아요. 여기서 리뷰 가이드만 추가하면 더 빨라져요';}
-    else if(r7>=20){s=isNonBeautyT2?7.5:6;c='나쁘지 않아요. 조금만 더 신경 쓰면 확 달라질 구간이에요';}
-    else if(r7>=15){s=isNonBeautyT2?6:5;c='중간이에요. 리뷰 이벤트 한 번 해보시겠어요?';}
-    else if(r7>=10){s=isNonBeautyT2?5:4;c='여기서부터 관리 시작하면 한 달 뒤에 달라져요';}
-    else if(r7>=7){s=isNonBeautyT2?4:3;c='리뷰 가이드를 만들어서 조금 더 받아보면 확 달라질 거예요';}
-    else if(r7>=4){s=isNonBeautyT2?2.5:2;c='리뷰를 직접 부탁해보신 적 있으세요?';}
-    else if(r7>=1){s=isNonBeautyT2?1.5:1;c='이번 주 리뷰가 거의 없어요. 오늘부터 한 분한테만 부탁해보세요';}
-    else{s=0;c='이번 주 리뷰 0개예요. 리뷰 가이드부터 같이 만들어봐요';}
+    if(r7>=40){s=PTS_RECENT7;c='최상위권 유입 수준입니다. 지금의 리뷰 흐름이 상위노출을 이끌고 있습니다.';}
+    else if(r7>=35){s=isNonBeautyT2?12:9;c='매우 우수한 페이스입니다. 이 추세라면 상위권 노출이 안정적으로 유지됩니다.';}
+    else if(r7>=30){s=isNonBeautyT2?10:8;c='리뷰가 꾸준히 쌓이고 있습니다. 좋은 흐름입니다.';}
+    else if(r7>=25){s=isNonBeautyT2?9:7;c='양호한 상태입니다. 리뷰 작성 가이드를 더하면 적립 속도가 빨라집니다.';}
+    else if(r7>=20){s=isNonBeautyT2?7.5:6;c='준수한 수준입니다. 조금만 보완하면 상위 구간 진입이 가능합니다.';}
+    else if(r7>=15){s=isNonBeautyT2?6:5;c='평균 수준입니다. 리뷰 유도 이벤트를 한 번 운영해보세요.';}
+    else if(r7>=10){s=isNonBeautyT2?5:4;c='지금부터 리뷰 관리를 체계화하면 한 달 안에 효과가 나타납니다.';}
+    else if(r7>=7){s=isNonBeautyT2?4:3;c='리뷰 작성 가이드를 만들어 적립량을 늘려보세요.';}
+    else if(r7>=4){s=isNonBeautyT2?2.5:2;c='리뷰 유입이 부족합니다. 결제 직후 리뷰 요청 과정을 만들어보세요.';}
+    else if(r7>=1){s=isNonBeautyT2?1.5:1;c='최근 7일 리뷰가 거의 없습니다. 오늘부터 리뷰 요청을 시작해보세요.';}
+    else{s=0;c='최근 7일 리뷰가 없습니다. 리뷰 작성 가이드 정비가 시급합니다.';}
     items.push({key:'recent7',name:'최근 7일 리뷰',cat:'review',max:PTS_RECENT7,score:s,detail:r7+'개',comment:c});
   } else pushNA('recent7','최근 7일 리뷰','review',PTS_RECENT7,'리뷰 데이터를 가져올 수 없었어요');
 
   // #2 최근 30일 리뷰 (7)
   if(hasReviewDetail){
     const r30=api.last30DaysReviews||0; let s,c;
-    if(r30>=45){s=7;c='한 달 리뷰가 폭발적이에요. 이 흐름 유지하시면 됩니다';}
-    else if(r30>=40){s=6.5;c='월간 리뷰가 아주 좋아요. 꾸준히 가고 계세요';}
-    else if(r30>=35){s=6;c='잘 하고 계세요. 리뷰 강자예요';}
-    else if(r30>=30){s=5;c='좋아요. 리뷰 가이드를 강화하면 더 올라갈 수 있어요';}
-    else if(r30>=25){s=4;c='나쁘지 않아요. 주 2~3개만 더 받으면 확 달라져요';}
-    else if(r30>=20){s=3;c='중간이에요. 영수증 리뷰 이벤트를 시작해보세요';}
-    else if(r30>=15){s=2.5;c='하루 1개꼴이에요. 리뷰 가이드 + 이벤트로 속도를 올려보세요';}
-    else if(r30>=10){s=2;c='한 달 리뷰가 좀 적어요. 손님한테 직접 부탁해보셨나요?';}
-    else if(r30>=5){s=1;c='월 리뷰가 한 자리예요. 리뷰 이벤트부터 세팅해보세요';}
-    else if(r30>=1){s=0.5;c='한 달 리뷰가 거의 없어요. 오늘부터 시작해보세요';}
-    else{s=0;c='최근 한 달간 리뷰 0개예요. 가장 급한 항목이에요';}
+    if(r30>=45){s=7;c='월간 리뷰 적립이 매우 활발합니다. 지금 흐름을 유지하시면 됩니다.';}
+    else if(r30>=40){s=6.5;c='월간 리뷰 지표가 우수합니다. 꾸준히 관리되고 있습니다.';}
+    else if(r30>=35){s=6;c='리뷰 적립이 안정적입니다. 상위 그룹에 해당합니다.';}
+    else if(r30>=30){s=5;c='양호한 상태입니다. 리뷰 가이드를 강화하면 추가 상승 여지가 있습니다.';}
+    else if(r30>=25){s=4;c='준수한 수준입니다. 주 2~3건만 더해도 구간이 달라집니다.';}
+    else if(r30>=20){s=3;c='평균 수준입니다. 영수증 리뷰 이벤트를 도입해보세요.';}
+    else if(r30>=15){s=2.5;c='하루 1건 수준입니다. 가이드와 이벤트를 함께 운영해 속도를 높여보세요.';}
+    else if(r30>=10){s=2;c='월간 리뷰가 다소 부족합니다. 직접 요청 과정을 점검해보세요.';}
+    else if(r30>=5){s=1;c='월간 리뷰가 한 자릿수입니다. 리뷰 이벤트 세팅부터 진행해보세요.';}
+    else if(r30>=1){s=0.5;c='월간 리뷰가 거의 없습니다. 오늘부터 적립을 시작해보세요.';}
+    else{s=0;c='최근 한 달간 리뷰가 없습니다. 가장 먼저 조치가 필요한 항목입니다.';}
     items.push({key:'recent30',name:'최근 30일 리뷰',cat:'review',max:PTS_RECENT30,score:s,detail:r30+'개',comment:c});
   } else pushNA('recent30','최근 30일 리뷰','review',PTS_RECENT30,'리뷰 데이터를 가져올 수 없었어요');
 
   // #3 방문자 리뷰 총 수 (5)
   {
     const t=api.totalReviewCount||0; let s,c;
-    if(t>=1000){s=5;c='리뷰 천 개 넘으셨네요. 인기 인증이에요';}
-    else if(t>=800){s=4.5;c='거의 천 개 가까이 오셨어요. 대단하십니다';}
-    else if(t>=600){s=4;c='리뷰가 탄탄하게 쌓여있네요. 신뢰감 충분해요';}
-    else if(t>=500){s=3.5;c='500개 넘으셨네요. 꾸준히 잘 관리하고 계세요';}
-    else if(t>=400){s=3;c='리뷰 400개대, 좋아요. 계속 쌓아가시면 됩니다';}
-    else if(t>=300){s=2.5;c='300개 넘으셨어요. 이제 리뷰 품질에도 신경 쓰면 좋겠어요';}
-    else if(t>=200){s=2;c='200개대, 나쁘지 않아요. 리뷰 이벤트를 해보시겠어요?';}
-    else if(t>=150){s=1.5;c='조금 더 모아볼까요? 리뷰 가이드 만들면 속도가 붙어요';}
-    else if(t>=100){s=1;c='100개는 넘었는데 아직 부족해요. 직접 부탁이 제일 빨라요';}
-    else if(t>=50){s=0.5;c='리뷰가 아직 100개가 안 돼요. 가이드부터 만들어보세요';}
-    else{s=0;c='리뷰가 50개도 안 돼요. 오늘부터 직접 부탁해보세요';}
+    if(t>=1000){s=5;c='리뷰 1,000건 이상으로 충분한 신뢰 지표를 확보했습니다.';}
+    else if(t>=800){s=4.5;c='리뷰 적립량이 상위 수준입니다.';}
+    else if(t>=600){s=4;c='리뷰 기반이 탄탄해 신뢰도가 충분합니다.';}
+    else if(t>=500){s=3.5;c='500건 이상으로 안정적으로 관리되고 있습니다.';}
+    else if(t>=400){s=3;c='양호한 적립량입니다. 지금처럼 계속 쌓아가시면 됩니다.';}
+    else if(t>=300){s=2.5;c='300건을 넘었습니다. 이제 리뷰 품질 관리도 함께 신경 써보세요.';}
+    else if(t>=200){s=2;c='준수한 수준입니다. 리뷰 이벤트로 적립을 더 빠르게 할 수 있습니다.';}
+    else if(t>=150){s=1.5;c='리뷰 가이드를 마련하면 적립 속도가 빨라집니다.';}
+    else if(t>=100){s=1;c='100건을 넘었지만 아직 부족합니다. 직접 요청이 가장 효과적입니다.';}
+    else if(t>=50){s=0.5;c='리뷰가 100건 미만입니다. 가이드 정비부터 진행해보세요.';}
+    else{s=0;c='리뷰가 50건 미만입니다. 오늘부터 적립을 시작해보세요.';}
     items.push({key:'totalReview',name:'방문자 리뷰 총 수',cat:'review',max:PTS_TOTAL_REV,score:s,detail:t.toLocaleString()+'개',comment:c});
   }
 
@@ -90,19 +90,19 @@ function analyzePlaceData(api, user){
     var useThree = isBeauty;
     var avg = api.reviewQualityAvg; var s,c;
     if(useThree){
-      if(avg>=1.9){s=5;c='리뷰 품질이 정말 좋으세요. AI가 이 리뷰를 읽고 손님한테 추천할 거예요';}
-      else if(avg>=1.5){s=4;c='구체적인 리뷰가 많네요. 시술 목적·만족도가 들어간 리뷰가 AI 추천에 유리해요';}
-      else if(avg>=1.1){s=3;c='괜찮아요. 리뷰 가이드로 좀 더 구체적인 리뷰를 유도해보세요';}
-      else if(avg>=0.8){s=2;c='리뷰가 좀 단순해요. 어떤 시술을 왜 받았는지 적어달라고 안내해보세요';}
-      else if(avg>=0.4){s=1;c='사장님, 리뷰 가이드를 만들어보세요. 구체적인 리뷰가 AI 추천의 핵심이에요';}
-      else{s=0.5;c='리뷰에 구체적인 정보가 부족해요. 리뷰 가이드를 만들면 확 달라져요';}
+      if(avg>=1.9){s=5;c='리뷰 정보량이 우수합니다. 네이버 AI가 요약·추천에 활용하기 좋은 수준입니다.';}
+      else if(avg>=1.5){s=4;c='구체적인 리뷰가 많습니다. 시술 목적·만족도가 담긴 리뷰가 추천에 유리합니다.';}
+      else if(avg>=1.1){s=3;c='양호한 상태입니다. 가이드로 좀 더 구체적인 리뷰를 유도해보세요.';}
+      else if(avg>=0.8){s=2;c='리뷰가 다소 단순합니다. 어떤 시술을 왜 받았는지 적도록 안내해보세요.';}
+      else if(avg>=0.4){s=1;c='리뷰 가이드를 만들어보세요. 구체적 리뷰가 AI 추천의 핵심입니다.';}
+      else{s=0.5;c='리뷰의 구체적 정보가 부족합니다. 가이드 정비로 개선해보세요.';}
     } else {
-      if(avg>=2.5){s=5;c='리뷰 품질이 정말 좋으세요. AI가 이 리뷰를 읽고 손님한테 추천할 거예요';}
-      else if(avg>=2.0){s=4;c='구체적인 리뷰가 많네요. 동행자나 목적이 들어간 리뷰가 AI 추천에 유리해요';}
-      else if(avg>=1.5){s=3;c='괜찮아요. 리뷰 가이드로 좀 더 구체적인 리뷰를 유도해보세요';}
-      else if(avg>=1.0){s=2;c='리뷰가 좀 단순해요. 누구와, 왜, 뭘 했는지 적어달라고 안내해보세요';}
-      else if(avg>=0.5){s=1;c='사장님, 리뷰 가이드를 만들어보세요. 구체적인 리뷰가 AI 추천의 핵심이에요';}
-      else{s=0.5;c='리뷰에 구체적인 정보가 부족해요. 리뷰 가이드를 만들면 확 달라져요';}
+      if(avg>=2.5){s=5;c='리뷰 정보량이 우수합니다. 네이버 AI가 요약·추천에 활용하기 좋은 수준입니다.';}
+      else if(avg>=2.0){s=4;c='구체적인 리뷰 비중이 높습니다. 동행·목적이 드러난 리뷰가 추천에 유리합니다.';}
+      else if(avg>=1.5){s=3;c='양호한 상태입니다. 리뷰 가이드로 구체성을 더 끌어올려보세요.';}
+      else if(avg>=1.0){s=2;c='리뷰가 다소 단순합니다. 누구와·왜·무엇을 했는지 안내를 더해보세요.';}
+      else if(avg>=0.5){s=1;c='리뷰 가이드 도입이 필요합니다. 구체적 리뷰가 AI 추천의 핵심입니다.';}
+      else{s=0.5;c='리뷰의 구체적 정보가 부족합니다. 가이드 정비로 개선해보세요.';}
     }
     var analyzedN = api.reviewsAnalyzed || 50;
     var d = api.reviewQualityDetails;
@@ -120,14 +120,14 @@ function analyzePlaceData(api, user){
     var ab = api.aiBriefing;
     var posRate = ab.positiveRate || 0;
     var as,ac;
-    if(posRate>=55){as=5;ac='리뷰 절반 넘게가 정보가 풍부해요. 네이버 AI 브리핑이 이 리뷰들을 골라 손님에게 요약해줍니다';}
-    else if(posRate>=42){as=4.5;ac='AI가 쓸 만한 리뷰가 많아요. 리뷰 가이드만 한 번 더 다듬으면 만점이에요';}
-    else if(posRate>=32){as=4;ac='좋아요. 단답 리뷰만 조금 더 줄이면 AI 브리핑 노출이 더 늘어요';}
-    else if(posRate>=24){as=3;ac='괜찮아요. 다만 단답 리뷰도 적지 않아요. 메뉴·상황이 들어간 리뷰를 더 유도해보세요';}
-    else if(posRate>=16){as=2;ac='리뷰는 쌓이는데 AI가 쓸 만한 건 적어요. "맛있어요" 같은 단답은 AI가 버려요';}
-    else if(posRate>=9){as=1;ac='리뷰 대부분이 단답이라 AI 브리핑에 거의 안 쓰여요. 리뷰 가이드부터 같이 만들어봐요';}
-    else if(posRate>=1){as=0.5;ac='AI가 요약할 만한 리뷰가 거의 없어요. 메뉴명·가격·상황·솔직한 평가가 담긴 리뷰가 필요해요';}
-    else{as=0;ac='사장님, AI 브리핑에 쓰일 리뷰가 0건이에요. 가장 급한 항목이에요';}
+    if(posRate>=55){as=5;ac='정보가 풍부한 리뷰 비중이 높습니다. 네이버 AI 브리핑이 이 리뷰들을 골라 고객에게 요약해줍니다.';}
+    else if(posRate>=42){as=4.5;ac='AI가 활용할 만한 리뷰가 많습니다. 가이드를 한 번 더 다듬으면 만점 수준입니다.';}
+    else if(posRate>=32){as=4;ac='양호한 상태입니다. 단답형 리뷰만 줄이면 AI 브리핑 노출이 더 늘어납니다.';}
+    else if(posRate>=24){as=3;ac='준수하지만 단답형 리뷰도 적지 않습니다. 메뉴·상황이 담긴 리뷰를 더 유도해보세요.';}
+    else if(posRate>=16){as=2;ac='리뷰는 쌓이지만 AI가 활용할 만한 비중은 낮습니다. 단답형 리뷰는 요약에 반영되지 않습니다.';}
+    else if(posRate>=9){as=1;ac='대부분 단답형이라 AI 브리핑에 거의 반영되지 않습니다. 가이드 정비부터 시작해보세요.';}
+    else if(posRate>=1){as=0.5;ac='AI가 요약할 만한 리뷰가 거의 없습니다. 메뉴명·가격·상황·솔직한 평가가 담긴 리뷰가 필요합니다.';}
+    else{as=0;ac='AI 브리핑에 반영될 리뷰가 없습니다. 가장 먼저 조치가 필요한 항목입니다.';}
     var aN = api.reviewsAnalyzed || 50;
     var aDetail = 'AI가 쓸 만한 리뷰 '+posRate+'% (정보풍부 '+ab.positiveRate+'% / 보통 '+ab.semiRate+'% / 단답 '+ab.negativeRate+'% · 최신 '+aN+'개 기준)';
     items.push({key:'aiBriefing',name:'AI 브리핑 적합도',cat:'review',max:5,score:as,detail:aDetail,comment:ac});
@@ -143,9 +143,9 @@ function analyzePlaceData(api, user){
     } else {
       if(b>=100){s=5;}else if(b>=50){s=4;}else if(b>=30){s=3;}else if(b>=10){s=2;}else if(b>=1){s=1;}else{s=0;}
     }
-    if(b>=50) c='블로그 리뷰가 풍성해요. 검색 노출에 큰 힘이 돼요';
-    else if(b>=10) c='블로그 리뷰가 쌓이고 있어요. 체험단을 활용하면 더 빨라져요';
-    else c='블로그 리뷰가 적어요. 체험단·블로거 협업을 고려해보세요';
+    if(b>=50) c='블로그 리뷰가 풍부합니다. 검색 노출에 큰 힘이 됩니다.';
+    else if(b>=10) c='블로그 리뷰가 쌓이고 있습니다. 체험단을 활용하면 더 빨라집니다.';
+    else c='블로그 리뷰가 부족합니다. 체험단·블로거 협업을 검토해보세요.';
     items.push({key:'blogReview',name:'블로그 리뷰',cat:'review',max:PTS_BLOG_REVIEW,score:s,detail:b+'개',comment:c});
   }
 
@@ -156,13 +156,13 @@ function analyzePlaceData(api, user){
       pushNA('starRating','별점','review',5,'아직 별점이 없거나 매장이 별점을 비공개로 설정했어요');
     } else {
       const d=Math.round(star*10)/10; let s,c;
-      if(d>=4.7){s=5;c='별점이 아주 높으세요. 이 별점이 고객의 첫 클릭을 만들어요';}
-      else if(d>=4.5){s=4.5;c='별점 좋아요. 4.7 이상은 클릭률이 확 달라져요';}
-      else if(d>=4.3){s=4;c='괜찮아요. 5점 리뷰를 더 받아 4.5+ 구간 진입을 노려보세요';}
-      else if(d>=4.0){s=3;c='4점대 진입했지만 4.5 미만은 클릭에서 손해예요. 5점 리뷰 확보가 핵심';}
-      else if(d>=3.5){s=2;c='별점이 아쉬워요. 3점대는 고객이 클릭을 망설이는 구간이에요';}
-      else if(d>=3.0){s=1;c='별점이 낮아 상위노출돼도 클릭이 안 돼요. 5점 리뷰 확보가 급해요';}
-      else{s=0;c='별점이 위험 수준이에요. 운영 점검부터 같이 해야 합니다';}
+      if(d>=4.7){s=5;c='별점이 매우 높습니다. 첫 클릭 전환을 이끄는 핵심 지표입니다.';}
+      else if(d>=4.5){s=4.5;c='별점이 우수합니다. 4.7 이상 구간에서 클릭률이 더 올라갑니다.';}
+      else if(d>=4.3){s=4;c='양호한 상태입니다. 5점 리뷰를 늘려 4.5 이상 구간 진입을 노려보세요.';}
+      else if(d>=4.0){s=3;c='4점대에 진입했지만 4.5 미만은 클릭에서 불리합니다. 5점 리뷰 확보가 핵심입니다.';}
+      else if(d>=3.5){s=2;c='별점이 아쉽습니다. 3점대는 고객이 클릭을 망설이는 구간입니다.';}
+      else if(d>=3.0){s=1;c='별점이 낮아 상위노출되어도 클릭 전환이 어렵습니다. 5점 리뷰 확보가 시급합니다.';}
+      else{s=0;c='별점이 위험 수준입니다. 운영 전반의 점검이 먼저입니다.';}
       items.push({key:'starRating',name:'별점',cat:'review',max:5,score:s,detail:d+'점',comment:c});
     }
   }
@@ -170,14 +170,14 @@ function analyzePlaceData(api, user){
   // #8 리뷰 답글 비율 (5)
   if(hasReviewDetail){
     const rr=api.replyRate||0; let s,c;
-    if(rr>=95){s=PTS_REPLY_RATE;c='거의 모든 리뷰에 답글 달고 계시네요. 이게 진짜 실력이에요';}
-    else if(rr>=85){s=PTS_REPLY_RATE*0.83;c='훌륭해요. 빠진 몇 개만 채우면 완벽합니다';}
-    else if(rr>=70){s=PTS_REPLY_RATE*0.67;c='잘 하고 계세요. 답글은 신규 손님을 위한 광고예요. 조금만 더요';}
-    else if(rr>=55){s=PTS_REPLY_RATE*0.5;c='반 이상은 달고 계시네요. 나머지도 채워보시겠어요?';}
-    else if(rr>=40){s=PTS_REPLY_RATE*0.33;c='답글 없는 리뷰가 꽤 있어요. 신규 손님이 보고 있어요';}
-    else if(rr>=25){s=PTS_REPLY_RATE*0.25;c='답글이 좀 부족해요. 하루에 3개씩만 달아보세요';}
-    else if(rr>=10){s=PTS_REPLY_RATE*0.12;c='리뷰 답글이 거의 없어요. 답글도 친절도 점수에 반영됩니다';}
-    else{s=0;c='답글부터 시작하셔야 돼요. 답글은 신규 고객을 위한 거예요';}
+    if(rr>=95){s=PTS_REPLY_RATE;c='거의 모든 리뷰에 답글이 작성되어 있습니다. 우수한 응대 수준입니다.';}
+    else if(rr>=85){s=PTS_REPLY_RATE*0.83;c='응대율이 높습니다. 일부 누락분만 보완하면 완성도가 높아집니다.';}
+    else if(rr>=70){s=PTS_REPLY_RATE*0.67;c='양호한 상태입니다. 답글은 신규 고객에게 노출되는 응대 지표이니 조금 더 채워보세요.';}
+    else if(rr>=55){s=PTS_REPLY_RATE*0.5;c='절반 이상 응대하고 있습니다. 나머지도 채워보세요.';}
+    else if(rr>=40){s=PTS_REPLY_RATE*0.33;c='미응대 리뷰가 적지 않습니다. 신규 고객에게 그대로 노출됩니다.';}
+    else if(rr>=25){s=PTS_REPLY_RATE*0.25;c='응대율이 부족합니다. 하루 3건씩 처리해보세요.';}
+    else if(rr>=10){s=PTS_REPLY_RATE*0.12;c='답글이 거의 없습니다. 응대는 친절도 평가에 반영됩니다.';}
+    else{s=0;c='답글 작성부터 시작해보세요. 답글은 신규 고객을 위한 정보입니다.';}
     s=Math.round(s*2)/2;
     items.push({key:'reviewReply',name:'리뷰 답글 비율',cat:'review',max:PTS_REPLY_RATE,score:s,detail:rr+'%',comment:c});
   } else pushNA('reviewReply','리뷰 답글 비율','review',PTS_REPLY_RATE,'리뷰 답글 비율은 직접 확인이 필요해요');
@@ -188,18 +188,18 @@ function analyzePlaceData(api, user){
   } else {
     const sc=api.saveCount; let s,c;
     if(sc>=3000){s=7;}else if(sc>=2000){s=5.5;}else if(sc>=1000){s=4;}else if(sc>=500){s=3;}else if(sc>=200){s=1.5;}else{s=0.5;}
-    c='저장 수는 고객의 \'가고 싶은 리스트\' 등록 신호예요';
+    c='저장 수는 고객이 \'나중에 방문할 곳\'으로 찜해두는 신호입니다.';
     items.push({key:'saveCount',name:'저장 수',cat:'review',max:7,score:s,detail:sc.toLocaleString()+'개',comment:c});
   }
 
   // #10 사진 리뷰 비율 (5)
   if(hasReviewDetail){
     const pr=api.photoReviewRate||0; let s,c;
-    if(pr>=60){s=5;c='사진 리뷰가 많으시네요. 신규 손님 전환에 진짜 큰 힘이에요';}
-    else if(pr>=45){s=4;c='절반 가까이 사진이 있어요. 리뷰 가이드에 \'사진 찍어주세요\' 한 줄만 추가해보세요';}
-    else if(pr>=30){s=3;c='나쁘지 않아요. 사진 리뷰가 더 늘면 체류시간이 확 올라가요';}
-    else if(pr>=15){s=2;c='사진 리뷰가 좀 적어요. 포토존을 만들어보시는 것도 방법이에요';}
-    else{s=1;c='사진 없는 리뷰는 신규 손님한테 설득력이 떨어져요';}
+    if(pr>=60){s=5;c='사진 리뷰 비중이 높습니다. 신규 고객 전환에 강한 영향을 줍니다.';}
+    else if(pr>=45){s=4;c='절반 가까이 사진이 포함되어 있습니다. 가이드에 사진 요청 문구를 더해보세요.';}
+    else if(pr>=30){s=3;c='양호한 상태입니다. 사진 리뷰가 늘수록 체류시간이 좋아집니다.';}
+    else if(pr>=15){s=2;c='사진 리뷰가 다소 부족합니다. 포토존 설치를 검토해보세요.';}
+    else{s=1;c='사진 없는 리뷰는 신규 고객 설득력이 낮습니다. 사진 리뷰 유도가 필요합니다.';}
     items.push({key:'photoReview',name:'사진 리뷰 비율',cat:'review',max:5,score:s,detail:pr+'%',comment:c});
   } else pushNA('photoReview','사진 리뷰 비율','review',5,'사진 리뷰 비율 데이터를 가져올 수 없었어요');
 
@@ -210,13 +210,13 @@ function analyzePlaceData(api, user){
     // #7 네이버 페이 (3)
     {
       const has=!!api.hasNPay; const s=has?3:0;
-      const c=has?'네이버 페이 쓰고 계시는군요. 결제 데이터가 붙으면 네이버가 우리 가게를 더 잘 알게 돼요':'네이버 페이를 연결하면 결제가 편해지고 노출에도 도움이 돼요';
+      const c=has?'네이버 페이가 연결되어 있습니다. 결제 데이터가 쌓이면 노출에도 도움이 됩니다.':'네이버 페이를 연결하면 결제가 편리해지고 노출에도 도움이 됩니다.';
       items.push({key:'npay',name:'네이버 페이',cat:'system',max:3,score:s,detail:has?'활성':'미사용',comment:c});
     }
     // #8 숙박 예약 연결 (3)
     {
       const has=!!api.hasBooking; const s=has?3:0;
-      const c=has?'네이버 예약 연결 잘 되어 있어요. 고객이 영업시간 밖에도 알아서 예약해요':'숙박 예약을 연결하면 고객이 24시간 알아서 예약할 수 있어요';
+      const c=has?'네이버 예약이 잘 연결되어 있습니다. 영업시간 외에도 고객이 직접 예약할 수 있습니다.':'숙박 예약을 연결하면 고객이 24시간 직접 예약할 수 있습니다.';
       items.push({key:'booking',name:'숙박 예약 연결',cat:'system',max:3,score:s,detail:has?'연결됨':'미연결',comment:c});
     }
   } else {
@@ -227,14 +227,14 @@ function analyzePlaceData(api, user){
     if(naKeys.has('booking')){ /* skip */ }
     else {
       const has=!!api.hasBooking; const s=has?6:0;
-      const c=has?'오, 이건 잘 해놓으셨네요. AI 에이전트 시대엔 예약 가능한 가게가 먼저 추천돼요':'이거 안 켜놓으시면 손님이 우리 가게를 못 찾아요. 무료인데 안 하시면 손해예요!';
+      const c=has?'네이버 예약이 연결되어 있습니다. AI 추천 환경에서는 예약 가능한 매장이 우선 노출됩니다.':'네이버 예약이 꺼져 있습니다. 무료 기능이니 켜두면 고객 유입에 직접적인 도움이 됩니다.';
       items.push({key:'booking',name:'네이버 예약',cat:'system',max:6,score:s,detail:has?'활성':'미활성',comment:c});
     }
 
     // #9 네이버 페이 (3)
     {
       const has=!!api.hasNPay; const s=has?3:0;
-      const c=has?'네이버 페이 쓰고 계시네요. 결제 데이터가 쌓이면 네이버가 우리 가게를 더 잘 알게 돼요':'네이버 페이를 연동하면 결제 데이터가 AI 추천에 중요한 데이터가 됩니다';
+      const c=has?'네이버 페이가 연결되어 있습니다. 결제 데이터가 쌓일수록 AI 추천에 유리하게 작용합니다.':'네이버 페이를 연동하면 결제 데이터가 AI 추천의 중요한 근거가 됩니다.';
       items.push({key:'npay',name:'네이버 페이',cat:'system',max:3,score:s,detail:has?'활성':'미활성',comment:c});
     }
 
@@ -243,7 +243,7 @@ function analyzePlaceData(api, user){
       pushNA('coupon','쿠폰','system',2,'의료기관은 쿠폰·할인이 환자 유인 광고로 금지되어 있어 진단에서 제외했어요');
     } else {
       const has=!!api.hasCoupon; const s=has?2:0;
-      const c=has?'쿠폰 잘 활용하고 계시네요':'쿠폰이 없으시네요. \'100% 공짜\' 쿠폰 하나 만들어보세요. 다운로드 폭발해요';
+      const c=has?'쿠폰을 잘 활용하고 있습니다.':'쿠폰이 없습니다. 부담 없는 무료 쿠폰을 하나 만들어 다운로드를 유도해보세요.';
       items.push({key:'coupon',name:'쿠폰',cat:'system',max:2,score:s,detail:has?'있음':'없음',comment:c});
     }
   }
@@ -274,20 +274,20 @@ function analyzePlaceData(api, user){
   // #12 업체 등록 사진 (4)
   {
     const n=api.imageCount||0; let s,c;
-    if(n>=30){s=4;c='사진이 풍부해요. 손님이 가게를 미리 그려볼 수 있어요';}
-    else if(n>=15){s=3;c='사진이 어느 정도 있어요. 메뉴·내부 사진을 더 추가해보세요';}
-    else if(n>=5){s=2;c='사진이 부족해요. 대표 메뉴 사진을 늘려보세요';}
-    else if(n>0){s=1;c='사진이 너무 적어요. 첫인상이 약해질 수 있어요';}
-    else{s=0;c='등록된 사진이 거의 없어요. 오늘 10장만 올려보세요';}
+    if(n>=30){s=4;c='사진이 충분합니다. 고객이 방문 전에 매장을 충분히 가늠할 수 있습니다.';}
+    else if(n>=15){s=3;c='사진이 어느 정도 등록되어 있습니다. 메뉴·내부 사진을 더 추가해보세요.';}
+    else if(n>=5){s=2;c='사진이 부족합니다. 대표 메뉴 사진을 늘려보세요.';}
+    else if(n>0){s=1;c='사진이 너무 적어 첫인상이 약해질 수 있습니다.';}
+    else{s=0;c='등록된 사진이 거의 없습니다. 우선 10장 정도 올려보세요.';}
     items.push({key:'imageCount',name:'업체 등록 사진',cat:'basic',max:4,score:s,detail:n+'장',comment:c});
   }
 
   // #13 편의시설 등록 (2)
   {
     const arr=api.conveniences||[]; const n=arr.length; let s,c;
-    if(n>=5){s=2;c='편의시설이 잘 등록돼 있어요';}
-    else if(n>=2){s=1;c='편의시설을 더 등록하면 검색 필터에 더 잘 걸려요';}
-    else{s=0;c='편의시설이 등록돼 있지 않아요. 주차·예약 등을 채워보세요';}
+    if(n>=5){s=2;c='편의시설 정보가 잘 등록되어 있습니다.';}
+    else if(n>=2){s=1;c='편의시설을 더 등록하면 검색 필터 노출에 유리합니다.';}
+    else{s=0;c='편의시설이 등록되어 있지 않습니다. 주차·예약 등 해당 항목을 채워보세요.';}
     items.push({key:'convenience',name:'편의시설 등록',cat:'basic',max:2,score:s,detail:n+'개',comment:c});
   }
 
@@ -296,32 +296,32 @@ function analyzePlaceData(api, user){
     // #14 영업시간 (3) — 숙박업은 운영 시작이 명확하므로 점수화
     {
       const has=!!api.hasBusinessHours; const s=has?3:0;
-      const c=has?'운영 시간(시작)이 등록돼 있어요':'사장님, 영업시간이 없으면 손님이 \'지금 운영하나?\' 확인이 안 돼요';
+      const c=has?'운영 시간(시작)이 등록되어 있습니다.':'영업시간이 없으면 고객이 현재 운영 여부를 확인하기 어렵습니다.';
       items.push({key:'businessHours',name:'영업시간',cat:'basic',max:3,score:s,detail:has?'등록됨':'미등록',comment:c});
     }
     // #15 객실 등록 (4)
     {
       const n=api.totalMenus||0; let s,c;
-      if(n>=6){s=4;c='객실 6개 등록, 충분해요';}
-      else if(n>=3){s=3;c='객실이 어느 정도 등록돼 있어요. 더 채우면 선택폭이 넓어져요';}
-      else if(n>=1){s=2;c='객실이 적게 등록돼 있어요. 객실 타입별로 모두 올려주세요';}
-      else{s=0;c='등록된 객실이 없어요. 객실 타입부터 등록해주세요';}
+      if(n>=6){s=4;c='객실이 충분히 등록되어 있습니다.';}
+      else if(n>=3){s=3;c='객실이 어느 정도 등록되어 있습니다. 더 채우면 선택폭이 넓어집니다.';}
+      else if(n>=1){s=2;c='객실 등록이 적습니다. 객실 타입별로 모두 올려보세요.';}
+      else{s=0;c='등록된 객실이 없습니다. 객실 타입부터 등록해보세요.';}
       items.push({key:'roomCount',name:'객실 등록',cat:'basic',max:4,score:s,detail:n+'개',comment:c});
     }
     // #16 객실 가격 공개 (3)
     {
       const total=api.totalMenus||0; const rate=api.menuPriceRate||0; let s,c;
-      if(total===0){ s=0; c='객실 가격을 공개해주세요'; }
-      else if(rate>=90){s=3;c='가격 빠진 객실이 없어요. 가격 표기는 예약 전환에 큰 도움이 돼요';}
-      else if(rate>=60){s=2;c='가격 공개율이 좋아요. 나머지 객실도 채워보세요';}
-      else if(rate>0){s=1;c='가격이 빠진 객실이 있어요. 고객은 가격을 먼저 봐요';}
-      else{s=0;c='객실 가격이 비어 있어요. 가격을 공개하면 문의가 줄어요';}
+      if(total===0){ s=0; c='객실 가격이 비어 있습니다. 가격을 공개하면 문의가 줄어듭니다.'; }
+      else if(rate>=90){s=3;c='모든 객실에 가격이 표기되어 있습니다. 가격 표기는 예약 전환에 큰 도움이 됩니다.';}
+      else if(rate>=60){s=2;c='가격 공개율이 양호합니다. 나머지 객실도 채워보세요.';}
+      else if(rate>0){s=1;c='가격이 빠진 객실이 있습니다. 고객은 가격을 먼저 확인합니다.';}
+      else{s=0;c='객실 가격이 비어 있습니다. 가격을 공개하면 문의가 줄어듭니다.';}
       items.push({key:'roomPrice',name:'객실 가격 공개',cat:'basic',max:3,score:s,detail:total+'개 중 '+rate+'% 가격공개',comment:c});
     }
     // #17 체크인/체크아웃 명시 (2)
     {
       const has=!!api.hasCheckInOut; const s=has?2:0;
-      const c=has?'체크인/체크아웃 시간이 잘 명시돼 있어요':'체크인/체크아웃 시간을 명시하면 문의가 줄고 신뢰가 올라가요';
+      const c=has?'체크인·체크아웃 시간이 잘 명시되어 있습니다.':'체크인·체크아웃 시간을 명시하면 문의가 줄고 신뢰가 올라갑니다.';
       items.push({key:'checkInOut',name:'체크인/체크아웃 명시',cat:'basic',max:2,score:s,detail:has?'명시됨':'미명시',comment:c});
     }
   } else if(isEducationOrRealestate){
@@ -330,7 +330,7 @@ function analyzePlaceData(api, user){
     // basic 영역은 영업시간만 점수화.
     {
       const has=!!api.hasBusinessHours; const s=has?2:0;
-      const c=has?'영업시간이 등록돼 있어요':'영업시간을 등록하지 않으면 손님이 헛걸음할 수 있어요';
+      const c=has?'영업시간이 등록되어 있습니다.':'영업시간을 등록하지 않으면 고객이 헛걸음할 수 있습니다.';
       items.push({key:'businessHours',name:'영업시간 등록',cat:'basic',max:2,score:s,detail:has?'등록됨':'미등록',comment:c});
     }
   } else {
@@ -339,7 +339,7 @@ function analyzePlaceData(api, user){
       pushNA('businessHours','영업시간','basic',3,'이 업종은 영업시간 항목이 진단 대상이 아니에요');
     } else {
       const has=!!api.hasBusinessHours; const s=has?3:0;
-      const c=has?'영업시간이 잘 등록되어 있어요':'영업시간이 없으면 손님이 \'지금 영업하나?\' 확인을 못 해요';
+      const c=has?'영업시간이 잘 등록되어 있습니다.':'영업시간이 없으면 고객이 현재 영업 여부를 확인할 수 없습니다.';
       items.push({key:'businessHours',name:'영업시간',cat:'basic',max:3,score:s,detail:has?'등록됨':'미등록',comment:c});
     }
 
@@ -349,10 +349,10 @@ function analyzePlaceData(api, user){
       pushNA('menuPrice',menuWord+' 가격 입력율','basic',2,'이 업종은 '+menuWord+' 가격 항목이 진단 대상이 아니에요');
     } else {
       const total=api.totalMenus||0; const rate=api.menuPriceRate||0; let s,c;
-      if(total===0){ s=0; c=menuWord+'가 등록돼 있지 않아요. 가장 먼저 채워야 할 항목이에요'; }
-      else if(rate>=90){s=2;c='가격 다 입력하셨네요';}
-      else if(rate>=60){s=1;c='가격 빠진 '+menuWord+'가 있어요';}
-      else{s=0;c='가격이 거의 없어요. 가격 모르면 예약 안 해요';}
+      if(total===0){ s=0; c='아직 등록된 항목이 없습니다. 가장 먼저 채워야 할 부분입니다.'; }
+      else if(rate>=90){s=2;c='가격이 모두 입력되어 있습니다.';}
+      else if(rate>=60){s=1;c='가격이 빠진 항목이 일부 있습니다.';}
+      else{s=0;c='가격 정보가 거의 없습니다. 가격을 모르면 예약으로 이어지기 어렵습니다.';}
       items.push({key:'menuPrice',name:menuWord+' 가격 입력율',cat:'basic',max:2,score:s,detail:total+'개 중 '+rate+'% 가격공개',comment:c});
     }
 
@@ -360,20 +360,20 @@ function analyzePlaceData(api, user){
     if(industry.tier===2 && !hasStyleTab){ /* 항목 제외 */ }
     else if(isBeauty && hasStyleTab){
       const sc=api.styleCount||0; let s,c,d;
-      if(sc>=50){s=2;c='스타일 탭에 포트폴리오가 충분해요. 잘 하고 계세요';d=sc+'장';}
-      else if(sc>=20){s=1.5;c='스타일 탭이 괜찮아요. 꾸준히 추가하면 더 좋아요';d=sc+'장';}
-      else if(sc>0){s=1;c='스타일 탭에 결과물을 더 올려보세요. 고객이 예약 전에 가장 많이 보는 곳이에요';d=sc+'장';}
-      else{s=0.5;c='스타일 탭이 비어 있어요. 결과물 사진을 올려주세요. 고객이 예약 전에 가장 많이 보는 곳이에요';d='부족';}
+      if(sc>=50){s=2;c='사진이 충분히 등록되어 있어 고객이 결과물을 미리 확인할 수 있습니다.';d=sc+'장';}
+      else if(sc>=20){s=1.5;c='사진이 어느 정도 있습니다. 대표 항목부터 사진을 더 채워보세요.';d=sc+'장';}
+      else if(sc>0){s=1;c='사진이 부족합니다. 사진이 있는 항목의 선택률이 훨씬 높습니다.';d=sc+'장';}
+      else{s=0.5;c='사진이 부족합니다. 사진이 있는 항목의 선택률이 훨씬 높습니다.';d='부족';}
       items.push({key:'menuPhoto',name:'스타일 탭',cat:'basic',max:2,score:s,detail:d,comment:c});
     } else if(naKeys.has('menuPhoto')){
       pushNA('menuPhoto',menuWord+' 사진 비율','basic',2,'이 업종은 '+menuWord+' 사진 항목이 진단 대상이 아니에요');
     } else {
       const total=api.totalMenus||0; const rate=api.menuPhotoRate||0; let s,c;
-      if(total===0){ s=0; c=menuWord+' 사진을 등록해주세요'; }
-      else if(rate>=90){s=2;c=menuWord+'마다 사진이 있어요. 잘 하고 계세요';}
-      else if(rate>=60){s=1;c='사진 없는 '+menuWord+'가 일부 있어요. 빠진 것만 채우면 됩니다';}
-      else if(rate>=30){s=0.5;c=menuWord+' 사진이 좀 부족해요. 사진 있는 '+menuWord+'가 주문이 더 잘 돼요';}
-      else{s=0;c=menuWord+'에 사진이 거의 없어요';}
+      if(total===0){ s=0; c='사진이 부족합니다. 사진이 있는 항목의 선택률이 훨씬 높습니다.'; }
+      else if(rate>=90){s=2;c='사진이 충분히 등록되어 있어 고객이 결과물을 미리 확인할 수 있습니다.';}
+      else if(rate>=60){s=1;c='사진이 어느 정도 있습니다. 대표 항목부터 사진을 더 채워보세요.';}
+      else if(rate>=30){s=0.5;c='사진이 부족합니다. 사진이 있는 항목의 선택률이 훨씬 높습니다.';}
+      else{s=0;c='사진이 부족합니다. 사진이 있는 항목의 선택률이 훨씬 높습니다.';}
       items.push({key:'menuPhoto',name:menuWord+' 사진 비율',cat:'basic',max:2,score:s,detail:rate+'% 사진등록',comment:c});
     }
   }
@@ -384,10 +384,10 @@ function analyzePlaceData(api, user){
   {
     const kwList=(user.keywords&&user.keywords.length)?user.keywords:(api.keywords||[]);
     const kw=kwList.length; let s,c;
-    if(kw>=5){s=5;c='대표키워드를 꽉 채우셨네요. 노출 기회를 다 잡고 있어요';}
-    else if(kw>=3){s=3;c='키워드를 더 채워보세요. 5개를 다 쓰는 게 좋아요';}
-    else if(kw>=1){s=2;c='키워드가 부족해요. 손님이 검색할 단어로 5개를 채워보세요';}
-    else{s=0;c='대표키워드가 비어 있어요. 노출 기회를 놓치고 있어요';}
+    if(kw>=5){s=5;c='대표키워드가 잘 채워져 있습니다. 고객 검색어와 잘 연결되어 있습니다.';}
+    else if(kw>=3){s=3;c='대표키워드를 더 채워보세요. 비어 있는 칸은 노출 기회를 놓치는 것입니다.';}
+    else if(kw>=1){s=2;c='대표키워드를 더 채워보세요. 비어 있는 칸은 노출 기회를 놓치는 것입니다.';}
+    else{s=0;c='대표키워드가 비어 있습니다. 고객이 검색하는 단어로 5개를 채워보세요.';}
     const list=kwList.join(', ');
     items.push({key:'keywords',name:'대표키워드',cat:'content',max:5,score:s,detail:kw+'개'+(list?(' · '+list):''),comment:c});
   }
@@ -397,28 +397,28 @@ function analyzePlaceData(api, user){
     // 소개글 충실도 (3)
     {
       const desc=(user.description||api.description||''); const len=desc.length; let s,c;
-      if(len>=500){s=3;c='소개글이 잘 쓰여 있어요. 학원·중개 업종에서는 소개글이 가장 큰 설득 수단이에요';}
-      else if(len>=300){s=2;c='소개글이 어느 정도 있지만 더 구체적으로 쓸 수 있어요';}
-      else if(len>=100){s=1;c='소개글이 너무 짧아요. 수업 과정·전문 분야·경력을 추가해보세요';}
-      else if(len>=1){s=0.5;c='소개글이 거의 없어요';}
-      else{s=0;c='소개글이 비어있어요. 손님이 가게를 이해할 수 없어요';}
+      if(len>=500){s=3;c='소개글이 충실합니다. 고객이 전화 전에 매장을 충분히 이해할 수 있습니다.';}
+      else if(len>=300){s=2;c='소개글이 어느 정도 작성되어 있습니다. 과정·전문 분야·상담 절차를 더 구체적으로 적어보세요.';}
+      else if(len>=100){s=1;c='소개글이 비어 있습니다. 소개글이 없으면 고객이 매장을 이해하기 어렵습니다.';}
+      else if(len>=1){s=0.5;c='소개글이 비어 있습니다. 소개글이 없으면 고객이 매장을 이해하기 어렵습니다.';}
+      else{s=0;c='소개글이 비어 있습니다. 소개글이 없으면 고객이 매장을 이해하기 어렵습니다.';}
       items.push({key:'specialDescription',name:'소개글 충실도',cat:'content',max:3,score:s,detail:len+'자',comment:c});
     }
     // 프로그램/매물 등록 (2)
     {
       const total=api.totalMenus||0; const serviceName=isEducation?'수강료·프로그램 등록':'서비스 메뉴(매물 유형)'; let s,c;
-      if(total>=5){s=2;c='프로그램/서비스 메뉴가 충분해요';}
-      else if(total>=3){s=1.5;c='조금 더 세분화할 수 있어요';}
-      else if(total>=1){s=0.5;c='너무 적어요';}
-      else{s=0;c=isEducation?'수강료나 프로그램이 없으면 학부모가 비교하기 어려워요':'매물 유형이나 상담 서비스를 메뉴로 나눠두면 손님이 전문 분야를 빨리 이해해요';}
+      if(total>=5){s=2;c='프로그램·서비스 항목이 충분히 등록되어 있습니다.';}
+      else if(total>=3){s=1.5;c='조금 더 세분화할 수 있습니다.';}
+      else if(total>=1){s=0.5;c='등록 항목이 너무 적습니다.';}
+      else{s=0;c=isEducation?'수강료나 프로그램이 없으면 학부모가 비교하기 어렵습니다.':'매물 유형이나 상담 서비스를 메뉴로 나눠두면 고객이 전문 분야를 빠르게 이해합니다.';}
       items.push({key:'specialMenu',name:serviceName,cat:'content',max:2,score:s,detail:total+'개',comment:c});
     }
     // 예약/상담 연결 (1)
     {
       const hasResvFacility=Array.isArray(api.conveniences)&&api.conveniences.some(function(it){return String(it).includes('예약');});
       const has=!!api.hasBooking||hasResvFacility; const s=has?1:0;
-      const c=has?(isEducation?'체험수업이나 상담 예약 경로가 보여요':'방문상담 예약 경로가 보여요')
-        :(isEducation?'체험수업 예약이 없으면 문의 전환이 떨어져요':'방문상담 예약이 없으면 매물 문의가 끊기기 쉬워요');
+      const c=has?(isEducation?'체험수업·상담 예약 경로가 확인됩니다.':'방문상담 예약 경로가 확인됩니다.')
+        :(isEducation?'체험수업 예약이 없으면 문의 전환율이 떨어집니다.':'방문상담 예약이 없으면 매물 문의가 끊기기 쉽습니다.');
       items.push({key:'consultBooking',name:'예약/상담 연결',cat:'content',max:1,score:s,detail:has?'연결됨':'미연결',comment:c});
     }
   } else {
@@ -433,10 +433,10 @@ function analyzePlaceData(api, user){
     if(hit>=3){s+=1; if(!found.length)found.push('핵심정보 포함');}
     if(s>5)s=5;
     let c;
-    if(s>=5)c='상세설명이 충실해요. 검색 키워드도 잘 녹아 있어요';
-    else if(s>=3)c='상세설명이 잘 작성돼 있어요. 검색 키워드를 더 녹여보세요';
-    else if(len>0)c='상세설명이 짧아요. 손님이 검색할 단어를 녹여서 길게 써보세요';
-    else c='상세설명이 비어 있어요. 가게 이야기와 검색 키워드를 채워보세요';
+    if(s>=5)c='상세설명이 충실하고 검색 키워드도 잘 녹아 있습니다.';
+    else if(s>=3)c='상세설명이 잘 작성되어 있습니다. 검색 키워드를 조금 더 녹여보세요.';
+    else if(len>0)c='상세설명이 짧습니다. 고객이 검색할 단어를 녹여 더 길게 작성해보세요.';
+    else c='상세설명이 비어 있습니다. 매장 이야기와 검색 키워드를 채워보세요.';
     items.push({key:'description',name:'상세설명',cat:'content',max:5,score:s,detail:len+'자'+(found.length?(' · '+found.join(', ')):''),comment:c});
   }
 
@@ -450,9 +450,9 @@ function analyzePlaceData(api, user){
     else if(/주차|발렛|파킹/.test(dir)){s+=1;}
     if(s>3)s=3;
     let c;
-    if(s>=3)c='찾아오는 길이 친절하게 안내돼 있어요';
-    else if(s>=1)c='찾아오는 길을 더 구체적으로 적으면 좋아요 (주차·대중교통)';
-    else c='찾아오는 길이 비어 있어요. 길 안내를 적으면 헛걸음이 줄어요';
+    if(s>=3)c='찾아오는 길이 친절하게 안내되어 있습니다.';
+    else if(s>=1)c='찾아오는 길을 더 구체적으로 적어보세요. 주차·대중교통 정보가 도움이 됩니다.';
+    else c='찾아오는 길이 비어 있습니다. 길 안내를 적으면 헛걸음이 줄어듭니다.';
     items.push({key:'direction',name:'찾아오는 길',cat:'content',max:3,score:s,detail:len>0?(len+'자'+(found.length?(' · '+found.join(', ')):'')):'미등록',comment:c});
   }
 
@@ -460,12 +460,12 @@ function analyzePlaceData(api, user){
   // 스마트콜·톡톡은 자동 수집값(api) 우선, 없으면 사용자 확인값(user) 사용
   {
     const has=!!(api.hasSmartCallAuto||user.smartcall); const s=has?3:0;
-    const c=has?'스마트콜 잘 켜놓으셨어요':'스마트콜을 켜면 고객이 클릭 한 번으로 전화할 수 있어요. 켜두세요';
+    const c=has?'스마트콜이 잘 켜져 있습니다.':'스마트콜을 켜면 고객이 클릭 한 번으로 전화할 수 있습니다. 켜두는 것을 권합니다.';
     items.push({key:'smartcall',name:'스마트콜',cat:'content',max:3,score:s,detail:has?'사용 중':'미사용',comment:c});
   }
   {
     const has=!!(api.hasTalkTalkAuto||user.talktalk); const s=has?3:0;
-    const c=has?'톡톡 잘 켜놓으셨어요. 야간 문의도 받을 수 있으니 좋아요':'톡톡을 켜면 손님이 전화 안 하고도 문의할 수 있어요. 특히 예약 문의가 늘어나요';
+    const c=has?'톡톡이 잘 켜져 있습니다. 영업시간 외 문의도 받을 수 있습니다.':'톡톡을 켜면 고객이 전화 없이도 문의할 수 있어 예약 문의가 늘어납니다.';
     items.push({key:'talktalk',name:'네이버 톡톡',cat:'content',max:3,score:s,detail:has?'사용 중':'미사용',comment:c});
   }
 
@@ -475,7 +475,7 @@ function analyzePlaceData(api, user){
   }
   else {
     const has=!!user.news; const s=has?3:0;
-    const c=has?'최근 소식을 올리고 있어요. 활발한 가게로 보여요':'소식을 올리지 않으면 "관리 안 하는 가게"로 보일 수 있어요';
+    const c=has?'최근 소식이 올라오고 있어 활발한 매장으로 보입니다.':'소식을 올리지 않으면 관리되지 않는 매장으로 보일 수 있습니다.';
     items.push({key:'news',name:'소식 (최근 1개월)',cat:'content',max:3,score:s,detail:has?'있음':'없음',comment:c});
   }
 
@@ -501,11 +501,11 @@ function analyzePlaceData(api, user){
 
   // 등급
   let grade,gradeComment,gradeColor;
-  if(displayScore>=90){grade='S';gradeComment='저 필요 없으시겠는데요? 진짜 잘 하고 계세요';gradeColor='#0E9F6E';}
-  else if(displayScore>=75){grade='A';gradeComment='기본기가 탄탄하세요. 여기 몇 개만 잡으면 매출이 확 달라질 거예요';gradeColor='#0284c7';}
-  else if(displayScore>=60){grade='B';gradeComment='구조는 있는데 구멍이 좀 있어요. 지금 잡으면 늦지 않았어요';gradeColor='#6A35FF';}
-  else if(displayScore>=40){grade='C';gradeComment='지금 손님이 들어왔다 나가고 있어요. 괜찮아요, 하나씩 같이 잡아봐요';gradeColor='#E8A200';}
-  else{grade='D';gradeComment='여기서부터 시작하면 돼요. 하나만 먼저 해볼까요?';gradeColor='#DC2626';}
+  if(displayScore>=90){grade='S';gradeComment='최적화 수준이 매우 높은 상태입니다. 지금의 운영 방식을 유지하시면 됩니다.';gradeColor='#0E9F6E';}
+  else if(displayScore>=75){grade='A';gradeComment='기본기가 탄탄한 상태입니다. 미흡한 몇 개 항목만 보완하면 매출 전환이 눈에 띄게 좋아집니다.';gradeColor='#0284c7';}
+  else if(displayScore>=60){grade='B';gradeComment='구조는 갖춰져 있지만 일부 항목에 공백이 있습니다. 지금 보완하면 충분히 만회되는 단계입니다.';gradeColor='#6A35FF';}
+  else if(displayScore>=40){grade='C';gradeComment='유입 대비 전환 손실이 생기고 있는 구간입니다. 영향이 큰 항목부터 하나씩 개선해보세요.';gradeColor='#E8A200';}
+  else{grade='D';gradeComment='기초 항목부터 단계적으로 정비가 필요한 상태입니다. 영향이 가장 큰 항목 하나부터 시작해보세요.';gradeColor='#DC2626';}
 
   // 카테고리 점수율
   const catScores={};
