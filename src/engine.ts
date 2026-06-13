@@ -493,11 +493,45 @@ function analyzePlaceData(api, user){
     }
   }
 
-  /* ── 합산 ── */
+  /* ── 합산 (카테고리 고정 가중치 방식) ── */
+  // 모든 매장에서 카테고리 만점을 동일하게 고정 (합 100)
+  const CAT_WEIGHTS = { review:45, content:23, basic:16, system:16 };
+
+  // 카테고리별 달성률 (N/A 항목은 분자·분모에서 함께 제외, 전부 N/A면 null=평가 불가)
+  const catRatio = {};
+  for(const cat of ['review','content','basic','system']){
+    const ci=items.filter(i=>i.cat===cat&&!i.na);
+    const got=ci.reduce((a,i)=>a+i.score,0); const mx=ci.reduce((a,i)=>a+i.max,0);
+    catRatio[cat]= mx>0?(got/mx):null;
+  }
+
+  // 평가 가능한 카테고리의 고정 만점 합 (평가 불가 카테고리는 제외 후 재정규화)
+  const activeWeight = Object.keys(CAT_WEIGHTS)
+    .filter(c=>catRatio[c]!==null)
+    .reduce((a,c)=>a+CAT_WEIGHTS[c],0);
+
+  // 카테고리별 환산 점수/만점 (평가 불가 카테고리는 만점 0, 비중은 나머지로 이전)
+  const catNormScore = {};
+  const catNormMax = {};
+  for(const cat of ['review','content','basic','system']){
+    if(catRatio[cat]===null){
+      catNormScore[cat]=0; catNormMax[cat]=0;
+    } else {
+      const normMax = activeWeight>0 ? (CAT_WEIGHTS[cat]/activeWeight*100) : 0;
+      catNormMax[cat]=normMax;
+      catNormScore[cat]=catRatio[cat]*normMax;
+    }
+  }
+
+  // 상단 총점 = 카테고리 환산 점수의 합
+  const rawSum = ['review','content','basic','system'].reduce((a,c)=>a+catNormScore[c],0);
+  const displayScore = Math.round(rawSum);
+  const categoryNorm = { score:catNormScore, max:catNormMax };
+
+  // 기존 변수 유지 (naMaxScore 안내 등 다른 곳에서 참조)
   const rawMax = items.reduce((a,i)=>a+(i.na?0:i.max),0);
   const rawScore = items.reduce((a,i)=>a+(i.na?0:i.score),0);
   const effectiveMax = rawMax;
-  const displayScore = effectiveMax>0 ? Math.round((rawScore/effectiveMax)*100) : 0;
 
   // 등급
   let grade,gradeComment,gradeColor;
@@ -527,7 +561,8 @@ function analyzePlaceData(api, user){
     name:api.name||'가게', category:api.category||'', address:api.roadAddress||'',
     industry, displayScore, rawScore, effectiveMax, naMaxScore,
     grade, gradeComment, gradeColor,
-    persona, personaDesc, personaIcon, catScores, items
+    persona, personaDesc, personaIcon, catScores, items,
+    categoryNorm
   };
 }
 `

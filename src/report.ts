@@ -149,19 +149,30 @@ function renderReport(result){
   const R=90, CIRC=2*Math.PI*R;
   const offset=CIRC*(1-result.displayScore/100);
 
-  // 카테고리 요약
+  // 카테고리 요약 — 카테고리 만점을 모든 매장에서 고정 (4개 합 = 상단 총점)
   const catSum={};
   let summaryHTML='';
+  const cNorm = result.categoryNorm || {score:{},max:{}};
+  let shownSum=0;
+  const lastCat = CAT_ORDER[CAT_ORDER.length-1];
   for(const ck of CAT_ORDER){
-    const ci=result.items.filter(i=>i.cat===ck);
-    const scored=ci.reduce((a,i)=>a+(i.na?0:i.score),0);
-    const maxable=ci.reduce((a,i)=>a+(i.na?0:i.max),0);
-    catSum[ck]={scored,maxable};
+    const scored = cNorm.score[ck] || 0;
+    const maxable = cNorm.max[ck] || 0;
+    // 표시값(소수점 1자리). 마지막 카테고리는 (총점-앞 합)으로 보정해 합 정합성 보장
+    let showScore;
+    if(ck===lastCat){
+      showScore = Math.round((result.displayScore - shownSum)*10)/10;
+    } else {
+      showScore = Math.round(scored*10)/10;
+      shownSum += showScore;
+    }
+    const showMax = Math.round(maxable*10)/10;
+    catSum[ck]={scored,maxable,showScore,showMax};
     const pct=maxable>0?Math.round(scored/maxable*100):0;
     summaryHTML+='<div class="summary-card" data-cat="'+CAT_META[ck].dataCat+'">'+
       '<div class="sc-name">'+CAT_META[ck].label+'</div>'+
-      '<div class="sc-score">'+(Math.round(scored*10)/10)+'<span style="font-size:14px;font-weight:500;color:#A39A8E;">점</span></div>'+
-      '<div class="sc-max">/ '+maxable+'점 만점</div>'+
+      '<div class="sc-score">'+showScore+'<span style="font-size:14px;font-weight:500;color:#A39A8E;">점</span></div>'+
+      '<div class="sc-max">/ '+showMax+'점 만점</div>'+
       '<div class="summary-bar"><div class="summary-bar-fill" data-pct="'+pct+'"></div></div></div>';
   }
 
@@ -199,7 +210,7 @@ function renderReport(result){
     }
     detailHTML+='<div class="cat-section"><div class="cat-header" data-cat="'+CAT_META[ck].dataCat+'">'+
       '<span class="cat-dot"></span><span class="cat-label">'+CAT_META[ck].label+'</span>'+
-      '<span class="cat-score-label">'+(Math.round(cs.scored*10)/10)+' / '+cs.maxable+'점</span></div>'+
+      '<span class="cat-score-label">'+cs.showScore+' / '+cs.showMax+'점</span></div>'+
       itemsHTML+'</div>';
   }
 
