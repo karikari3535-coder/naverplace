@@ -41,7 +41,7 @@ async function startDiagnosis(){
       .then(r=>r.json().then(body=>({ok:r.ok, body})));
     const animPromise = runAiLoadingAnimation({
       title:'AI가 매장을 분석하고 있어요',
-      sub:'네이버 플레이스 25개 항목 · 실시간 진단',
+      sub:'네이버 플레이스 26개 항목 · 실시간 진단',
       steps: ANALYZE_STEPS, quotes: ANALYZE_QUOTES,
       dataPromise: apiPromise.then(r=>(r&&r.ok?r.body:null)).catch(()=>null),
       detailBuilder: buildAnalyzeDetail,
@@ -222,7 +222,7 @@ async function showResult(){
   showStage('loadingScreen');
   await runAiLoadingAnimation({
     title:'AI가 리포트를 작성하고 있어요',
-    sub:'25개 항목 분석 기반 · 맞춤 액션 플랜',
+    sub:'26개 항목 분석 기반 · 맞춤 액션 플랜',
     steps:[
       {label:'강점·약점 도출',ms:800,init:'카테고리별 점수 분석 중'},
       {label:'사장님 맞춤 액션 플랜 작성',ms:800,init:'우선 개선 항목 선정 중'},
@@ -251,7 +251,7 @@ function restart(){
   showStage('stage1');
 }
 
-/* ===================== 진단 엔진 (25항목) ===================== */
+/* ===================== 진단 엔진 (26항목) ===================== */
 ` + DIAGNOSE_ENGINE + `
 
 /* ===================== 리포트 렌더 ===================== */

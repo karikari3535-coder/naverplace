@@ -246,7 +246,7 @@ function renderReport(result){
   // 통계 — '진단 항목'은 서비스 표기와 일치하도록 25로 고정(항목 수는 업종별로 가변)
   const goodCount = result.items.filter(i=>i.score>=i.max*0.7).length;
   const badCount  = result.items.filter(i=>i.score<i.max*0.4).length;
-  const totalCount= 25;
+  const totalCount= 26;
 
   c.innerHTML=
     '<div class="report-header">'+
