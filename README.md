@@ -1,24 +1,24 @@
-# 플레이스 닥터 (Place Doctor) — 네이버 플레이스 진단 리포트
+# 셀러랩스 플레이스 무료 진단 — 네이버 플레이스 진단 리포트
 
-EunCoach 플레이스 진단 사이트를 Cloudflare Pages + Hono로 클론·개선한 웹앱입니다.
-네이버 플레이스 URL만 넣으면 매장 데이터를 자동 수집해 **25개 항목**을 채점하고,
-등급(S/A/B/C/D)·사장님 페르소나·맞춤 처방까지 담은 리포트를 만들어 줍니다.
+네이버 플레이스 URL만 넣으면 매장 데이터를 자동 수집해 **26개 항목**을 채점하고,
+등급(S/A/B/C/D)·사장님 페르소나·맞춤 처방까지 담은 리포트를 만들어 주는
+Cloudflare Pages + Hono 기반 웹앱입니다.
 
 ## 프로젝트 개요
-- **이름**: 플레이스 닥터 (Place Doctor)
+- **이름**: 셀러랩스 플레이스 무료 진단 (SellerLabs Place 무료 진단)
 - **목표**: 네이버 플레이스 운영 상태를 자동 진단해, 무엇을 먼저 개선해야 하는지 한눈에 보여주기
 - **핵심 특징**:
   - 네이버 플레이스 URL(또는 `naver.me` 단축링크) 입력만으로 자동 데이터 수집
   - AI 분석 로딩 애니메이션 → 정보 확인 → 진단 리포트의 3단계 플로우
-  - 4개 카테고리(리뷰·시스템·기본정보·콘텐츠) 25개 항목 가중치 채점
+  - 4개 카테고리(리뷰·시스템·기본정보·콘텐츠) 26개 항목 가중치 채점
   - 100점 환산 점수 + S/A/B/C/D 등급 + 5가지 사장님 페르소나
   - 약점 우선순위 기반 Top-3 액션 플랜 제시
   - 따뜻한 베이지/오렌지 톤의 단일 페이지 디자인
 
 ## URL
+- **프로덕션 서비스**: https://bd619c54-8d18-4734-869c-45fd3a4c08a7.vip.gensparksite.com
+- **GitHub**: https://github.com/karikari3535-coder/naverplace
 - **로컬(개발) 서비스**: http://localhost:3000
-- **샌드박스 공개 URL**: https://3000-i03eveccw07udgx8tl7pb-18e660f9.sandbox.novita.ai
-- **프로덕션(Cloudflare Pages)**: 아직 배포 전 (배포 시 갱신)
 
 ## 기능 진입 경로 (URI / 파라미터)
 | 메서드 | 경로 | 파라미터 | 설명 |
@@ -50,10 +50,14 @@ EunCoach 플레이스 진단 사이트를 Cloudflare Pages + Hono로 클론·개
   1. 사용자가 URL 입력 → `GET /api/place?url=...`
   2. 서버: 단축링크 해제 → placeId 추출 → 여러 type 경로 시도 → APOLLO_STATE 추출 → 필드 조립(`PlaceData`)
   3. 클라이언트: 응답을 Stage2에서 사용자 확인/보정(상세설명·대표키워드·찾아오는길·스마트콜·톡톡·소식)
-  4. 클라이언트 엔진 `analyzePlaceData(api, user)`가 25항목 채점 → 점수/등급/페르소나/액션 산출
+  4. 클라이언트 엔진 `analyzePlaceData(api, user)`가 최대 26항목 채점 → 점수/등급/페르소나/액션 산출
   5. `renderReport(result)`가 Stage3 리포트 HTML 렌더링
 
-### 진단 항목 (25개, 4카테고리, 참조 사이트와 동일 가중 배점)
+### 진단 항목 (26개 표기, 4카테고리, 가중 배점)
+
+> 진단 항목은 사용자에게 **26개**로 표기합니다. 실제 채점되는 항목 수는 업종 특성에 따라
+> 24~26개 사이에서 달라지며(예: 의료기관은 의료광고법상 일부 항목 제외, 일부 업종은 스타일탭 미해당),
+> 해당 없는 항목은 N/A 처리 후 분모에서 제외해 점수를 보정합니다.
 - **리뷰(review, ~45점)**: 최근 7일(10/13)·최근 30일(7)·총 방문자 리뷰(5)·리뷰 품질(5)·AI 브리핑(5)·블로그 리뷰(5/7)·별점(5)·답글 비율(5)·저장 수(7)·포토 리뷰(5)
 - **시스템(system, ~12점)**: 네이버 예약(6)·네이버 페이(3)·쿠폰(2)·**톡톡 응답률(3, 신규)**
 - **기본정보(basic, ~10점)**: 업체 사진(4)·편의시설(2)·영업시간(3)·메뉴 가격(2)·메뉴 사진/스타일탭(2)
@@ -92,7 +96,7 @@ webapp/
 │   ├── page.ts       # renderHome() — 전체 HTML 셸 (Stage1~3)
 │   ├── styles.ts     # PAGE_CSS — 베이지/오렌지 테마
 │   ├── client.ts     # CLIENT_JS — 스테이지 제어/로딩/폼 처리
-│   ├── engine.ts     # DIAGNOSE_ENGINE — analyzePlaceData(25항목 채점)
+│   ├── engine.ts     # DIAGNOSE_ENGINE — analyzePlaceData(최대 26항목 채점)
 │   ├── report.ts     # RENDER_REPORT — renderReport(리포트 렌더)
 │   └── lib/naver.ts  # fetchPlaceData() — 네이버 APOLLO_STATE 파서
 ├── ecosystem.config.cjs  # PM2 (wrangler pages dev, port 3000)
@@ -124,7 +128,7 @@ curl http://localhost:3000        # 동작 확인
 5. 정확도 향상을 위한 추가 데이터 소스(로그인 세션 또는 공식 API) 검토.
 
 ## 배포 상태
-- **플랫폼**: Cloudflare Pages
-- **상태**: ✅ 로컬/샌드박스 동작 / ❌ 프로덕션 미배포
+- **플랫폼**: Cloudflare Pages (Genspark 호스팅)
+- **상태**: ✅ 프로덕션 배포 완료
 - **기술 스택**: Hono + Vite + Cloudflare Pages
-- **최종 업데이트**: 2026-06-13 (리뷰 가중 배점 참조 사이트 일치 + PDF 다운로드·점수 공유 버튼 추가)
+- **최종 업데이트**: 2026-06-15 (진단 항목 26개 통일 + 신규 로고 적용 + 모바일 안정성 개선 + 카카오톡/SNS OG 카드 추가)
