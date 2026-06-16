@@ -118,6 +118,9 @@ a { color: inherit; text-decoration: none; }
 .report-header .shop-name { font-size: 24px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px; }
 .report-header .shop-meta { color: #6B635A; font-size: 14px; margin-bottom: 4px; }
 .report-header .report-date { color: #A39A8E; font-size: 13px; }
+.header-place-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 8px 16px; background: #03C75A; color: #fff; border-radius: 999px; font-size: 13px; font-weight: 600; text-decoration: none; transition: filter .15s; }
+.header-place-link:hover { filter: brightness(0.95); }
+.header-place-link .hpl-ic { font-size: 13px; }
 
 .score-section { text-align: center; padding: 40px 0 24px; }
 .score-gauge-container { position: relative; width: 240px; height: 240px; margin: 0 auto 16px; }
@@ -280,17 +283,9 @@ a { color: inherit; text-decoration: none; }
 .mp-card-title { font-size: 15px; font-weight: 700; color: #1A1714; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 .mp-card-title .mp-ic { color: #6100FF; font-size: 16px; }
 
-/* 1) 업체 종합 등급 */
-.mp-grade-card { text-align: left; }
-.mp-grade-row { display: flex; align-items: center; gap: 20px; justify-content: center; }
-.mp-grade-circle { width: 84px; height: 84px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 38px; font-weight: 800; flex-shrink: 0; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
-.mp-grade-info { text-align: center; }
-.mp-grade-name { font-size: 17px; font-weight: 700; color: #1A1714; }
-.mp-grade-cat { font-size: 13px; color: #A39A8E; margin: 2px 0 6px; }
-.mp-grade-score { font-size: 34px; font-weight: 800; line-height: 1; }
-.mp-grade-score span { font-size: 16px; font-weight: 600; color: #A39A8E; margin-left: 2px; }
+/* (구) 업체 종합 등급 카드 CSS는 상단 점수 게이지와 중복되어 카드와 함께 제거함 */
 
-/* 2~3) 지표 카드 그리드 */
+/* 주요 지표 / 리뷰 품질 카드 그리드 */
 .mp-metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .mp-metric { background: #FBFAF7; border: 1px solid #ECE8E1; border-radius: 14px; padding: 18px 10px; text-align: center; }
 .mp-metric-ic { width: 40px; height: 40px; border-radius: 12px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; background: #F2ECFF; }

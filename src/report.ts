@@ -260,19 +260,7 @@ function renderReport(result){
   const starStr = (M.starRating===null||M.starRating===undefined||M.starRating===0)
     ? '비공개' : (Math.round(M.starRating*100)/100)+' / 5.0';
 
-  // 1) 업체 종합 등급 (등급 원 + 점수)
-  const gradeCardHTML =
-    '<div class="mp-card mp-grade-card">'+
-      '<div class="mp-card-title"><span class="mp-ic">◎</span> 업체 종합 등급</div>'+
-      '<div class="mp-grade-row">'+
-        '<div class="mp-grade-circle" style="background:'+result.gradeColor+'">'+result.grade+'</div>'+
-        '<div class="mp-grade-info">'+
-          '<div class="mp-grade-name">'+escapeHtml(result.name)+'</div>'+
-          '<div class="mp-grade-cat">'+escapeHtml(result.category)+'</div>'+
-          '<div class="mp-grade-score" style="color:'+result.gradeColor+'">'+result.displayScore+'<span>점</span></div>'+
-        '</div>'+
-      '</div>'+
-    '</div>';
+  // (구) 업체 종합 등급 카드 → 상단 점수 게이지와 중복이라 제거함.
 
   // 2) 주요 지표 (방문자 리뷰 / 평점 / 사진 리뷰)
   const keyMetricsHTML =
@@ -318,26 +306,24 @@ function renderReport(result){
       '<div class="mp-check-grid">'+checkRows+'</div>'+
     '</div>';
 
-  // 5) 업체 정보
-  const B = result.business || {};
-  let bizRows='';
-  if(B.address) bizRows+='<div class="mp-biz-row"><span class="mp-biz-ic">📍</span><div><div class="mp-biz-lbl">주소</div><div class="mp-biz-val">'+escapeHtml(B.address)+'</div></div></div>';
-  if(B.phone)   bizRows+='<div class="mp-biz-row"><span class="mp-biz-ic">📞</span><div><div class="mp-biz-lbl">전화번호</div><div class="mp-biz-val">'+escapeHtml(B.phone)+'</div></div></div>';
-  if(B.intro)   bizRows+='<div class="mp-biz-row"><span class="mp-biz-ic">💬</span><div><div class="mp-biz-lbl">한줄평</div><div class="mp-biz-val">'+escapeHtml(B.intro)+'</div></div></div>';
-  if(B.placeUrl)bizRows+='<div class="mp-biz-row"><span class="mp-biz-ic">🔗</span><div><div class="mp-biz-lbl">네이버 플레이스</div><a class="mp-biz-link" href="'+B.placeUrl+'" target="_blank" rel="noopener">바로가기</a></div></div>';
-  const businessHTML =
-    '<div class="mp-card">'+
-      '<div class="mp-card-title"><span class="mp-ic">ℹ︎</span> 업체 정보</div>'+
-      bizRows+
-    '</div>';
+  // (구) 업체 정보 카드 → 상단 헤더(이름·카테고리·주소·바로가기)와 중복이라 제거함.
+  //      주소는 헤더 shop-meta, 플레이스 링크는 헤더 '스마트플레이스 바로가기' 버튼으로 이동.
 
-  const mapiaSectionHTML = gradeCardHTML + keyMetricsHTML + reviewQualHTML + profileHTML + businessHTML;
+  // 가운데 마피아넷 스타일 섹션: 주요 지표 → 리뷰 품질 분석 → 프로필 완성도 순.
+  const mapiaSectionHTML = keyMetricsHTML + reviewQualHTML + profileHTML;
+
+  // 헤더 '스마트플레이스 바로가기' 링크용 URL (business.placeUrl 재사용)
+  const placeUrl = (result.business && result.business.placeUrl) || '';
 
   c.innerHTML=
     '<div class="report-header">'+
       '<div class="shop-name">'+escapeHtml(result.name)+'</div>'+
       '<div class="shop-meta">'+escapeHtml(result.category)+(result.address?(' · '+escapeHtml(result.address)):'')+'</div>'+
       '<div class="report-date">진단일시: '+dateStr+'</div>'+
+      (placeUrl
+        ? '<a class="header-place-link" href="'+placeUrl+'" target="_blank" rel="noopener">'+
+            '<span class="hpl-ic">🔗</span> 스마트플레이스 바로가기</a>'
+        : '')+
     '</div>'+
 
     medicalNotice+

@@ -633,6 +633,12 @@ function analyzePlaceData(api, user){
     {label:'한줄평(소개)',   done:hasIntro},
     {label:'대표 이미지',    done:hasMainImage}
   ];
+  // 네이버페이·쿠폰은 점수(items)에 이미 반영돼 있으므로, 채점 결과를 그대로 체크리스트로 노출.
+  // 업종상 진단 제외(N/A)된 항목은 체크리스트에서도 빼서 일관성 유지(예: 의료기관 쿠폰).
+  var npayItem   = items.find(function(i){return i.key==='npay';});
+  var couponItem = items.find(function(i){return i.key==='coupon';});
+  if (npayItem && !npayItem.na)   profileChecklist.push({label:'네이버페이 연결', done:npayItem.score>0});
+  if (couponItem && !couponItem.na) profileChecklist.push({label:'쿠폰 적용', done:couponItem.score>0});
   var profileDone = profileChecklist.filter(function(x){return x.done;}).length;
   var profileCompleteness = Math.round(profileDone/profileChecklist.length*100);
 
