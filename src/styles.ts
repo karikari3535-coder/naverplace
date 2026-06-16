@@ -368,4 +368,14 @@ a { color: inherit; text-decoration: none; }
 .compare-badge.cmp-down{background:#FDEEEE;color:#C0392B;}
 .compare-badge.cmp-down .cmp-sub{color:#C0392B;}
 .compare-badge.cmp-same{background:#F2EEE7;color:#7A7266;}
+
+/* ===== PC(>=768px) 화면 보강: 폰트·게이지 키우기 ===== */
+@media (min-width: 768px) {
+  #stage1 h1 { font-size: 34px; }
+  #stage1 .subtitle, #stage2 .subtitle { font-size: 17px; }
+  .report-container { padding: 0 24px; }
+  .report-header .shop-name { font-size: 28px; }
+  .score-gauge-container, .score-gauge-container svg { width: 280px; height: 280px; }
+  .score-number { font-size: 76px; }
+}
 `
