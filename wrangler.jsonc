@@ -8,7 +8,7 @@
   ],
   // 로컬/임시용 관리자 토큰. 배포 환경에서는 시크릿으로 주입하는 것이 안전.
   "vars": {
-    "ADMIN_TOKEN": "change-me-to-a-long-random-string"
+    "ADMIN_TOKEN": "0b6FsFwa5Yy9Ha86MD0fBiFL1NMk82YDm4OJJsbH"
   },
   "d1_databases": [
     {
