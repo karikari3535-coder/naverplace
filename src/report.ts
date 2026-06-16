@@ -439,11 +439,9 @@ function renderReport(result){
     '<div class="section-title">셀러랩스라면, 이 3가지부터 시작하겠어요</div>'+
     '<div class="section-subtitle">점수 낮은 순서대로 마이마이가 처방한 우선순위예요 — 현장형으로 자세하게</div>'+
     '<div class="action-section">'+actionHTML+'</div>'+
-    (placeUrl
-      ? '<a class="action-cta-btn" href="'+placeUrl+'" target="_blank" rel="noopener">'+
-          '<span class="acb-ic">🛠️</span> 이 3가지, 스마트플레이스에서 지금 수정하기'+
-          '<span class="acb-arrow">›</span></a>'
-      : '')+
+    '<a class="action-cta-btn" href="https://smartplace.naver.com/bizes" target="_blank" rel="noopener">'+
+      '<span class="acb-ic">🛠️</span> 이 3가지, 스마트플레이스에서 지금 수정하기'+
+      '<span class="acb-arrow">›</span></a>'+
 
     '<hr class="section-divider">'+
     '<div class="section-title">항목별 상세 진단</div>'+
@@ -456,18 +454,48 @@ function renderReport(result){
       '<a href="https://sellerlabs.co.kr" target="_blank" rel="noopener">sellerlabs.co.kr</a> · 스마트스토어·플레이스 순위 추적 솔루션</div></div>'+
 
     // (T2) SNS 공유용 1080x1080 캡처 카드 — 화면 밖에 숨겨두고 html2canvas로 캡처
+    //      리포트 핵심 정보(주요 지표·영역별 완성도·운영 완성도)를 한 장에 정리
     '<div class="share-card-stage" aria-hidden="true">'+
       '<div id="shareCard" class="share-card">'+
-        '<div class="share-card-brand">'+
-          '<img src="/static/sellerlabs-logo.svg" alt="셀러랩스" class="share-card-logo">'+
+        // 1) 브랜드 + 매장명
+        '<div class="sc-head">'+
+          '<img src="/static/sellerlabs-logo.svg" alt="셀러랩스" class="sc-logo">'+
+          '<div class="sc-store">'+escapeHtml(result.name)+'</div>'+
+          '<div class="sc-cat">'+escapeHtml(result.category)+'</div>'+
         '</div>'+
-        '<div class="share-card-store">'+escapeHtml(result.name)+'</div>'+
-        '<div class="share-card-cat">'+escapeHtml(result.category)+'</div>'+
-        '<div class="share-card-score" style="color:'+result.gradeColor+'">'+result.displayScore+
-          '<span class="share-card-score-unit">점</span></div>'+
-        '<div class="share-card-grade" style="background:'+result.gradeColor+'">'+result.grade+' 등급</div>'+
-        '<div class="share-card-persona">'+result.personaIcon+' '+escapeHtml(result.persona)+'</div>'+
-        '<div class="share-card-footer">네이버 플레이스 무료 진단 · sellerlabs.co.kr</div>'+
+        // 2) 점수 + 등급 + 페르소나
+        '<div class="sc-score-row">'+
+          '<div class="sc-score" style="color:'+result.gradeColor+'">'+result.displayScore+
+            '<span class="sc-score-unit">점</span></div>'+
+          '<div class="sc-score-side">'+
+            '<div class="sc-grade" style="background:'+result.gradeColor+'">'+result.grade+' 등급</div>'+
+            '<div class="sc-persona">'+escapeHtml(result.persona)+'</div>'+
+          '</div>'+
+        '</div>'+
+        // 3) 주요 지표 3종 (이모지는 캡처 시 깨질 수 있어 텍스트 라벨만 사용)
+        '<div class="sc-metrics">'+
+          '<div class="sc-metric"><div class="sc-metric-val">'+fmtNum(M.totalReviews)+'</div><div class="sc-metric-lbl">방문자 리뷰</div></div>'+
+          '<div class="sc-metric"><div class="sc-metric-val">'+starStr+'</div><div class="sc-metric-lbl">평점</div></div>'+
+          '<div class="sc-metric"><div class="sc-metric-val">'+fmtNum(M.photoReviewCount)+'</div><div class="sc-metric-lbl">사진 리뷰</div></div>'+
+        '</div>'+
+        // 4) 영역별 완성도 4개 바
+        '<div class="sc-bars-title">영역별 완성도</div>'+
+        '<div class="sc-bars">'+
+          CAT_ORDER.map(function(ck){
+            var pct = (catSum[ck] && catSum[ck].pct) || 0;
+            return '<div class="sc-bar-row">'+
+              '<div class="sc-bar-label">'+CAT_META[ck].label+'</div>'+
+              '<div class="sc-bar-track"><div class="sc-bar-fill" style="width:'+pct+'%;background:'+result.gradeColor+'"></div></div>'+
+              '<div class="sc-bar-pct">'+pct+'%</div>'+
+            '</div>';
+          }).join('')+
+        '</div>'+
+        // 5) 운영 완성도
+        '<div class="sc-prof">'+
+          '<span class="sc-prof-lbl">운영 완성도</span>'+
+          '<span class="sc-prof-val" style="color:'+result.gradeColor+'">'+profPct+'%</span>'+
+        '</div>'+
+        '<div class="sc-footer">네이버 플레이스 무료 진단 · sellerlabs.co.kr</div>'+
       '</div>'+
     '</div>';
 
