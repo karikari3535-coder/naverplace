@@ -118,9 +118,9 @@ a { color: inherit; text-decoration: none; }
 .report-header .shop-name { font-size: 24px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px; }
 .report-header .shop-meta { color: #6B635A; font-size: 14px; margin-bottom: 4px; }
 .report-header .report-date { color: #A39A8E; font-size: 13px; }
-.header-place-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 8px 16px; background: #03C75A; color: #fff; border-radius: 999px; font-size: 13px; font-weight: 600; text-decoration: none; transition: filter .15s; }
-.header-place-link:hover { filter: brightness(0.95); }
-.header-place-link .hpl-ic { font-size: 13px; }
+.header-place-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 8px 16px; background: #fff; color: #4A443C; border: 1px solid #D8D2C8; border-radius: 999px; font-size: 13px; font-weight: 600; text-decoration: none; transition: background .15s, border-color .15s, color .15s; }
+.header-place-link:hover { background: #F4F1EB; border-color: #C7BFB2; color: #2B2620; }
+.header-place-link .hpl-ic { font-size: 12px; opacity: 0.75; }
 
 .score-section { text-align: center; padding: 40px 0 24px; }
 .score-gauge-container { position: relative; width: 240px; height: 240px; margin: 0 auto 16px; }
