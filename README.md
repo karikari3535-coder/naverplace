@@ -25,6 +25,8 @@ Cloudflare Pages + Hono 기반 웹앱입니다.
 |--------|------|----------|------|
 | `GET` | `/` | 없음 | 메인 단일 페이지 (Stage1~3 모두 포함) |
 | `GET` | `/api/place` | `url` (필수, 네이버 플레이스 URL 또는 naver.me 단축링크) | 매장 데이터를 추출해 JSON 반환 |
+| `POST` | `/api/save` | body: `{ placeId?, result }` (JSON) | 진단 결과를 D1에 저장하고 짧은 공유 ID 반환 `{ id }` |
+| `GET` | `/api/r/:id` | path: `id` (필수, 저장 시 발급된 공유 ID) | 저장된 진단 결과 조회 `{ result, createdAt }` · 없으면 404 `{ error: "not_found" }` |
 
 `/api/place` 응답 예시(요약):
 ```json
@@ -42,16 +44,35 @@ Cloudflare Pages + Hono 기반 웹앱입니다.
 }
 ```
 
+`/api/save` → `/api/r/:id` 흐름 예시:
+```bash
+# 저장
+curl -X POST .../api/save -H 'Content-Type: application/json' \
+  -d '{"placeId":"11726718","result":{ ...analyzePlaceData 결과... }}'
+# → {"id":"jtblqpLYb8"}
+
+# 조회
+curl .../api/r/jtblqpLYb8
+# → {"result":{ ... }, "createdAt": 1718500000000}
+```
+
 ## 데이터 아키텍처
 - **데이터 출처**: 네이버 모바일 플레이스 페이지(`m.place.naver.com/{type}/{id}/home`)에 임베드된
   `window.__APOLLO_STATE__` JSON을 서버에서 fetch하여 파싱 (브레이스 밸런싱 기반 문자열-aware 파서).
-- **저장소**: 별도 영구 저장소 없음 (Stateless). 진단은 요청 시점에 실시간 계산.
+- **저장소**: Cloudflare D1(SQLite) `diagnoses` 테이블. 진단 자체는 요청 시점에 실시간 계산하며,
+  사용자가 결과를 공유·저장할 때만 `POST /api/save`로 D1에 영속화합니다.
+  - 테이블 스키마(`migrations/0001_init.sql`): `id`(TEXT PK, Web Crypto 10자리 ID) · `place_id` · `name` ·
+    `category` · `industry` · `score`(REAL) · `grade` · `result_json`(TEXT, 전체 결과 JSON) · `created_at`(INTEGER, epoch ms)
+  - 인덱스: `idx_diag_place(place_id, created_at DESC)`, `idx_diag_created(created_at DESC)`
+  - 바인딩: `wrangler.jsonc` `d1_databases` → 바인딩명 `DB`, DB명 `naverplace-db`
+    (Genspark 호스팅 배포 시 D1 프로비저닝 및 마이그레이션 자동 적용)
 - **데이터 흐름**:
   1. 사용자가 URL 입력 → `GET /api/place?url=...`
   2. 서버: 단축링크 해제 → placeId 추출 → 여러 type 경로 시도 → APOLLO_STATE 추출 → 필드 조립(`PlaceData`)
   3. 클라이언트: 응답을 Stage2에서 사용자 확인/보정(상세설명·대표키워드·찾아오는길·스마트콜·톡톡·소식)
   4. 클라이언트 엔진 `analyzePlaceData(api, user)`가 최대 26항목 채점 → 점수/등급/페르소나/액션 산출
   5. `renderReport(result)`가 Stage3 리포트 HTML 렌더링
+  6. (선택) 사용자가 공유/저장 시 `POST /api/save` → D1 `diagnoses`에 저장 → 공유 ID 발급, `GET /api/r/:id`로 재조회
 
 ### 진단 항목 (26개 표기, 4카테고리, 가중 배점)
 
