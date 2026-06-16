@@ -162,32 +162,25 @@ function renderReport(result){
   const R=90, CIRC=2*Math.PI*R;
   const offset=CIRC*(1-result.displayScore/100);
 
-  // 카테고리 요약 — 카테고리 만점을 모든 매장에서 고정 (4개 합 = 상단 총점)
+  // 카테고리 요약 — 영역별 '완성도(%)'로 표시.
+  //   · 종합 점수(displayScore)는 인기도(popScore)가 섞여 별도 산출되므로
+  //     카드 합과 억지로 맞추는 '떠넘기기 보정'은 제거함.
+  //   · 각 영역은 항목 실제점수 합 / 만점(N/A 제외) 기준 달성률(%)만 보여줌.
   const catSum={};
   let summaryHTML='';
-  const cNorm = result.categoryNorm || {score:{},max:{}};
-  let shownSum=0;
-  const lastCat = CAT_ORDER[CAT_ORDER.length-1];
   for(const ck of CAT_ORDER){
-    const scored = cNorm.score[ck] || 0;
-    const maxable = cNorm.max[ck] || 0;
-    // 표시값(소수점 1자리). 마지막 카테고리는 (총점-앞 합)으로 보정해 합 정합성 보장
-    let showScore;
-    if(ck===lastCat){
-      showScore = Math.round((result.displayScore - shownSum)*10)/10;
-    } else {
-      showScore = Math.round(scored*10)/10;
-      shownSum += showScore;
-    }
-    const showMax = Math.round(maxable*10)/10;
-    catSum[ck]={scored,maxable,showScore,showMax};
-    const pct=maxable>0?Math.round(scored/maxable*100):0;
+    const ci=result.items.filter(i=>i.cat===ck && !i.na);
+    const realScore = ci.reduce((a,i)=>a+i.score,0);
+    const realMax   = ci.reduce((a,i)=>a+i.max,0);
+    const pct = realMax>0 ? Math.round(realScore/realMax*100) : 0;
+    // 상세진단 헤더에서 재사용할 실제 점수/만점 저장
+    catSum[ck]={ realScore:Math.round(realScore*10)/10, realMax, pct };
     summaryHTML+='<div class="summary-card" data-cat="'+CAT_META[ck].dataCat+'" '+
       'role="button" tabindex="0" onclick="scrollToCat(\''+ck+'\')" '+
       'onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();scrollToCat(\''+ck+'\');}">'+
       '<div class="sc-name">'+CAT_META[ck].label+'</div>'+
-      '<div class="sc-score">'+showScore+'<span style="font-size:14px;font-weight:500;color:#A39A8E;">점</span></div>'+
-      '<div class="sc-max">/ '+showMax+'점 만점</div>'+
+      '<div class="sc-score">'+pct+'<span style="font-size:18px;font-weight:600;color:#A39A8E;">%</span></div>'+
+      '<div class="sc-max">'+catSum[ck].realScore+' / '+realMax+'점</div>'+
       '<div class="summary-bar"><div class="summary-bar-fill" data-pct="'+pct+'"></div></div></div>';
   }
 
@@ -225,7 +218,7 @@ function renderReport(result){
     }
     detailHTML+='<div class="cat-section" id="detail-'+ck+'"><div class="cat-header" data-cat="'+CAT_META[ck].dataCat+'">'+
       '<span class="cat-dot"></span><span class="cat-label">'+CAT_META[ck].label+'</span>'+
-      '<span class="cat-score-label">'+cs.showScore+' / '+cs.showMax+'점</span></div>'+
+      '<span class="cat-score-label">'+cs.realScore+' / '+cs.realMax+'점 ('+cs.pct+'%)</span></div>'+
       itemsHTML+'</div>';
   }
 
@@ -386,8 +379,8 @@ function renderReport(result){
     '<div class="mp-section">'+mapiaSectionHTML+'</div>'+
 
     '<hr class="section-divider">'+
-    '<div class="section-title">카테고리별 점수</div>'+
-    '<div class="section-subtitle">4개 영역으로 나눠서 점수를 매겼어요</div>'+
+    '<div class="section-title">영역별 완성도</div>'+
+    '<div class="section-subtitle">각 영역이 얼마나 채워졌는지 보여줘요. 종합 점수는 리뷰·인기도를 별도로 반영해 계산합니다.</div>'+
     '<div class="summary-grid">'+summaryHTML+'</div>'+
 
     '<hr class="section-divider">'+

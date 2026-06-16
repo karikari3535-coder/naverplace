@@ -165,7 +165,7 @@ a { color: inherit; text-decoration: none; }
 .summary-card[data-cat="basic"]::before { background: #FFBE00; }
 .summary-card[data-cat="content"]::before { background: #2E9E78; }
 .summary-card .sc-name { font-size: 13px; font-weight: 600; color: #6B635A; margin-bottom: 8px; }
-.summary-card .sc-score { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 2px; }
+.summary-card .sc-score { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 2px; display: flex; align-items: baseline; gap: 2px; }
 .summary-card[data-cat="review"] .sc-score { color: #6C5FD4; }
 .summary-card[data-cat="system"] .sc-score { color: #2C8AA6; }
 .summary-card[data-cat="basic"] .sc-score { color: #FFBE00; }
