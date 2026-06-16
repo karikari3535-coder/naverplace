@@ -138,7 +138,7 @@ function downloadReportPDF(){
 }
 
 // (T2) 결과 요약 카드를 PNG로 저장 (html2canvas)
-function downloadShareCard(){
+async function downloadShareCard(){
   const card=document.getElementById('shareCard');
   if(!card){ showToast('카드를 찾을 수 없어요'); return; }
   if(typeof window.html2canvas==='undefined'){
@@ -148,22 +148,34 @@ function downloadShareCard(){
   const r=window.__lastReport||{};
   const safeName=(r.name||'플레이스').replace(/[\\/:*?"<>|\s]+/g,'_');
   showToast('이미지를 만들고 있어요...');
-  // 웹폰트(Pretendard)가 캡처 시점에 로드돼 있도록 보장
-  Promise.resolve(document.fonts && document.fonts.ready).then(function(){
-  window.html2canvas(card,{
-    scale:1, useCORS:true, backgroundColor:null,
-    width:1080, windowWidth:1080,
-    height: card.scrollHeight, windowHeight: card.scrollHeight
-  }).then(function(canvas){
+
+  // 폰트가 다 로드된 뒤 캡처 (글꼴 깨짐 방지)
+  try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(e){}
+
+  try{
+    const canvas = await window.html2canvas(card,{
+      scale:1, useCORS:true, backgroundColor:null,
+      width:1080, windowWidth:1080,
+      // 실제 콘텐츠 전체 높이로 캡처 (가장 큰 값 사용 → 잘림 방지)
+      height: Math.max(card.scrollHeight, card.offsetHeight, 1350),
+      windowHeight: Math.max(card.scrollHeight, card.offsetHeight, 1350),
+      scrollX:0, scrollY:0,
+      onclone:function(doc){
+        // 복제본을 화면 안에 보이게 해 높이 측정이 정확하도록
+        const stage=doc.querySelector('.share-card-stage');
+        if(stage){ stage.style.left='0'; stage.style.position='static'; stage.style.height='auto'; stage.style.overflow='visible'; }
+        const cc=doc.getElementById('shareCard');
+        if(cc){ cc.style.height='auto'; }
+      }
+    });
     const link=document.createElement('a');
     link.download='플레이스진단_'+safeName+'.png';
     link.href=canvas.toDataURL('image/png');
     link.click();
     showToast('이미지를 저장했어요!');
-  }).catch(function(){
+  }catch(e){
     showToast('이미지 생성에 실패했어요. 다시 시도해주세요');
-  });
-  });
+  }
 }
 
 // 내 점수 공유하기 (Web Share API → 실패 시 클립보드 복사)

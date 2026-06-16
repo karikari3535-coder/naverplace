@@ -343,48 +343,6 @@ a { color: inherit; text-decoration: none; }
 .mp-biz-link { font-size: 14px; color: #2563EB; font-weight: 600; text-decoration: none; }
 .mp-biz-link:hover { text-decoration: underline; }
 
-/* T2: SNS 공유 카드 (화면 밖, 캡처 전용) — 핵심 지표 요약형 */
-.share-card-stage { position: absolute; left: -99999px; top: 0; width: 1080px; height: 1080px; }
-.share-card { width: 1080px; height: 1080px; box-sizing: border-box; padding: 60px 72px;
-  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
-  background: linear-gradient(160deg,#FBF7F0 0%,#F3ECFB 100%);
-  font-family: 'Pretendard Variable',Pretendard,system-ui,sans-serif; overflow: hidden; }
-
-/* 1) 헤더 */
-.sc-head { text-align: center; }
-.sc-logo { height: 46px; margin-bottom: 16px; }
-.sc-store { font-size: 54px; font-weight: 800; color: #2A2438; line-height: 1.1; }
-.sc-cat { font-size: 27px; color: #A39A8E; margin-top: 6px; }
-
-/* 2) 점수 + 등급/페르소나 */
-.sc-score-row { display: flex; align-items: center; justify-content: center; gap: 30px; margin: 22px 0 20px; }
-.sc-score { font-size: 148px; font-weight: 900; line-height: 0.88; letter-spacing: -5px; }
-.sc-score-unit { font-size: 46px; font-weight: 700; color: #A39A8E; letter-spacing: 0; }
-.sc-score-side { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
-.sc-grade { font-size: 36px; font-weight: 800; color: #fff; padding: 9px 30px; border-radius: 999px; }
-.sc-persona { font-size: 29px; font-weight: 700; color: #5B3FBF; max-width: 330px; line-height: 1.3; }
-
-/* 3) 주요 지표 3종 */
-.sc-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 18px; }
-.sc-metric { background: #fff; border-radius: 20px; padding: 22px 10px; text-align: center; box-shadow: 0 4px 20px rgba(91,63,191,0.06); }
-.sc-metric-val { font-size: 46px; font-weight: 800; color: #2A2438; line-height: 1; }
-.sc-metric-lbl { font-size: 24px; color: #8A8175; margin-top: 10px; font-weight: 600; }
-
-/* 4) 영역별 완성도 바 */
-.sc-bars-title { font-size: 26px; font-weight: 800; color: #3A3340; margin-bottom: 12px; padding-left: 4px; }
-.sc-bars { background: #fff; border-radius: 20px; padding: 22px 32px; box-shadow: 0 4px 20px rgba(91,63,191,0.06); }
-.sc-bar-row { display: flex; align-items: center; gap: 16px; padding: 9px 0; }
-.sc-bar-label { width: 230px; font-size: 26px; font-weight: 700; color: #3A3340; flex-shrink: 0; }
-.sc-bar-track { flex: 1; height: 18px; background: #EEE9F6; border-radius: 999px; overflow: hidden; }
-.sc-bar-fill { height: 100%; border-radius: 999px; }
-.sc-bar-pct { width: 84px; text-align: right; font-size: 26px; font-weight: 800; color: #5B3FBF; flex-shrink: 0; }
-
-/* 5) 운영 완성도 + 푸터 */
-.sc-prof { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: auto; }
-.sc-prof-lbl { font-size: 29px; font-weight: 700; color: #3A3340; }
-.sc-prof-val { font-size: 40px; font-weight: 900; }
-.sc-footer { text-align: center; font-size: 24px; color: #A39A8E; margin-top: 18px; }
-
 /* ===== 재진단 비교 배지 (T5) ===== */
 .compare-badge{display:flex;flex-direction:column;align-items:center;gap:2px;
   margin:18px auto 4px;padding:10px 16px;border-radius:14px;max-width:340px;
@@ -410,7 +368,13 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ===== 공유 요약 카드 v2 (1080x1350) ===== */
-.share-card-stage{ position:fixed; left:-99999px; top:0; width:1080px; min-height:1350px; overflow:visible; pointer-events:none; }
+.share-card-stage{
+  position:fixed; left:-99999px; top:0;
+  width:1080px;
+  height:auto;          /* 고정 높이 제거 */
+  overflow:visible;     /* 잘림 방지 */
+  pointer-events:none;
+}
 .share-card{
   width:1080px; min-height:1350px; box-sizing:border-box;
   padding:72px 80px; display:flex; flex-direction:column;
