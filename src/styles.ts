@@ -410,9 +410,9 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ===== 공유 요약 카드 v2 (1080x1350) ===== */
-.share-card-stage{ position:fixed; left:-99999px; top:0; width:1080px; height:1350px; overflow:visible; pointer-events:none; }
+.share-card-stage{ position:fixed; left:-99999px; top:0; width:1080px; min-height:1350px; overflow:visible; pointer-events:none; }
 .share-card{
-  width:1080px; height:1350px; box-sizing:border-box;
+  width:1080px; min-height:1350px; box-sizing:border-box;
   padding:72px 80px; display:flex; flex-direction:column;
   background:linear-gradient(160deg,#FFFFFF 0%,#F4EFFF 100%);
   font-family:'Pretendard Variable',Pretendard,sans-serif; color:#1A1714;

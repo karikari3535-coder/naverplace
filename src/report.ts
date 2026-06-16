@@ -152,7 +152,8 @@ function downloadShareCard(){
   Promise.resolve(document.fonts && document.fonts.ready).then(function(){
   window.html2canvas(card,{
     scale:1, useCORS:true, backgroundColor:null,
-    width:1080, height:1350, windowWidth:1080, windowHeight:1350
+    width:1080, windowWidth:1080,
+    height: card.scrollHeight, windowHeight: card.scrollHeight
   }).then(function(canvas){
     const link=document.createElement('a');
     link.download='플레이스진단_'+safeName+'.png';
