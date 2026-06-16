@@ -622,14 +622,15 @@ function analyzePlaceData(api, user){
   var hasConvenience = Array.isArray(api.conveniences) && api.conveniences.length>0;
   var hasIntro = !!((api.microIntro&&api.microIntro.length) || (api.description&&api.description.length));
   var hasMainImage = (api.imageCount||0)>0;
-  var hasSmartOrder = !!(api.hasNPay || api.hasSmartCallAuto);
+  // 스마트주문(네이버페이 OR 스마트콜) 혼합 판정은 라벨과 실제값이 어긋나 혼란을 줬다.
+  // 네이버페이는 아래 '네이버페이 연결' 칸에서 따로 표시되므로, 이 칸은 스마트콜 기준으로 일치시킨다.
   var profileChecklist = [
     {label:'영업시간 등록', done:!!api.hasBusinessHours},
     {label:'메뉴/사진 등록', done:hasMenuPhoto},
     {label:'가격 정보',      done:hasPrice},
     {label:'편의시설 정보',  done:hasConvenience},
     {label:'네이버 예약',    done:!!api.hasBooking},
-    {label:'스마트주문',     done:hasSmartOrder},
+    {label:'스마트콜',       done:!!api.hasSmartCallAuto},
     {label:'한줄평(소개)',   done:hasIntro},
     {label:'대표 이미지',    done:hasMainImage}
   ];
