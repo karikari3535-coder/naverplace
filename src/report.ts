@@ -5,7 +5,10 @@ const CAT_META = {
   basic:{label:'기본정보', dataCat:'basic'},
   content:{label:'콘텐츠 & 운영', dataCat:'content'}
 };
-const CAT_ORDER=['review','system','basic','content'];
+// 표시 순서: ①콘텐츠&운영 ②리뷰&신뢰 ③기본정보 ④시스템&결제
+// (2열 그리드: 좌상=콘텐츠&운영 / 우상=리뷰&신뢰 / 좌하=기본정보 / 우하=시스템&결제)
+// 카드(summaryHTML)·상세진단(detailHTML) 모두 이 배열 순서를 그대로 따른다.
+const CAT_ORDER=['content','review','basic','system'];
 
 // 셀러랩스의 실전 팁 — 항목별 실무 노하우 (2~4문장, 구체적 숫자 + 행동 + 동기부여)
 const TIPS = {
@@ -78,6 +81,16 @@ const ACTIONS = {
 function toggleTip(btn){
   const tip=btn.closest('.coach-tip');
   if(tip) tip.classList.toggle('open');
+}
+
+// 카테고리 카드 클릭 → 해당 상세진단 섹션으로 부드럽게 스크롤 + 잠깐 강조
+function scrollToCat(ck){
+  const el=document.getElementById('detail-'+ck);
+  if(!el) return;
+  const y=el.getBoundingClientRect().top + window.pageYOffset - 16;
+  window.scrollTo({ top:y, behavior:'smooth' });
+  el.classList.add('cat-section-flash');
+  setTimeout(function(){ el.classList.remove('cat-section-flash'); }, 1200);
 }
 
 // 간단한 토스트 알림
@@ -169,7 +182,9 @@ function renderReport(result){
     const showMax = Math.round(maxable*10)/10;
     catSum[ck]={scored,maxable,showScore,showMax};
     const pct=maxable>0?Math.round(scored/maxable*100):0;
-    summaryHTML+='<div class="summary-card" data-cat="'+CAT_META[ck].dataCat+'">'+
+    summaryHTML+='<div class="summary-card" data-cat="'+CAT_META[ck].dataCat+'" '+
+      'role="button" tabindex="0" onclick="scrollToCat(\''+ck+'\')" '+
+      'onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();scrollToCat(\''+ck+'\');}">'+
       '<div class="sc-name">'+CAT_META[ck].label+'</div>'+
       '<div class="sc-score">'+showScore+'<span style="font-size:14px;font-weight:500;color:#A39A8E;">점</span></div>'+
       '<div class="sc-max">/ '+showMax+'점 만점</div>'+
@@ -208,7 +223,7 @@ function renderReport(result){
         '<div class="item-comment">'+escapeHtml(item.comment)+'</div></div>'+
         tipHTML+'</div>';
     }
-    detailHTML+='<div class="cat-section"><div class="cat-header" data-cat="'+CAT_META[ck].dataCat+'">'+
+    detailHTML+='<div class="cat-section" id="detail-'+ck+'"><div class="cat-header" data-cat="'+CAT_META[ck].dataCat+'">'+
       '<span class="cat-dot"></span><span class="cat-label">'+CAT_META[ck].label+'</span>'+
       '<span class="cat-score-label">'+cs.showScore+' / '+cs.showMax+'점</span></div>'+
       itemsHTML+'</div>';

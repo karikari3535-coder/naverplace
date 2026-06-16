@@ -156,7 +156,9 @@ a { color: inherit; text-decoration: none; }
 .section-subtitle { color: #6B635A; font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
 
 .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.summary-card { background: #FFFFFF; border: 1px solid #DCD6CB; border-radius: 16px; padding: 20px; position: relative; overflow: hidden; }
+.summary-card { background: #FFFFFF; border: 1px solid #DCD6CB; border-radius: 16px; padding: 20px; position: relative; overflow: hidden; cursor: pointer; transition: transform .12s, box-shadow .12s, border-color .12s; }
+.summary-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.08); border-color: #C7BFB2; }
+.summary-card:focus-visible { outline: 2px solid #6C5FD4; outline-offset: 2px; }
 .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .summary-card[data-cat="review"]::before { background: #6C5FD4; }
 .summary-card[data-cat="system"]::before { background: #2C8AA6; }
@@ -176,7 +178,9 @@ a { color: inherit; text-decoration: none; }
 .summary-card[data-cat="basic"] .summary-bar-fill { background: #FFBE00; }
 .summary-card[data-cat="content"] .summary-bar-fill { background: #2E9E78; }
 
-.cat-section { margin-top: 40px; }
+.cat-section { margin-top: 40px; border-radius: 12px; }
+.cat-section-flash { animation: catFlash 1.2s ease; }
+@keyframes catFlash { 0% { background: rgba(108,95,212,0.10); } 100% { background: transparent; } }
 .cat-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid; }
 .cat-header[data-cat="review"] { border-color: #6C5FD4; }
 .cat-header[data-cat="system"] { border-color: #2C8AA6; }
