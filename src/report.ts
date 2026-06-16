@@ -243,10 +243,90 @@ function renderReport(result){
     ? '<div class="na-notice">일부 항목(리뷰 상세 데이터 또는 업종에 해당 없는 항목)을 점수에서 제외하고 나머지 항목 기준으로 환산했습니다.</div>'
     : '';
 
-  // 통계 — '진단 항목'은 서비스 표기와 일치하도록 25로 고정(항목 수는 업종별로 가변)
+  // 통계 — '진단 항목'은 서비스 표기와 일치하도록 26로 고정(항목 수는 업종별로 가변)
   const goodCount = result.items.filter(i=>i.score>=i.max*0.7).length;
   const badCount  = result.items.filter(i=>i.score<i.max*0.4).length;
   const totalCount= 26;
+
+  /* ── 참조 사이트(마피아넷) 스타일 지표 섹션 ── */
+  const M = result.metrics || {};
+  const fmtRate = (v)=> (v===null||v===undefined||isNaN(v)) ? '-' : (v+'%');
+  const fmtNum  = (v)=> (v===null||v===undefined) ? '-' : Number(v).toLocaleString();
+  const starStr = (M.starRating===null||M.starRating===undefined||M.starRating===0)
+    ? '비공개' : (Math.round(M.starRating*100)/100)+' / 5.0';
+
+  // 1) 업체 종합 등급 (등급 원 + 점수)
+  const gradeCardHTML =
+    '<div class="mp-card mp-grade-card">'+
+      '<div class="mp-card-title"><span class="mp-ic">◎</span> 업체 종합 등급</div>'+
+      '<div class="mp-grade-row">'+
+        '<div class="mp-grade-circle" style="background:'+result.gradeColor+'">'+result.grade+'</div>'+
+        '<div class="mp-grade-info">'+
+          '<div class="mp-grade-name">'+escapeHtml(result.name)+'</div>'+
+          '<div class="mp-grade-cat">'+escapeHtml(result.category)+'</div>'+
+          '<div class="mp-grade-score" style="color:'+result.gradeColor+'">'+result.displayScore+'<span>점</span></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+
+  // 2) 주요 지표 (방문자 리뷰 / 평점 / 사진 리뷰)
+  const keyMetricsHTML =
+    '<div class="mp-card">'+
+      '<div class="mp-card-title"><span class="mp-ic">📊</span> 주요 지표</div>'+
+      '<div class="mp-metric-grid">'+
+        '<div class="mp-metric"><div class="mp-metric-ic mp-ic-rev">💬</div>'+
+          '<div class="mp-metric-val">'+fmtNum(M.totalReviews)+'</div><div class="mp-metric-lbl">방문자 리뷰</div></div>'+
+        '<div class="mp-metric"><div class="mp-metric-ic mp-ic-star">⭐</div>'+
+          '<div class="mp-metric-val">'+starStr+'</div><div class="mp-metric-lbl">평점</div></div>'+
+        '<div class="mp-metric"><div class="mp-metric-ic mp-ic-cam">📷</div>'+
+          '<div class="mp-metric-val">'+fmtNum(M.photoReviewCount)+'</div><div class="mp-metric-lbl">사진 리뷰</div></div>'+
+      '</div>'+
+    '</div>';
+
+  // 3) 리뷰 품질 분석 (텍스트 / 미디어 / 다양성)
+  const reviewQualHTML =
+    '<div class="mp-card">'+
+      '<div class="mp-card-title"><span class="mp-ic">📝</span> 리뷰 품질 분석</div>'+
+      '<div class="mp-metric-grid">'+
+        '<div class="mp-metric"><div class="mp-metric-ic mp-ic-text">📄</div>'+
+          '<div class="mp-metric-val">'+fmtRate(M.textReviewRate)+'</div><div class="mp-metric-lbl">텍스트 리뷰 비율</div></div>'+
+        '<div class="mp-metric"><div class="mp-metric-ic mp-ic-media">🖼️</div>'+
+          '<div class="mp-metric-val">'+fmtRate(M.mediaReviewRate)+'</div><div class="mp-metric-lbl">미디어 리뷰 비율</div></div>'+
+        '<div class="mp-metric"><div class="mp-metric-ic mp-ic-div">👥</div>'+
+          '<div class="mp-metric-val">'+fmtRate(M.reviewerDiversity)+'</div><div class="mp-metric-lbl">리뷰어 다양성</div></div>'+
+      '</div>'+
+    '</div>';
+
+  // 4) 프로필 완성도 (% 바 + 8개 체크리스트, 2열)
+  const checklist = result.profileChecklist || [];
+  const profPct = result.profileCompleteness || 0;
+  let checkRows='';
+  for(const item of checklist){
+    checkRows+='<div class="mp-check '+(item.done?'mp-check-on':'mp-check-off')+'">'+
+      '<span class="mp-check-mark">'+(item.done?'✓':'✗')+'</span>'+escapeHtml(item.label)+'</div>';
+  }
+  const profileHTML =
+    '<div class="mp-card">'+
+      '<div class="mp-card-title"><span class="mp-ic">✔︎</span> 프로필 완성도</div>'+
+      '<div class="mp-prof-pct">'+profPct+'%</div>'+
+      '<div class="mp-prof-bar"><div class="mp-prof-bar-fill" data-pct="'+profPct+'"></div></div>'+
+      '<div class="mp-check-grid">'+checkRows+'</div>'+
+    '</div>';
+
+  // 5) 업체 정보
+  const B = result.business || {};
+  let bizRows='';
+  if(B.address) bizRows+='<div class="mp-biz-row"><span class="mp-biz-ic">📍</span><div><div class="mp-biz-lbl">주소</div><div class="mp-biz-val">'+escapeHtml(B.address)+'</div></div></div>';
+  if(B.phone)   bizRows+='<div class="mp-biz-row"><span class="mp-biz-ic">📞</span><div><div class="mp-biz-lbl">전화번호</div><div class="mp-biz-val">'+escapeHtml(B.phone)+'</div></div></div>';
+  if(B.intro)   bizRows+='<div class="mp-biz-row"><span class="mp-biz-ic">💬</span><div><div class="mp-biz-lbl">한줄평</div><div class="mp-biz-val">'+escapeHtml(B.intro)+'</div></div></div>';
+  if(B.placeUrl)bizRows+='<div class="mp-biz-row"><span class="mp-biz-ic">🔗</span><div><div class="mp-biz-lbl">네이버 플레이스</div><a class="mp-biz-link" href="'+B.placeUrl+'" target="_blank" rel="noopener">바로가기</a></div></div>';
+  const businessHTML =
+    '<div class="mp-card">'+
+      '<div class="mp-card-title"><span class="mp-ic">ℹ︎</span> 업체 정보</div>'+
+      bizRows+
+    '</div>';
+
+  const mapiaSectionHTML = gradeCardHTML + keyMetricsHTML + reviewQualHTML + profileHTML + businessHTML;
 
   c.innerHTML=
     '<div class="report-header">'+
@@ -296,6 +376,9 @@ function renderReport(result){
     '</div>'+
 
     '<hr class="section-divider">'+
+    '<div class="mp-section">'+mapiaSectionHTML+'</div>'+
+
+    '<hr class="section-divider">'+
     '<div class="section-title">카테고리별 점수</div>'+
     '<div class="section-subtitle">4개 영역으로 나눠서 점수를 매겼어요</div>'+
     '<div class="summary-grid">'+summaryHTML+'</div>'+
@@ -320,6 +403,7 @@ function renderReport(result){
     setTimeout(()=>{
       const g=document.getElementById('gaugeFill'); if(g) g.setAttribute('stroke-dashoffset', String(offset));
       document.querySelectorAll('.summary-bar-fill').forEach(el=>{ el.style.width=(el.dataset.pct||0)+'%'; });
+      document.querySelectorAll('.mp-prof-bar-fill').forEach(el=>{ el.style.width=(el.dataset.pct||0)+'%'; });
     },100);
   });
 }

@@ -267,5 +267,56 @@ a { color: inherit; text-decoration: none; }
   .btn-primary { padding: 14px 20px; font-size: 15px; }
   .btn-secondary { padding: 12px 18px; font-size: 14px; }
   .item-badge { font-size: 12px; padding: 4px 9px; }
+  .mp-metric-grid { gap: 8px; }
+  .mp-metric { padding: 14px 8px; }
+  .mp-metric-val { font-size: 18px; }
+  .mp-check-grid { grid-template-columns: 1fr; }
 }
+
+/* ── 참조 사이트(마피아넷) 스타일 지표 섹션 ── */
+.mp-section { display: flex; flex-direction: column; gap: 16px; }
+.mp-card { background: #FFFFFF; border: 1px solid #DCD6CB; border-radius: 16px; padding: 20px; }
+.mp-card-title { font-size: 15px; font-weight: 700; color: #1A1714; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.mp-card-title .mp-ic { color: #6100FF; font-size: 16px; }
+
+/* 1) 업체 종합 등급 */
+.mp-grade-card { text-align: left; }
+.mp-grade-row { display: flex; align-items: center; gap: 20px; justify-content: center; }
+.mp-grade-circle { width: 84px; height: 84px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 38px; font-weight: 800; flex-shrink: 0; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+.mp-grade-info { text-align: center; }
+.mp-grade-name { font-size: 17px; font-weight: 700; color: #1A1714; }
+.mp-grade-cat { font-size: 13px; color: #A39A8E; margin: 2px 0 6px; }
+.mp-grade-score { font-size: 34px; font-weight: 800; line-height: 1; }
+.mp-grade-score span { font-size: 16px; font-weight: 600; color: #A39A8E; margin-left: 2px; }
+
+/* 2~3) 지표 카드 그리드 */
+.mp-metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.mp-metric { background: #FBFAF7; border: 1px solid #ECE8E1; border-radius: 14px; padding: 18px 10px; text-align: center; }
+.mp-metric-ic { width: 40px; height: 40px; border-radius: 12px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; background: #F2ECFF; }
+.mp-metric-ic.mp-ic-star { background: #E7F7EF; }
+.mp-metric-ic.mp-ic-cam, .mp-metric-ic.mp-ic-text, .mp-metric-ic.mp-ic-div { background: #EAF3FB; }
+.mp-metric-ic.mp-ic-media { background: #E7F7EF; }
+.mp-metric-val { font-size: 22px; font-weight: 800; color: #1A1714; line-height: 1.1; }
+.mp-metric-lbl { font-size: 12px; color: #8A8178; margin-top: 6px; }
+
+/* 4) 프로필 완성도 */
+.mp-prof-pct { font-size: 26px; font-weight: 800; color: #2563EB; line-height: 1; margin-bottom: 10px; }
+.mp-prof-bar { height: 10px; background: #EDE8E0; border-radius: 5px; overflow: hidden; margin-bottom: 18px; }
+.mp-prof-bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, #3B82F6, #2563EB); border-radius: 5px; transition: width 1s ease; }
+.mp-check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+.mp-check { font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #ECE8E1; border-radius: 10px; background: #FBFAF7; }
+.mp-check-mark { font-weight: 800; width: 16px; text-align: center; flex-shrink: 0; }
+.mp-check-on { color: #1A1714; }
+.mp-check-on .mp-check-mark { color: #0E9F6E; }
+.mp-check-off { color: #B6ADA2; }
+.mp-check-off .mp-check-mark { color: #D9534F; }
+
+/* 5) 업체 정보 */
+.mp-biz-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #F2EEE7; }
+.mp-biz-row:last-child { border-bottom: none; }
+.mp-biz-ic { font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+.mp-biz-lbl { font-size: 12px; color: #A39A8E; margin-bottom: 3px; }
+.mp-biz-val { font-size: 14px; color: #1A1714; font-weight: 500; word-break: keep-all; }
+.mp-biz-link { font-size: 14px; color: #2563EB; font-weight: 600; text-decoration: none; }
+.mp-biz-link:hover { text-decoration: underline; }
 `

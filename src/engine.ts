@@ -557,12 +557,56 @@ function analyzePlaceData(api, user){
   else if(displayScore>=75){persona='결승선 코앞의 사장님';personaIcon='🎖️';personaDesc='거의 다 하셨어요. 남은 몇 개만 잡으면 상위 1% 매장입니다. 아래에서 마지막 빈칸만 확인해보세요.';}
   else{persona='우선순위만 잡으면 되는 사장님';personaIcon='🧭';personaDesc='열심히 여러 가지를 해오셨는데 곳곳에 빈틈이 있어요. 무엇부터 손볼지 순서를 정리해드릴게요.';}
 
+  /* ── 참조 사이트(마피아넷) 스타일 지표 패키지 ── */
+  // 사진 리뷰 개수: imageReviewCount가 있으면 그대로, 없으면 총리뷰 × 사진비율로 근사
+  var photoReviewCount = (api.imageReviewCount!=null && api.imageReviewCount>0)
+    ? api.imageReviewCount
+    : Math.round((api.totalReviewCount||0)*((api.photoReviewRate||0)/100));
+  var metrics = {
+    totalReviews: api.totalReviewCount||0,
+    starRating: api.starRating,            // null이면 비공개
+    photoReviewCount: photoReviewCount,
+    // 리뷰 품질 분석 3종 (리뷰 상세 수집 실패 시 null → 화면에서 '-' 표시)
+    textReviewRate: (api.textReviewRate!=null ? api.textReviewRate : null),
+    mediaReviewRate: (api.mediaReviewRate!=null ? api.mediaReviewRate : null),
+    reviewerDiversity: (api.reviewerDiversity!=null ? api.reviewerDiversity : null)
+  };
+
+  /* ── 프로필 완성도 체크리스트 (참조 사이트와 동일 8항목) ── */
+  var hasMenuPhoto = (api.menuPhotoRate||0)>0 || (api.styleCount||0)>0 || (api.totalMenus||0)>0;
+  var hasPrice = (api.menuPriceRate||0)>0;
+  var hasConvenience = Array.isArray(api.conveniences) && api.conveniences.length>0;
+  var hasIntro = !!((api.microIntro&&api.microIntro.length) || (api.description&&api.description.length));
+  var hasMainImage = (api.imageCount||0)>0;
+  var hasSmartOrder = !!(api.hasNPay || api.hasSmartCallAuto);
+  var profileChecklist = [
+    {label:'영업시간 등록', done:!!api.hasBusinessHours},
+    {label:'메뉴/사진 등록', done:hasMenuPhoto},
+    {label:'가격 정보',      done:hasPrice},
+    {label:'편의시설 정보',  done:hasConvenience},
+    {label:'네이버 예약',    done:!!api.hasBooking},
+    {label:'스마트주문',     done:hasSmartOrder},
+    {label:'한줄평(소개)',   done:hasIntro},
+    {label:'대표 이미지',    done:hasMainImage}
+  ];
+  var profileDone = profileChecklist.filter(function(x){return x.done;}).length;
+  var profileCompleteness = Math.round(profileDone/profileChecklist.length*100);
+
+  /* ── 업체 정보 (참조 사이트와 동일) ── */
+  var business = {
+    address: api.roadAddress||api.address||'',
+    phone: api.phone||null,
+    intro: api.microIntro||'',
+    placeUrl: api.id ? ('https://m.place.naver.com/place/'+api.id+'/home') : ''
+  };
+
   return {
     name:api.name||'가게', category:api.category||'', address:api.roadAddress||'',
     industry, displayScore, rawScore, effectiveMax, naMaxScore,
     grade, gradeComment, gradeColor,
     persona, personaDesc, personaIcon, catScores, items,
-    categoryNorm
+    categoryNorm,
+    metrics, profileChecklist, profileCompleteness, business
   };
 }
 `

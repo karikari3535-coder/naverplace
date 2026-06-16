@@ -74,6 +74,10 @@ export interface PlaceData {
     semiRate: number
     negativeRate: number
   } | null
+  // 참조 사이트(마피아넷) 스타일 지표 (리뷰 상세 수집 실패 시 null)
+  textReviewRate: number | null
+  mediaReviewRate: number | null
+  reviewerDiversity: number | null
 }
 
 export interface IndustryInfo {
@@ -557,6 +561,10 @@ export interface ReviewDetail {
   aiPositiveRate: number // 정보 풍부 (AI가 쓸 만함)
   aiSemiRate: number // 보통
   aiNegativeRate: number // 단답
+  // ── 참조 사이트(마피아넷) 스타일 지표 ──
+  textReviewRate: number // 텍스트 리뷰 비율 (본문이 담긴 리뷰 비율)
+  mediaReviewRate: number // 미디어 리뷰 비율 (리뷰당 미디어 총 개수 / 리뷰 수 → 100% 초과 가능)
+  reviewerDiversity: number // 리뷰어 다양성 (고유 작성자 비율, author.id 없으면 0)
 }
 
 async function fetchVisitorReviewDetail(
@@ -574,7 +582,7 @@ async function fetchVisitorReviewDetail(
           size: 50,
           isPhotoUsed: false,
           includeContent: true,
-          getAuthorInfo: false,
+          getAuthorInfo: true,
           item: '0',
         },
         id,
@@ -623,6 +631,10 @@ async function fetchVisitorReviewDetail(
   let aiPositive = 0
   let aiSemi = 0
   let aiNegative = 0
+  // ── 참조 사이트(마피아넷) 스타일 지표 카운터 ──
+  let withText = 0 // 텍스트(본문)가 충분히 담긴 리뷰
+  let mediaTotal = 0 // 미디어(사진/영상) 총 개수 — 리뷰당 여러 장 → 100% 초과 가능
+  const authorSet = new Set<string>() // 고유 작성자 (리뷰어 다양성)
 
   for (const it of items) {
     const dt = parseReviewDate(it.created || '', now)
@@ -632,11 +644,18 @@ async function fetchVisitorReviewDetail(
       if (days <= 30) last30++
     }
     if (it.reply && it.reply.body) withReply++
-    const hasMedia = Array.isArray(it.media) && it.media.length > 0
+    const mediaCnt = Array.isArray(it.media) ? it.media.length : 0
+    const hasMedia = mediaCnt > 0
     if (hasMedia) withPhoto++
+    mediaTotal += mediaCnt
 
     const body: string = typeof it.body === 'string' ? it.body : ''
     const len = body.length
+    // 텍스트 리뷰: 본문이 10자 이상 담긴 리뷰
+    if (len >= 10) withText++
+    // 리뷰어 다양성: 작성자 고유 식별자 수집 (author.id 없으면 무시)
+    const authorId = it.author && it.author.id ? String(it.author.id) : ''
+    if (authorId) authorSet.add(authorId)
 
     // ── 리뷰 품질 4요소 판정 (각 리뷰가 해당 요소를 담고 있으면 +1) ──
     // ① 동행(누구와): 가족·친구·아이·부모·커플 등 동행자 언급
@@ -682,6 +701,15 @@ async function fetchVisitorReviewDetail(
     aiPositiveRate: pct(aiPositive),
     aiSemiRate: pct(aiSemi),
     aiNegativeRate: pct(aiNegative),
+    // ── 참조 사이트(마피아넷) 스타일 지표 ──
+    // 텍스트 리뷰 비율: 본문이 담긴 리뷰 비율
+    textReviewRate: pct(withText),
+    // 미디어 리뷰 비율: 사진/영상 포함 리뷰 비율 기준 + 멀티미디어 가중(리뷰당 평균 장수 반영, 최대 130%로 캡)
+    mediaReviewRate: Math.min(
+      130,
+      Math.round(((withPhoto / n) * 100 + ((mediaTotal - withPhoto) / n) * 20) * 10) / 10
+    ),
+    reviewerDiversity: authorSet.size > 0 ? Math.round((authorSet.size / n) * 1000) / 10 : 0,
   }
 }
 
@@ -1006,6 +1034,11 @@ function assemble(
         negativeRate: reviewDetail.aiNegativeRate,
       }
     : null
+  // ── 참조 사이트(마피아넷) 스타일 지표 ──
+  const textReviewRate = reviewDetail?.textReviewRate ?? null
+  const mediaReviewRate = reviewDetail?.mediaReviewRate ?? null
+  const reviewerDiversity =
+    reviewDetail && reviewDetail.reviewerDiversity > 0 ? reviewDetail.reviewerDiversity : null
 
   return {
     id,
@@ -1055,5 +1088,8 @@ function assemble(
     reviewsAnalyzed,
     reviewQualityDetails,
     aiBriefing,
+    textReviewRate,
+    mediaReviewRate,
+    reviewerDiversity,
   }
 }
