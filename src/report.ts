@@ -238,6 +238,11 @@ function renderReport(result){
     ? '<div class="medical-notice">🏥 <b>의료기관 안내</b> — 병원·의원은 의료광고 사전심의 대상이라, 시술 사진·소식·체험단·할인(쿠폰) 권유는 진단에서 제외했어요. 허용되는 건 명칭·진료과목·의료진·진료시간·위치·예약 같은 <b>사실정보</b>와 <b>병원 공간·시설 사진</b>이에요.</div>'
     : '';
 
+  // 리뷰 상세(최근 리뷰) 수집 실패 경고 — 네이버 봇 차단으로 GraphQL이 막혔을 때 노출
+  const failNotice = result.reviewDetailFailed
+    ? '<div class="warn-notice">⚠️ 최근 리뷰 데이터를 일시적으로 가져오지 못해 일부 리뷰 항목이 점수에서 제외됐어요. 잠시 후 다시 시도하면 더 정확한 점수가 나옵니다.</div>'
+    : '';
+
   // 일부 항목 제외 안내 (N/A 항목이 있을 때) — 참조 사이트와 동일
   const naNotice = (result.naMaxScore>0)
     ? '<div class="na-notice">일부 항목(리뷰 상세 데이터 또는 업종에 해당 없는 항목)을 점수에서 제외하고 나머지 항목 기준으로 환산했습니다.</div>'
@@ -366,6 +371,7 @@ function renderReport(result){
     '<div class="main-bubble-wrap"><div class="bubble-logo"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스"></div>'+
       '<div class="speech-bubble">'+escapeHtml(result.gradeComment)+'</div></div>'+
 
+    failNotice+
     naNotice+
 
     '<div class="report-actions">'+

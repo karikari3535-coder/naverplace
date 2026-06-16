@@ -61,6 +61,8 @@ export interface PlaceData {
   reviewQualityAvg: number
   hasReviewDetail: boolean
   reviewsAnalyzed: number
+  // 리뷰 상세(GraphQL) 수집이 차단/실패했는지 여부 → 리포트 상단 경고 배너 노출용
+  reviewDetailFailed: boolean
   // 리뷰 품질 4요소 비율
   reviewQualityDetails: {
     companionRate: number
@@ -545,6 +547,27 @@ async function fetchClipCount(id: string, businessType: string): Promise<number 
  * 최근 7/30일 리뷰 수, 답글 비율, 사진 리뷰 비율, 리뷰 품질 근사치를 계산한다.
  * 실패 시 null 반환(→ hasReviewDetail=false 로 N/A 처리).
  */
+
+/**
+ * 마지막 GraphQL 리뷰 상세 호출이 차단(403/429/5xx/빈응답)됐는지 여부.
+ * fetchVisitorReviewDetail 호출 직후 assemble 단계에서 읽어 reviewDetailFailed 로 전달한다.
+ * (모듈 스코프 단일 진단 흐름 기준 — 요청마다 fetchVisitorReviewDetail 시작 시 false 로 리셋)
+ */
+let lastGraphqlBlocked = false
+
+/**
+ * 네이버 m.place 프런트가 GraphQL 호출 시 보내는 x-wtm-graphql 컨텍스트 토큰을 모사.
+ * 형식이 수시로 바뀌어 보장되진 않지만, Origin/Referer 와 함께 보내면 성공률이 오른다.
+ */
+function buildWtmGraphql(id: string, businessType: string): string {
+  try {
+    const payload = JSON.stringify({ arg: id, type: businessType, source: 'place' })
+    // Cloudflare Workers 환경에 btoa 존재
+    return btoa(unescape(encodeURIComponent(payload)))
+  } catch {
+    return ''
+  }
+}
 export interface ReviewDetail {
   last7DaysReviews: number
   last30DaysReviews: number
@@ -592,22 +615,54 @@ async function fetchVisitorReviewDetail(
     },
   ]
 
-  const fetchPage = async (page: number): Promise<any[]> => {
+  // 이번 진단 호출 시작 시 차단 플래그 리셋
+  lastGraphqlBlocked = false
+
+  const fetchPage = async (page: number, attempt = 0): Promise<any[]> => {
     try {
       const res = await fetch('https://api.place.naver.com/graphql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'User-Agent': MOBILE_UA,
+          Accept: 'application/json, text/plain, */*',
           'Accept-Language': 'ko-KR,ko;q=0.9',
+          // ↓ 네이버가 검사하는 핵심 헤더들 (Origin / 정확한 Referer / 컨텍스트 토큰)
+          Origin: 'https://m.place.naver.com',
           Referer: `https://m.place.naver.com/${businessType}/${id}/review/visitor`,
+          'x-wtm-graphql': buildWtmGraphql(id, businessType),
         },
         body: JSON.stringify(buildBody(page)),
       })
-      if (!res.ok) return []
+
+      // 차단/오류를 조용히 삼키지 말고 플래그로 표시 + 백오프 재시도
+      if (res.status === 403 || res.status === 429 || res.status >= 500) {
+        lastGraphqlBlocked = true
+        if (attempt < 2) {
+          await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+          return fetchPage(page, attempt + 1)
+        }
+        return []
+      }
+      if (!res.ok) {
+        lastGraphqlBlocked = true
+        return []
+      }
+
       const j: any = await res.json()
-      return j?.[0]?.data?.visitorReviews?.items || []
+      const items = j?.[0]?.data?.visitorReviews?.items
+      if (!Array.isArray(items)) {
+        // 200 인데 items 가 비정상 → 봇 차단/빈 응답으로 간주
+        lastGraphqlBlocked = true
+        return []
+      }
+      return items
     } catch {
+      if (attempt < 2) {
+        await new Promise((r) => setTimeout(r, 400 * (attempt + 1)))
+        return fetchPage(page, attempt + 1)
+      }
+      lastGraphqlBlocked = true
       return []
     }
   }
@@ -1014,6 +1069,8 @@ function assemble(
   // ── 최근 리뷰 상세 (방문자 리뷰 GraphQL API에서 수집) ──
   // reviewDetail 이 있으면 hasReviewDetail=true → 참조 사이트와 동일한 리뷰 가중 채점.
   const hasReviewDetail = !!reviewDetail
+  // 리뷰 상세 수집 실패 여부: reviewDetail 이 없는데 GraphQL 호출이 차단/실패로 표시된 경우
+  const reviewDetailFailed = !reviewDetail && lastGraphqlBlocked
   const last7DaysReviews = reviewDetail?.last7DaysReviews ?? 0
   const last30DaysReviews = reviewDetail?.last30DaysReviews ?? 0
   const replyRate = reviewDetail?.replyRate ?? 0
@@ -1085,6 +1142,7 @@ function assemble(
     replyRate,
     reviewQualityAvg,
     hasReviewDetail,
+    reviewDetailFailed,
     reviewsAnalyzed,
     reviewQualityDetails,
     aiBriefing,

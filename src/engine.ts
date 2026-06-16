@@ -193,7 +193,9 @@ function analyzePlaceData(api, user){
   }
 
   // #10 사진 리뷰 비율 (5)
-  if(hasReviewDetail){
+  // 사진 리뷰 비율은 HTML(VisitorReviewStatsResult)에서도 수집되므로 GraphQL 실패해도 채점 가능.
+  // → 리뷰 상세 수집이 실패해도 이 항목은 N/A로 떨어뜨리지 않고 HTML 근사치로 부분 채점한다.
+  if(typeof api.photoReviewRate === 'number' && api.photoReviewRate >= 0 && (api.totalReviewCount||0) > 0){
     const pr=api.photoReviewRate||0; let s,c;
     if(pr>=60){s=5;c='사진 리뷰 비중이 높습니다. 신규 고객 전환에 강한 영향을 줍니다.';}
     else if(pr>=45){s=4;c='절반 가까이 사진이 포함되어 있습니다. 가이드에 사진 요청 문구를 더해보세요.';}
@@ -523,10 +525,52 @@ function analyzePlaceData(api, user){
     }
   }
 
-  // 상단 총점 = 카테고리 환산 점수의 합
+  // 상단 총점(운영관리 기반) = 카테고리 환산 점수의 합
   const rawSum = ['review','content','basic','system'].reduce((a,c)=>a+catNormScore[c],0);
-  const displayScore = Math.round(rawSum);
   const categoryNorm = { score:catNormScore, max:catNormMax };
+
+  /* ── 누적 인기도(절대 지표) 보정 ──
+     참조 사이트(마피아넷 등)는 누적 리뷰 수·별점·사진 리뷰·블로그 리뷰 같은
+     "절대 지표"로 점수를 매겨 유명 매장이 높게 나온다.
+     우리 엔진은 최근 리뷰 유입·운영관리 중심이라 유명 매장이 낮게 나오는 경향이 있어,
+     절대 지표 기반 인기도 점수(popScore, 0~100)를 만들어 운영 점수와 블렌딩한다. */
+  const _tot = api.totalReviewCount || 0;
+  const _blog = api.blogCafeReviewCount || 0;
+  const _photoRt = api.photoReviewRate || 0; // 사진 리뷰 비율(%) — GraphQL 실패해도 HTML에서 수집됨
+  const _star = (typeof api.starRating === 'number' && api.starRating > 0) ? api.starRating : null;
+  const _last30 = api.last30DaysReviews || 0;
+
+  // 정규화(0~1) 후 가중 합산 → 0~92 스케일의 raw 인기도, 이후 스프레드 보정.
+  // 가중치는 5개 실측 매장(참조 사이트 점수)에 맞춰 캘리브레이션한 값.
+  const revN = _tot > 0 ? Math.min(1, Math.log10(_tot) / Math.log10(4800)) : 0;        // 4,800건+ 만점
+  const blogN = _blog > 0 ? Math.min(1, Math.log10(_blog + 1) / Math.log10(6500)) : 0; // 6,500건+ 만점
+  const photoN = Math.min(1, _photoRt / 70);                                           // 70%+ 만점
+  const starN = (() => {
+    const sv = _star == null ? 4.0 : _star; // 별점 비공개면 4.0 기준값(과한 페널티 방지)
+    if (sv >= 4.5) return 1;
+    if (sv >= 4.0) return 0.7 + (sv - 4.0) * 0.6; // 4.0→0.7 ~ 4.5→1.0
+    if (sv >= 3.0) return Math.max(0, (sv - 3.0) * 0.7); // 3.0→0 ~ 4.0→0.7
+    return 0;
+  })();
+  const activeN = Math.min(1, _last30 / 80); // 최근 30일 80건+ 만점
+
+  // 가중치(절대 지표 중심): 누적 리뷰 36 / 블로그 36 / 별점 8 / 최근활성 11 / 사진비율 1 (합 92)
+  // → 100점 만점 기준으로 정규화. 5개 실측 매장(참조 사이트 점수)에 회귀로 보정.
+  const PW_REV = 36, PW_BLOG = 36, PW_PHOTO = 1, PW_STAR = 8, PW_ACTIVE = 11;
+  const PW_SUM = PW_REV + PW_BLOG + PW_PHOTO + PW_STAR + PW_ACTIVE;
+  const popRaw =
+    (revN * PW_REV + blogN * PW_BLOG + photoN * PW_PHOTO + starN * PW_STAR + activeN * PW_ACTIVE) /
+    PW_SUM * 100;
+  // 스프레드 보정: (raw - 20) * 1.26 → 상·하위 매장 간격을 참조 사이트와 비슷하게 벌림
+  const popScore = Math.min(100, Math.max(0, (Math.min(100, popRaw) - 20) * 1.26));
+
+  // 운영관리 점수(rawSum)와 인기도 점수(popScore)를 블렌딩.
+  // 참조 사이트(절대 지표 기반)와 점수 경향을 맞추되, 운영 점수(rawSum)도 8% 반영해
+  // 26개 항목 진단의 카테고리별 세부 분석·개선 코멘트와 총점이 동떨어지지 않게 한다.
+  const POP_WEIGHT = 0.92;
+  const blended = rawSum * (1 - POP_WEIGHT) + popScore * POP_WEIGHT;
+  // 0.5점 단위 표기 (참조 사이트와 동일)
+  const displayScore = Math.round(blended * 2) / 2;
 
   // 기존 변수 유지 (naMaxScore 안내 등 다른 곳에서 참조)
   const rawMax = items.reduce((a,i)=>a+(i.na?0:i.max),0);
@@ -606,7 +650,8 @@ function analyzePlaceData(api, user){
     grade, gradeComment, gradeColor,
     persona, personaDesc, personaIcon, catScores, items,
     categoryNorm,
-    metrics, profileChecklist, profileCompleteness, business
+    metrics, profileChecklist, profileCompleteness, business,
+    reviewDetailFailed: !!api.reviewDetailFailed
   };
 }
 `

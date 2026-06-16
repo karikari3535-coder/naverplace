@@ -216,6 +216,7 @@ a { color: inherit; text-decoration: none; }
 .action-body { flex: 1; }
 .medical-notice { background: rgba(56,189,248,0.10); border: 1px solid rgba(56,189,248,0.35); border-radius: 14px; padding: 14px 18px; margin: 16px 0; font-size: 13px; color: #1E6E8C; line-height: 1.7; }
 .na-notice { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.15); border-radius: 12px; padding: 14px 18px; margin: 16px 0 4px; font-size: 13px; color: #6B635A; line-height: 1.7; text-align: center; }
+.warn-notice { background: rgba(232,162,0,0.08); border: 1px solid rgba(232,162,0,0.28); border-radius: 12px; padding: 14px 18px; margin: 16px 0 4px; font-size: 13px; color: #946800; line-height: 1.7; text-align: center; font-weight: 600; }
 .action-body .action-item-name { font-size: 15px; font-weight: 700; color: #5000D0; margin-bottom: 2px; }
 .action-body .action-item-score { font-size: 13px; font-weight: 600; color: #FFBE00; }
 .action-body .action-current { font-size: 13px; color: #6B635A; margin-bottom: 6px; }
