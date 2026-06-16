@@ -299,8 +299,9 @@ async function saveAndUpdateUrl(result){
 /* 비교 배지를 점수 게이지 근처에 삽입 */
 function renderCompareBadge(cmp){
   if(!cmp) return;
-  const sec = document.querySelector('.score-section');
-  if(!sec) return;
+  // 주소 밑 · PLACE SCORE 위 자리(compareSlot)에 넣고, 없으면 점수 영역 뒤로 폴백
+  const slot = document.getElementById('compareSlot') || document.querySelector('.score-section');
+  if(!slot) return;
   if(document.getElementById('compareBadge')) return; // 중복 방지
 
   const diff = Math.round((cmp.curScore - cmp.prevScore) * 10) / 10;
@@ -326,7 +327,7 @@ function renderCompareBadge(cmp){
       + '<b>'+diffTxt+'</b></span>'
     + '<span class="cmp-meta">'+days+'</span>'
     + compHTML;
-  sec.appendChild(el);
+  slot.appendChild(el);
 }
 
 function daysAgoLabel(ms){

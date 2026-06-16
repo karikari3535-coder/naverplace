@@ -382,6 +382,9 @@ function renderReport(result){
 
     medicalNotice+
 
+    // 재진단 비교 배지가 들어갈 자리(주소 밑 · PLACE SCORE 위)
+    '<div id="compareSlot"></div>'+
+
     '<div class="score-section">'+
       '<div class="score-gauge-container">'+
         '<svg viewBox="0 0 240 240">'+
@@ -403,11 +406,6 @@ function renderReport(result){
       '</div>'+
     '</div>'+
 
-    '<div class="persona-card"><div class="persona-icon">'+result.personaIcon+'</div>'+
-      '<div class="persona-label">사장님 유형</div>'+
-      '<div class="persona-name">'+escapeHtml(result.persona)+'</div>'+
-      '<div class="persona-desc">'+escapeHtml(result.personaDesc)+'</div></div>'+
-
     '<div class="main-bubble-wrap"><div class="bubble-logo"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스"></div>'+
       '<div class="speech-bubble">'+escapeHtml(result.gradeComment)+'</div></div>'+
 
@@ -422,6 +420,12 @@ function renderReport(result){
       '<button type="button" class="report-action-btn" onclick="shareScore()">'+
         '<span class="ra-icon">🔗</span> 내 점수 공유하기</button>'+
     '</div>'+
+
+    // 사장님 유형 카드: 공유/저장 버튼 아래로 이동
+    '<div class="persona-card"><div class="persona-icon">'+result.personaIcon+'</div>'+
+      '<div class="persona-label">사장님 유형</div>'+
+      '<div class="persona-name">'+escapeHtml(result.persona)+'</div>'+
+      '<div class="persona-desc">'+escapeHtml(result.personaDesc)+'</div></div>'+
 
     '<hr class="section-divider">'+
     '<div class="mp-section">'+mapiaSectionHTML+'</div>'+
