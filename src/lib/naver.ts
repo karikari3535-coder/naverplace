@@ -926,7 +926,12 @@ function assemble(
   // ── 결제/편의 ──
   const conveniences: string[] = Array.isArray(base.conveniences) ? base.conveniences : []
   const paymentInfo: string[] = Array.isArray(base.paymentInfo) ? base.paymentInfo : []
-  const hasNPay = paymentInfo.some((p) => /네이버페이|간편결제/.test(p))
+  // 네이버페이 연동 판정: 네이버 플레이스는 실제 네이버페이가 연동된 매장만
+  // paymentInfo 결제수단 목록에 정확히 "네이버페이"를 노출한다.
+  // (예) 연동 매장: ["제로페이","네이버페이",...] / 미연동 매장: ["간편결제","제로페이",...]
+  // ⚠️ "간편결제"는 일반 결제수단 안내일 뿐 네이버페이가 아니므로 매칭하면 오판이 난다.
+  //    따라서 "네이버페이"(공백 제거 후 비교)만 정확히 매칭한다.
+  const hasNPay = paymentInfo.some((p) => /네이버\s*페이/.test(String(p)))
 
   // ── 영업시간 ──
   // placeDetail.newBusinessHours({...})[] 가 있으면 등록된 것으로 판단.
