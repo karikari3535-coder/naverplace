@@ -30,6 +30,7 @@ Cloudflare Pages + Hono 기반 웹앱입니다.
 | `GET` | `/r/:id` | path: `id` (필수, 공유 ID) | 영구 공유 페이지(SSR). OG 메타에 매장명·점수·등급 주입, 결과를 서버에서 직접 주입해 즉시 리포트 렌더 (카톡/크롤러 미리보기 대응) · 없으면 404 안내 페이지 |
 | `GET` | `/api/prev` | `placeId` (필수), `before` (선택, epoch ms) | 같은 매장의 직전 진단 1건 반환 `{ prev: { score, completeness, createdAt } }` · 없으면 `{ prev: null }` (재진단 비교용) |
 | `GET` | `/admin/stats` | `token` (필수, `ADMIN_TOKEN` 일치) | 관리자 통계 JSON(총 진단수·최근7일·평균점수·일별추이·업종 Top10) · 토큰 불일치 시 401 |
+| `GET` | `/admin` | `token` (필수, `ADMIN_TOKEN` 일치) | 관리자 통계 HTML 대시보드(요약 카드·최근7일 막대차트·업종 Top10 표, 업종 코드→한글 매핑) · 토큰 불일치 시 401 |
 
 `/api/place` 응답 예시(요약):
 ```json

@@ -3,6 +3,7 @@ import { cors } from 'hono/cors'
 import { fetchPlaceData } from './lib/naver'
 import { renderHome } from './page'
 import { renderSharePage, renderShareFallback } from './share'
+import { renderAdminDashboard, type AdminStats } from './admin'
 import { makeId } from './lib/id'
 import type { Bindings } from './types'
 
@@ -135,30 +136,20 @@ app.get('/r/:id', async (c) => {
   }
 })
 
-/**
- * GET /admin/stats?token=...
- * 총 진단 수 / 최근 7일 추이 / 업종 Top N.
- * 토큰 불일치 시 401.
- */
-app.get('/admin/stats', async (c) => {
-  const token = c.req.query('token')
-  const expected = c.env.ADMIN_TOKEN
-  if (!expected || token !== expected) {
-    return c.json({ error: 'unauthorized' }, 401)
-  }
-
+/** 진단 통계 집계 (D1) — /admin/stats(JSON)와 /admin(HTML)이 공유 */
+async function getStats(db: D1Database): Promise<AdminStats> {
   const since7d = Date.now() - 7 * 86400000
 
-  const total = await c.env.DB.prepare(
+  const total = await db.prepare(
     `SELECT COUNT(*) AS n FROM diagnoses`
   ).first<{ n: number }>()
 
-  const last7 = await c.env.DB.prepare(
+  const last7 = await db.prepare(
     `SELECT COUNT(*) AS n FROM diagnoses WHERE created_at >= ?`
   ).bind(since7d).first<{ n: number }>()
 
   // 날짜별 추이(최근 7일) — epoch ms를 일 단위로 그룹
-  const daily = await c.env.DB.prepare(
+  const daily = await db.prepare(
     `SELECT date(created_at / 1000, 'unixepoch', 'localtime') AS d,
             COUNT(*) AS n
        FROM diagnoses
@@ -167,23 +158,50 @@ app.get('/admin/stats', async (c) => {
   ).bind(since7d).all<{ d: string; n: number }>()
 
   // 업종 Top N
-  const byIndustry = await c.env.DB.prepare(
+  const byIndustry = await db.prepare(
     `SELECT COALESCE(industry, '미분류') AS industry, COUNT(*) AS n
        FROM diagnoses
       GROUP BY industry ORDER BY n DESC LIMIT 10`
   ).all<{ industry: string; n: number }>()
 
-  const avgScore = await c.env.DB.prepare(
+  const avgScore = await db.prepare(
     `SELECT ROUND(AVG(score), 1) AS avg FROM diagnoses WHERE score IS NOT NULL`
   ).first<{ avg: number }>()
 
-  return c.json({
+  return {
     total: total?.n ?? 0,
     last7days: last7?.n ?? 0,
     avgScore: avgScore?.avg ?? null,
     daily: daily.results ?? [],
     topIndustries: byIndustry.results ?? [],
-  })
+  }
+}
+
+/**
+ * GET /admin/stats?token=...
+ * 총 진단 수 / 최근 7일 추이 / 업종 Top N (JSON). 토큰 불일치 시 401.
+ */
+app.get('/admin/stats', async (c) => {
+  const token = c.req.query('token')
+  const expected = c.env.ADMIN_TOKEN
+  if (!expected || token !== expected) {
+    return c.json({ error: 'unauthorized' }, 401)
+  }
+  return c.json(await getStats(c.env.DB))
+})
+
+/**
+ * GET /admin?token=...
+ * 같은 통계를 사람이 보기 좋은 HTML 대시보드로 렌더. 토큰 불일치 시 401.
+ */
+app.get('/admin', async (c) => {
+  const token = c.req.query('token')
+  const expected = c.env.ADMIN_TOKEN
+  if (!expected || token !== expected) {
+    return c.html('<!DOCTYPE html><meta charset="utf-8"><body style="font-family:sans-serif;text-align:center;padding:60px;color:#888">접근 권한이 없습니다 (401)<br><small>?token= 파라미터를 확인하세요</small></body>', 401)
+  }
+  const stats = await getStats(c.env.DB)
+  return c.html(renderAdminDashboard(stats, token!))
 })
 
 // 메인 페이지 (단일 HTML)
