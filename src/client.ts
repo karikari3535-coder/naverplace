@@ -51,6 +51,8 @@ async function startDiagnosis(){
     if(!ok) throw new Error(data.error||'진단에 실패했습니다');
 
     apiData = data;
+    // 확인 페이지(stage2)는 화면에 띄우지 않고, 자동 수집값으로 입력 필드만 채워둔다.
+    //   → showResult()가 이 필드에서 user 값을 읽어 점수에 반영하므로 채우기 코드는 유지.
     document.getElementById('confirmName').textContent = (data.name||'가게')+' 정보를 가져왔어요';
     const descEmptyMsg = data.microIntro
       ? ('한줄소개: "'+data.microIntro+'"\\n(상세설명 전문은 직접 확인·입력해주세요)')
@@ -62,7 +64,8 @@ async function startDiagnosis(){
     setAutoToggle('smartcall', !!data.hasSmartCallAuto, '사용 중', '미사용');
     setAutoToggle('talktalk', !!data.hasTalkTalkAuto, '사용 중', '미사용');
     applyAutoNewsToggle(data);
-    showStage('stage2');
+    // 확인 페이지를 건너뛰고 자동 수집값 그대로 바로 결과 화면으로 진행
+    await showResult(true);
   }catch(err){
     showStage('stage1'); btn.disabled=false;
     errorMsg.textContent=err.message; errorMsg.style.display='block';
@@ -197,7 +200,7 @@ function toggleToggleEditors(){
 }
 
 /* ===================== 결과 ===================== */
-async function showResult(){
+async function showResult(skipLoading){
   // Stage2 사용자 입력 반영
   const kwRaw = document.getElementById('inputKeywords').value.trim();
   const user={
@@ -219,28 +222,31 @@ async function showResult(){
   };
   const peerName = (result.industry && (peerMap[result.industry.group] || result.industry.displayName)) || '동일 업종';
 
-  showStage('loadingScreen');
-  await runAiLoadingAnimation({
-    title:'AI가 리포트를 작성하고 있어요',
-    sub:'26개 항목 분석 기반 · 맞춤 액션 플랜',
-    steps:[
-      {label:'강점·약점 도출',ms:800,init:'카테고리별 점수 분석 중'},
-      {label:'사장님 맞춤 액션 플랜 작성',ms:800,init:'우선 개선 항목 선정 중'},
-      {label:'업종 평균과 최종 비교',ms:700,init:'동일 업종 벤치마크 비교 중'},
-      {label:'리포트 구성·그래프 렌더링',ms:800,init:'시각화 준비 중'}
-    ],
-    quotes:['강점은 살리고 약점은 구체적으로 짚어드릴게요','진단은 시작일 뿐, 실행이 매출을 바꿔요'],
-    dataPromise: Promise.resolve(result),
-    detailBuilder:(idx,r)=>{
-      if(!r) return '';
-      if(idx===0) return '총점 '+r.displayScore+'점 · '+r.grade+' 등급';
-      if(idx===1) return '우선 개선 '+weakCount+'가지 선정';
-      if(idx===2) return peerName+' 평균 반영';
-      if(idx===3) return '시각화 준비 완료';
-      return '';
-    },
-    endLine:'리포트를 준비했어요!'
-  });
+  // 완전 자동 흐름: startDiagnosis의 분석 애니메이션 직후 바로 리포트를 그린다(중복 애니메이션 생략).
+  if(!skipLoading){
+    showStage('loadingScreen');
+    await runAiLoadingAnimation({
+      title:'AI가 리포트를 작성하고 있어요',
+      sub:'26개 항목 분석 기반 · 맞춤 액션 플랜',
+      steps:[
+        {label:'강점·약점 도출',ms:800,init:'카테고리별 점수 분석 중'},
+        {label:'사장님 맞춤 액션 플랜 작성',ms:800,init:'우선 개선 항목 선정 중'},
+        {label:'업종 평균과 최종 비교',ms:700,init:'동일 업종 벤치마크 비교 중'},
+        {label:'리포트 구성·그래프 렌더링',ms:800,init:'시각화 준비 중'}
+      ],
+      quotes:['강점은 살리고 약점은 구체적으로 짚어드릴게요','진단은 시작일 뿐, 실행이 매출을 바꿔요'],
+      dataPromise: Promise.resolve(result),
+      detailBuilder:(idx,r)=>{
+        if(!r) return '';
+        if(idx===0) return '총점 '+r.displayScore+'점 · '+r.grade+' 등급';
+        if(idx===1) return '우선 개선 '+weakCount+'가지 선정';
+        if(idx===2) return peerName+' 평균 반영';
+        if(idx===3) return '시각화 준비 완료';
+        return '';
+      },
+      endLine:'리포트를 준비했어요!'
+    });
+  }
   renderReport(result);
   showStage('stage3');
 }
