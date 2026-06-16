@@ -207,6 +207,14 @@ a { color: inherit; text-decoration: none; }
 .item-comment-wrap { display: flex; align-items: flex-start; gap: 8px; }
 .item-comment { background: #EDE8E0; border: 1px solid #DCD6CB; border-radius: 4px 12px 12px 12px; padding: 10px 14px; font-size: 13px; line-height: 1.7; color: #6B635A; flex: 1; }
 
+.item-cta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; padding: 14px 16px; background: linear-gradient(135deg,#6A35FF 0%,#8B5CF6 100%); border-radius: 12px; text-decoration: none; cursor: pointer; box-shadow: 0 4px 14px rgba(106,53,255,0.25); transition: transform .15s ease, box-shadow .15s ease; }
+.item-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(106,53,255,0.38); }
+.item-cta-text { display: flex; flex-direction: column; gap: 3px; }
+.item-cta-title { color: #fff; font-size: 15px; font-weight: 700; }
+.item-cta-desc { color: rgba(255,255,255,0.85); font-size: 12.5px; }
+.item-cta-arrow { flex-shrink: 0; color: #fff; font-size: 13px; font-weight: 700; background: rgba(255,255,255,0.18); padding: 8px 12px; border-radius: 8px; white-space: nowrap; }
+@media (max-width:480px){ .item-cta { flex-direction: column; align-items: stretch; text-align: center; } .item-cta-arrow { text-align: center; } }
+
 .coach-tip { margin-top: 10px; }
 .coach-tip-toggle { width: 100%; text-align: left; background: rgba(97, 0, 255,0.06); border: 1px solid rgba(97, 0, 255,0.22); border-radius: 10px; padding: 9px 14px; font-size: 13px; font-weight: 700; color: #5000D0; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: background 0.15s; }
 .coach-tip-toggle:hover { background: rgba(97, 0, 255,0.1); }

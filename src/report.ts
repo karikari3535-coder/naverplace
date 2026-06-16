@@ -208,13 +208,24 @@ function renderReport(result){
             '<div class="coach-tip-row"><div class="bubble-logo-sm"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스"></div>'+
             '<div class="coach-tip-text">'+escapeHtml(tip)+'</div></div></div></div>';
       }
+      // 대표키워드 항목에는 순위추적 CTA를 노출해 사람들이 눈에 띄어 들어가게 한다.
+      let ctaHTML='';
+      if(item.key==='keywords'){
+        ctaHTML='<a class="item-cta" href="https://sellerlabs.co.kr/naver/smartplace/ranking-track" target="_blank" rel="noopener">'+
+          '<span class="item-cta-text">'+
+            '<span class="item-cta-title">📈 내 대표키워드 순위 추적하기</span>'+
+            '<span class="item-cta-desc">고객이 검색했을 때 내 매장이 몇 위에 뜨는지 무료로 확인해 보세요.</span>'+
+          '</span>'+
+          '<span class="item-cta-arrow">순위 추적하러 가기 →</span>'+
+        '</a>';
+      }
       itemsHTML+='<div class="item-card">'+
         '<div class="item-top"><span class="item-name">'+escapeHtml(item.name)+'</span>'+
         '<span class="item-badge '+badge+'">'+badgeText+'</span></div>'+
         '<div class="item-detail">'+escapeHtml(item.detail)+'</div>'+
         '<div class="item-comment-wrap"><div class="bubble-logo-sm"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스"></div>'+
         '<div class="item-comment">'+escapeHtml(item.comment)+'</div></div>'+
-        tipHTML+'</div>';
+        tipHTML+ctaHTML+'</div>';
     }
     detailHTML+='<div class="cat-section" id="detail-'+ck+'"><div class="cat-header" data-cat="'+CAT_META[ck].dataCat+'">'+
       '<span class="cat-dot"></span><span class="cat-label">'+CAT_META[ck].label+'</span>'+
