@@ -166,7 +166,8 @@ function downloadShareCard(){
 async function shareScore(){
   const r=window.__lastReport||{};
   const text='['+(r.name||'우리 가게')+'] 네이버 플레이스 진단 결과: '+(r.score!=null?r.score:'-')+'점 ('+(r.grade||'-')+' 등급)\n셀러랩스 플레이스 진단으로 확인해보세요 👇';
-  const url=window.location.href.split('#')[0];
+  // 저장된 영구 링크(/r/{id})가 있으면 그걸 공유 → 카톡 미리보기(OG) 노출
+  const url=(typeof sharedUrl!=='undefined' && sharedUrl) ? sharedUrl : window.location.href.split('#')[0];
   const shareData={ title:'네이버 플레이스 진단 결과', text:text, url:url };
   try{
     if(navigator.share){ await navigator.share(shareData); return; }

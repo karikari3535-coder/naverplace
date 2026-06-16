@@ -27,6 +27,7 @@ Cloudflare Pages + Hono 기반 웹앱입니다.
 | `GET` | `/api/place` | `url` (필수, 네이버 플레이스 URL 또는 naver.me 단축링크) | 매장 데이터를 추출해 JSON 반환 |
 | `POST` | `/api/save` | body: `{ placeId?, result }` (JSON) | 진단 결과를 D1에 저장하고 짧은 공유 ID 반환 `{ id }` |
 | `GET` | `/api/r/:id` | path: `id` (필수, 저장 시 발급된 공유 ID) | 저장된 진단 결과 조회 `{ result, createdAt }` · 없으면 404 `{ error: "not_found" }` |
+| `GET` | `/r/:id` | path: `id` (필수, 공유 ID) | 영구 공유 페이지(SSR). OG 메타에 매장명·점수·등급 주입, 결과를 서버에서 직접 주입해 즉시 리포트 렌더 (카톡/크롤러 미리보기 대응) · 없으면 404 안내 페이지 |
 
 `/api/place` 응답 예시(요약):
 ```json
@@ -72,7 +73,8 @@ curl .../api/r/jtblqpLYb8
   3. 클라이언트: 응답을 Stage2에서 사용자 확인/보정(상세설명·대표키워드·찾아오는길·스마트콜·톡톡·소식)
   4. 클라이언트 엔진 `analyzePlaceData(api, user)`가 최대 26항목 채점 → 점수/등급/페르소나/액션 산출
   5. `renderReport(result)`가 Stage3 리포트 HTML 렌더링
-  6. (선택) 사용자가 공유/저장 시 `POST /api/save` → D1 `diagnoses`에 저장 → 공유 ID 발급, `GET /api/r/:id`로 재조회
+  6. 결과 화면 진입 즉시 `POST /api/save` 자동 저장 → 공유 ID 발급 → 주소창을 `/r/{id}`로 갱신(`history.replaceState`)
+  7. `/r/{id}` 직접 접속 시 서버가 OG 메타(매장명·점수·등급)와 함께 SSR하고 `window.__SHARED_RESULT`로 결과를 주입 → 클라이언트가 추가 fetch 없이 즉시 `renderReport`. "내 점수 공유하기"는 이 영구 링크를 우선 사용해 카톡 미리보기(OG) 노출
 
 ### 진단 항목 (26개 표기, 4카테고리, 가중 배점)
 

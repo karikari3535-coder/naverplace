@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { fetchPlaceData } from './lib/naver'
 import { renderHome } from './page'
+import { renderSharePage, renderShareFallback } from './share'
 import { makeId } from './lib/id'
 import type { Bindings } from './types'
 
@@ -78,6 +79,27 @@ app.get('/api/r/:id', async (c) => {
     result: JSON.parse(row.result_json),
     createdAt: row.created_at,
   })
+})
+
+/**
+ * GET /r/:id
+ * 저장된 결과를 서버에서 OG 메타와 함께 직접 렌더 → 카톡/크롤러 노출.
+ */
+app.get('/r/:id', async (c) => {
+  const id = c.req.param('id')
+  const origin = new URL(c.req.url).origin
+  const row = await c.env.DB.prepare(
+    `SELECT result_json FROM diagnoses WHERE id = ?`
+  ).bind(id).first<{ result_json: string }>()
+
+  if (!row) return c.html(renderShareFallback(origin), 404)
+
+  try {
+    const result = JSON.parse(row.result_json)
+    return c.html(renderSharePage(id, origin, result))
+  } catch {
+    return c.html(renderShareFallback(origin), 500)
+  }
 })
 
 // 메인 페이지 (단일 HTML)

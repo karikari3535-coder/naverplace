@@ -151,7 +151,7 @@ function buildAnalyzeDetail(idx,d){
 }
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-document.getElementById('urlInput').addEventListener('keydown',e=>{ if(e.key==='Enter') startDiagnosis(); });
+(function(){ var ui=document.getElementById('urlInput'); if(ui) ui.addEventListener('keydown',function(e){ if(e.key==='Enter') startDiagnosis(); }); })();
 
 /* ===================== Stage2 자동 필드 ===================== */
 function applyAutoField(fieldId, text, emptyMsg){
@@ -249,6 +249,28 @@ async function showResult(skipLoading){
   }
   renderReport(result);
   showStage('stage3');
+
+  // 진단 결과 자동 저장 → /r/{id} 로 주소 갱신 + 공유에 사용
+  saveAndUpdateUrl(result);
+}
+
+/* ===================== 결과 저장 & 공유 URL ===================== */
+let sharedUrl = null;  // shareScore가 우선 사용할 영구 링크
+
+async function saveAndUpdateUrl(result){
+  try{
+    const placeId = (apiData && apiData.id) || null;
+    const res = await fetch('/api/save', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ placeId, result })
+    });
+    if(!res.ok) return;            // 저장 실패해도 화면은 그대로
+    const { id } = await res.json();
+    if(!id) return;
+    sharedUrl = location.origin + '/r/' + id;
+    history.replaceState(null, '', '/r/' + id);  // 주소창만 갱신(새로고침 유지용)
+  }catch(e){ /* 저장 실패는 조용히 무시 */ }
 }
 
 function restart(){
@@ -256,6 +278,18 @@ function restart(){
   document.getElementById('diagnoseBtn').disabled=false;
   showStage('stage1');
 }
+
+/* ===================== 공유 링크(/r/{id}) 부트스트랩 ===================== */
+function bootShared(){
+  const shared = window.__SHARED_RESULT;
+  if(!shared) return;
+  // /r/{id} 직접 접속: 서버가 주입한 result로 즉시 리포트 렌더
+  lastResult = shared;
+  sharedUrl = location.href.split('#')[0];
+  renderReport(shared);   // 이 시점엔 RENDER_REPORT가 이미 로드됨
+}
+// 모든 함수 정의(엔진/리포트 포함)가 끝난 뒤 실행되도록 다음 틱으로 미룬다
+setTimeout(bootShared, 0);
 
 /* ===================== 진단 엔진 (26항목) ===================== */
 ` + DIAGNOSE_ENGINE + `
