@@ -124,11 +124,41 @@ function downloadReportPDF(){
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
     pagebreak:{mode:['css','legacy']}
   };
+  // 화면 밖 캡처 카드(share-card-stage)는 PDF에 들어가면 안 되므로 잠시 제외
+  const shareStage=el.querySelector('.share-card-stage');
+  if(shareStage) shareStage.style.display='none';
   window.html2pdf().set(opt).from(el).save().then(()=>{
     if(actions) actions.style.visibility='visible';
+    if(shareStage) shareStage.style.display='';
   }).catch(()=>{
     if(actions) actions.style.visibility='visible';
+    if(shareStage) shareStage.style.display='';
     showToast('PDF 생성에 실패했어요. 다시 시도해주세요');
+  });
+}
+
+// (T2) 결과 요약 카드를 PNG로 저장 (html2canvas)
+function downloadShareCard(){
+  const card=document.getElementById('shareCard');
+  if(!card){ showToast('카드를 찾을 수 없어요'); return; }
+  if(typeof window.html2canvas==='undefined'){
+    showToast('이미지 모듈을 불러오는 중이에요. 잠시 후 다시 눌러주세요');
+    return;
+  }
+  const r=window.__lastReport||{};
+  const safeName=(r.name||'플레이스').replace(/[\\/:*?"<>|\s]+/g,'_');
+  showToast('이미지를 만들고 있어요...');
+  window.html2canvas(card,{
+    scale:1, useCORS:true, backgroundColor:null,
+    width:1080, height:1080, windowWidth:1080, windowHeight:1080
+  }).then(function(canvas){
+    const link=document.createElement('a');
+    link.download='플레이스진단_'+safeName+'.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+    showToast('이미지를 저장했어요!');
+  }).catch(function(){
+    showToast('이미지 생성에 실패했어요. 다시 시도해주세요');
   });
 }
 
@@ -380,6 +410,8 @@ function renderReport(result){
     naNotice+
 
     '<div class="report-actions">'+
+      '<button type="button" class="report-action-btn" onclick="downloadShareCard()">'+
+        '<span class="ra-icon">🖼️</span> 이미지로 저장</button>'+
       '<button type="button" class="report-action-btn" onclick="downloadReportPDF()">'+
         '<span class="ra-icon">📄</span> 리포트 PDF 다운로드</button>'+
       '<button type="button" class="report-action-btn" onclick="shareScore()">'+
@@ -398,6 +430,11 @@ function renderReport(result){
     '<div class="section-title">셀러랩스라면, 이 3가지부터 시작하겠어요</div>'+
     '<div class="section-subtitle">점수 낮은 순서대로 마이마이가 처방한 우선순위예요 — 현장형으로 자세하게</div>'+
     '<div class="action-section">'+actionHTML+'</div>'+
+    (placeUrl
+      ? '<a class="action-cta-btn" href="'+placeUrl+'" target="_blank" rel="noopener">'+
+          '<span class="acb-ic">🛠️</span> 이 3가지, 스마트플레이스에서 지금 수정하기'+
+          '<span class="acb-arrow">›</span></a>'
+      : '')+
 
     '<hr class="section-divider">'+
     '<div class="section-title">항목별 상세 진단</div>'+
@@ -407,7 +444,23 @@ function renderReport(result){
     '<div class="restart-wrap"><button class="btn-secondary" onclick="restart()">다른 가게 진단하기</button></div>'+
     '<div class="report-footer">본 진단은 네이버 플레이스 공개 정보를 기반으로 한 참고용 분석입니다.<br>실제 노출 순위는 네이버 알고리즘에 따라 달라질 수 있어요.'+
       '<div class="footer-brand"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스" width="28" height="32"><br>'+
-      '<a href="https://sellerlabs.co.kr" target="_blank" rel="noopener">sellerlabs.co.kr</a> · 스마트스토어·플레이스 순위 추적 솔루션</div></div>';
+      '<a href="https://sellerlabs.co.kr" target="_blank" rel="noopener">sellerlabs.co.kr</a> · 스마트스토어·플레이스 순위 추적 솔루션</div></div>'+
+
+    // (T2) SNS 공유용 1080x1080 캡처 카드 — 화면 밖에 숨겨두고 html2canvas로 캡처
+    '<div class="share-card-stage" aria-hidden="true">'+
+      '<div id="shareCard" class="share-card">'+
+        '<div class="share-card-brand">'+
+          '<img src="/static/sellerlabs-logo.svg" alt="셀러랩스" class="share-card-logo">'+
+        '</div>'+
+        '<div class="share-card-store">'+escapeHtml(result.name)+'</div>'+
+        '<div class="share-card-cat">'+escapeHtml(result.category)+'</div>'+
+        '<div class="share-card-score" style="color:'+result.gradeColor+'">'+result.displayScore+
+          '<span class="share-card-score-unit">점</span></div>'+
+        '<div class="share-card-grade" style="background:'+result.gradeColor+'">'+result.grade+' 등급</div>'+
+        '<div class="share-card-persona">'+result.personaIcon+' '+escapeHtml(result.persona)+'</div>'+
+        '<div class="share-card-footer">네이버 플레이스 무료 진단 · sellerlabs.co.kr</div>'+
+      '</div>'+
+    '</div>';
 
   // 애니메이션
   requestAnimationFrame(()=>{

@@ -225,6 +225,12 @@ a { color: inherit; text-decoration: none; }
 .coach-tip-row { display: flex; align-items: flex-start; gap: 8px; padding: 12px 4px 2px; }
 .coach-tip-text { background: linear-gradient(135deg, rgba(97, 0, 255,0.08), rgba(255, 190, 0,0.04)); border: 1px solid rgba(97, 0, 255,0.18); border-radius: 4px 12px 12px 12px; padding: 12px 14px; font-size: 13px; line-height: 1.8; color: #5A4A42; flex: 1; }
 
+/* 액션 섹션 하단 통합 수정 버튼 */
+.action-cta-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; padding: 16px 20px; background: linear-gradient(135deg,#6A35FF 0%,#8B5CF6 100%); border-radius: 12px; text-decoration: none; color: #fff; font-size: 15.5px; font-weight: 700; box-shadow: 0 4px 14px rgba(106,53,255,0.28); transition: transform .15s ease, box-shadow .15s ease; }
+.action-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(106,53,255,0.4); }
+.action-cta-btn .acb-ic { font-size: 17px; }
+.action-cta-btn .acb-arrow { font-size: 20px; font-weight: 800; }
+
 .action-section { margin-top: 40px; }
 .action-card { background: linear-gradient(135deg, rgba(97, 0, 255,0.08), rgba(97, 0, 255,0.02)); border: 1px solid rgba(97, 0, 255,0.2); border-radius: 16px; padding: 20px; margin-bottom: 12px; display: flex; gap: 14px; align-items: flex-start; }
 .action-number { width: 32px; height: 32px; background: linear-gradient(135deg, #6100FF, #FFBE00); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; }
@@ -327,4 +333,17 @@ a { color: inherit; text-decoration: none; }
 .mp-biz-val { font-size: 14px; color: #1A1714; font-weight: 500; word-break: keep-all; }
 .mp-biz-link { font-size: 14px; color: #2563EB; font-weight: 600; text-decoration: none; }
 .mp-biz-link:hover { text-decoration: underline; }
+
+/* T2: SNS 공유 카드 (화면 밖, 캡처 전용) */
+.share-card-stage { position: absolute; left: -99999px; top: 0; width: 1080px; height: 1080px; }
+.share-card { width: 1080px; height: 1080px; box-sizing: border-box; padding: 90px 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(160deg,#FBF7F0 0%,#F3ECFB 100%); font-family: 'Pretendard Variable',Pretendard,system-ui,sans-serif; text-align: center; }
+.share-card-brand { margin-bottom: 40px; }
+.share-card-logo { height: 64px; }
+.share-card-store { font-size: 58px; font-weight: 800; color: #2A2438; line-height: 1.2; }
+.share-card-cat { font-size: 30px; color: #A39A8E; margin-top: 12px; }
+.share-card-score { font-size: 240px; font-weight: 900; line-height: 1; margin: 40px 0 8px; }
+.share-card-score-unit { font-size: 64px; font-weight: 700; color: #A39A8E; }
+.share-card-grade { font-size: 44px; font-weight: 800; color: #fff; padding: 16px 48px; border-radius: 999px; margin: 16px 0 40px; }
+.share-card-persona { font-size: 38px; font-weight: 700; color: #5B3FBF; }
+.share-card-footer { margin-top: auto; font-size: 26px; color: #A39A8E; }
 `

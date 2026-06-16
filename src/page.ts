@@ -164,6 +164,7 @@ export function renderHome(): string {
   </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>${CLIENT_JS}</script>
 </body>
 </html>`
