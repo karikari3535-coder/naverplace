@@ -148,9 +148,11 @@ function downloadShareCard(){
   const r=window.__lastReport||{};
   const safeName=(r.name||'플레이스').replace(/[\\/:*?"<>|\s]+/g,'_');
   showToast('이미지를 만들고 있어요...');
+  // 웹폰트(Pretendard)가 캡처 시점에 로드돼 있도록 보장
+  Promise.resolve(document.fonts && document.fonts.ready).then(function(){
   window.html2canvas(card,{
     scale:1, useCORS:true, backgroundColor:null,
-    width:1080, height:1080, windowWidth:1080, windowHeight:1080
+    width:1080, height:1350, windowWidth:1080, windowHeight:1350
   }).then(function(canvas){
     const link=document.createElement('a');
     link.download='플레이스진단_'+safeName+'.png';
@@ -159,6 +161,7 @@ function downloadShareCard(){
     showToast('이미지를 저장했어요!');
   }).catch(function(){
     showToast('이미지 생성에 실패했어요. 다시 시도해주세요');
+  });
   });
 }
 
@@ -453,49 +456,50 @@ function renderReport(result){
       '<div class="footer-brand"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스" width="28" height="32"><br>'+
       '<a href="https://sellerlabs.co.kr" target="_blank" rel="noopener">sellerlabs.co.kr</a> · 스마트스토어·플레이스 순위 추적 솔루션</div></div>'+
 
-    // (T2) SNS 공유용 1080x1080 캡처 카드 — 화면 밖에 숨겨두고 html2canvas로 캡처
-    //      리포트 핵심 정보(주요 지표·영역별 완성도·운영 완성도)를 한 장에 정리
+    // (T2 개선) SNS 공유용 1080x1350 요약 카드 — 리포트 핵심을 한 장에
     '<div class="share-card-stage" aria-hidden="true">'+
       '<div id="shareCard" class="share-card">'+
-        // 1) 브랜드 + 매장명
-        '<div class="sc-head">'+
-          '<img src="/static/sellerlabs-logo.svg" alt="셀러랩스" class="sc-logo">'+
-          '<div class="sc-store">'+escapeHtml(result.name)+'</div>'+
-          '<div class="sc-cat">'+escapeHtml(result.category)+'</div>'+
+        // 헤더: 브랜드 + 매장명
+        '<div class="sc2-head">'+
+          '<img src="/static/sellerlabs-logo.svg" alt="셀러랩스" class="sc2-logo">'+
+          '<div class="sc2-store">'+escapeHtml(result.name)+'</div>'+
+          '<div class="sc2-cat">'+escapeHtml(result.category)+'</div>'+
         '</div>'+
-        // 2) 점수 + 등급 + 페르소나
-        '<div class="sc-score-row">'+
-          '<div class="sc-score" style="color:'+result.gradeColor+'">'+result.displayScore+
-            '<span class="sc-score-unit">점</span></div>'+
-          '<div class="sc-score-side">'+
-            '<div class="sc-grade" style="background:'+result.gradeColor+'">'+result.grade+' 등급</div>'+
-            '<div class="sc-persona">'+escapeHtml(result.persona)+'</div>'+
+        // 점수 + 등급
+        '<div class="sc2-score-row">'+
+          '<div class="sc2-score" style="color:'+result.gradeColor+'">'+result.displayScore+
+            '<span class="sc2-score-unit">점</span></div>'+
+          '<div class="sc2-grade-wrap">'+
+            '<div class="sc2-grade" style="background:'+result.gradeColor+'">'+result.grade+' 등급</div>'+
+            '<div class="sc2-persona">'+result.personaIcon+' '+escapeHtml(result.persona)+'</div>'+
           '</div>'+
         '</div>'+
-        // 3) 주요 지표 3종 (이모지는 캡처 시 깨질 수 있어 텍스트 라벨만 사용)
-        '<div class="sc-metrics">'+
-          '<div class="sc-metric"><div class="sc-metric-val">'+fmtNum(M.totalReviews)+'</div><div class="sc-metric-lbl">방문자 리뷰</div></div>'+
-          '<div class="sc-metric"><div class="sc-metric-val">'+starStr+'</div><div class="sc-metric-lbl">평점</div></div>'+
-          '<div class="sc-metric"><div class="sc-metric-val">'+fmtNum(M.photoReviewCount)+'</div><div class="sc-metric-lbl">사진 리뷰</div></div>'+
+        // 주요 지표 3개
+        '<div class="sc2-metrics">'+
+          '<div class="sc2-metric"><div class="sc2-metric-val">'+fmtNum(M.totalReviews)+'</div><div class="sc2-metric-lbl">방문자 리뷰</div></div>'+
+          '<div class="sc2-metric"><div class="sc2-metric-val">'+starStr+'</div><div class="sc2-metric-lbl">평점</div></div>'+
+          '<div class="sc2-metric"><div class="sc2-metric-val">'+fmtNum(M.photoReviewCount)+'</div><div class="sc2-metric-lbl">사진 리뷰</div></div>'+
         '</div>'+
-        // 4) 영역별 완성도 4개 바
-        '<div class="sc-bars-title">영역별 완성도</div>'+
-        '<div class="sc-bars">'+
+        // 영역별 완성도 (4개 바)
+        '<div class="sc2-section-t">영역별 완성도</div>'+
+        '<div class="sc2-bars">'+
           CAT_ORDER.map(function(ck){
-            var pct = (catSum[ck] && catSum[ck].pct) || 0;
-            return '<div class="sc-bar-row">'+
-              '<div class="sc-bar-label">'+CAT_META[ck].label+'</div>'+
-              '<div class="sc-bar-track"><div class="sc-bar-fill" style="width:'+pct+'%;background:'+result.gradeColor+'"></div></div>'+
-              '<div class="sc-bar-pct">'+pct+'%</div>'+
-            '</div>';
+            var cs=catSum[ck]||{pct:0};
+            return '<div class="sc2-bar-row">'+
+              '<span class="sc2-bar-label">'+CAT_META[ck].label+'</span>'+
+              '<span class="sc2-bar-track"><span class="sc2-bar-fill" style="width:'+cs.pct+'%"></span></span>'+
+              '<span class="sc2-bar-pct">'+cs.pct+'%</span></div>';
           }).join('')+
         '</div>'+
-        // 5) 운영 완성도
-        '<div class="sc-prof">'+
-          '<span class="sc-prof-lbl">운영 완성도</span>'+
-          '<span class="sc-prof-val" style="color:'+result.gradeColor+'">'+profPct+'%</span>'+
+        // 우선 개선 3가지
+        '<div class="sc2-section-t">먼저 개선하면 좋아요</div>'+
+        '<div class="sc2-todos">'+
+          weak.map(function(it,i){
+            return '<div class="sc2-todo"><span class="sc2-todo-num">'+(i+1)+'</span>'+
+              '<span class="sc2-todo-name">'+escapeHtml(it.name)+'</span></div>';
+          }).join('')+
         '</div>'+
-        '<div class="sc-footer">네이버 플레이스 무료 진단 · sellerlabs.co.kr</div>'+
+        '<div class="sc2-footer">네이버 플레이스 26개 항목 무료 진단 · sellerlabs.co.kr</div>'+
       '</div>'+
     '</div>';
 

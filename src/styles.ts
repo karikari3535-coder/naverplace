@@ -408,4 +408,44 @@ a { color: inherit; text-decoration: none; }
   .score-gauge-container, .score-gauge-container svg { width: 280px; height: 280px; }
   .score-number { font-size: 76px; }
 }
+
+/* ===== 공유 요약 카드 v2 (1080x1350) ===== */
+.share-card-stage{ position:fixed; left:-99999px; top:0; width:1080px; height:1350px; overflow:visible; pointer-events:none; }
+.share-card{
+  width:1080px; height:1350px; box-sizing:border-box;
+  padding:72px 80px; display:flex; flex-direction:column;
+  background:linear-gradient(160deg,#FFFFFF 0%,#F4EFFF 100%);
+  font-family:'Pretendard Variable',Pretendard,sans-serif; color:#1A1714;
+}
+.sc2-head{text-align:center; margin-bottom:28px;}
+.sc2-logo{height:56px; width:auto; margin-bottom:24px;}
+.sc2-store{font-size:52px; font-weight:800; letter-spacing:-1px; line-height:1.2;}
+.sc2-cat{font-size:26px; color:#6B635A; margin-top:8px;}
+
+.sc2-score-row{display:flex; align-items:center; justify-content:center; gap:32px; margin:20px 0 36px;}
+.sc2-score{font-size:150px; font-weight:900; line-height:1;}
+.sc2-score-unit{font-size:44px; font-weight:700; color:#A39A8E; margin-left:6px;}
+.sc2-grade-wrap{display:flex; flex-direction:column; gap:12px; align-items:flex-start;}
+.sc2-grade{color:#fff; font-size:34px; font-weight:800; padding:10px 28px; border-radius:999px;}
+.sc2-persona{font-size:26px; font-weight:700; color:#4A443C;}
+
+.sc2-metrics{display:flex; gap:20px; margin-bottom:40px;}
+.sc2-metric{flex:1; background:#fff; border:1px solid #ECE6FA; border-radius:24px; padding:28px 12px; text-align:center;}
+.sc2-metric-val{font-size:44px; font-weight:800; color:#6100FF;}
+.sc2-metric-lbl{font-size:24px; color:#6B635A; margin-top:6px;}
+
+.sc2-section-t{font-size:30px; font-weight:800; margin:8px 0 20px;}
+.sc2-bars{display:flex; flex-direction:column; gap:18px; margin-bottom:40px;}
+.sc2-bar-row{display:flex; align-items:center; gap:20px;}
+.sc2-bar-label{width:230px; font-size:27px; font-weight:600; flex-shrink:0;}
+.sc2-bar-track{flex:1; height:24px; background:#E9E3F7; border-radius:999px; overflow:hidden;}
+.sc2-bar-fill{display:block; height:100%; background:linear-gradient(90deg,#6100FF,#9B6BFF); border-radius:999px;}
+.sc2-bar-pct{width:90px; text-align:right; font-size:28px; font-weight:800; color:#6100FF; flex-shrink:0;}
+
+.sc2-todos{display:flex; flex-direction:column; gap:16px;}
+.sc2-todo{display:flex; align-items:center; gap:20px; background:#fff; border:1px solid #ECE6FA; border-radius:20px; padding:22px 28px;}
+.sc2-todo-num{width:48px; height:48px; flex-shrink:0; background:#6100FF; color:#fff; border-radius:50%; font-size:28px; font-weight:800; display:flex; align-items:center; justify-content:center;}
+.sc2-todo-name{font-size:30px; font-weight:700;}
+
+.sc2-footer{margin-top:auto; padding-top:32px; text-align:center; font-size:24px; color:#A39A8E;}
 `
