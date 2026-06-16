@@ -122,6 +122,15 @@ a { color: inherit; text-decoration: none; }
 .header-place-link:hover { background: #F4F1EB; border-color: #C7BFB2; color: #2B2620; }
 .header-place-link .hpl-ic { font-size: 12px; opacity: 0.75; }
 
+/* 리포트 헤더 네비 버튼 (스마트플레이스 바로가기 / 다른 가게 진단하기) */
+.header-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.header-nav-btn{display:inline-flex;align-items:center;gap:6px;
+  padding:9px 16px;border-radius:999px;font-size:13px;font-weight:700;
+  background:#fff;color:#6B4EFF;border:1.5px solid #E3DEF5;cursor:pointer;
+  text-decoration:none;transition:all .15s ease;line-height:1;}
+.header-nav-btn:hover{background:#F5F2FF;border-color:#6B4EFF;}
+.header-nav-btn .hnb-ic{font-size:14px;}
+
 .score-section { text-align: center; padding: 40px 0 24px; }
 .score-gauge-container { position: relative; width: 240px; height: 240px; margin: 0 auto 16px; }
 .score-gauge-container svg { width: 240px; height: 240px; }

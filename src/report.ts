@@ -367,13 +367,17 @@ function renderReport(result){
 
   c.innerHTML=
     '<div class="report-header">'+
+      '<div class="header-nav">'+
+        (placeUrl
+          ? '<a class="header-nav-btn" href="'+placeUrl+'" target="_blank" rel="noopener">'+
+              '<span class="hnb-ic">🔗</span> 스마트플레이스 바로가기</a>'
+          : '')+
+        '<button type="button" class="header-nav-btn" onclick="restart()">'+
+          '<span class="hnb-ic">🔍</span> 다른 가게 진단하기</button>'+
+      '</div>'+
       '<div class="shop-name">'+escapeHtml(result.name)+'</div>'+
       '<div class="shop-meta">'+escapeHtml(result.category)+(result.address?(' · '+escapeHtml(result.address)):'')+'</div>'+
       '<div class="report-date">진단일시: '+dateStr+'</div>'+
-      (placeUrl
-        ? '<a class="header-place-link" href="'+placeUrl+'" target="_blank" rel="noopener">'+
-            '<span class="hpl-ic">🔗</span> 스마트플레이스 바로가기</a>'
-        : '')+
     '</div>'+
 
     medicalNotice+

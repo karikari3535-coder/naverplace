@@ -338,8 +338,20 @@ function daysAgoLabel(ms){
 }
 
 function restart(){
-  document.getElementById('urlInput').value='';
-  document.getElementById('diagnoseBtn').disabled=false;
+  // 공유 페이지(/r/{id})에는 stage1이 없으므로, 그 경우엔 메인으로 이동.
+  const stage1 = document.getElementById('stage1');
+  const urlInput = document.getElementById('urlInput');
+  if(!stage1 || !urlInput){
+    location.href = location.origin + '/';
+    return;
+  }
+  urlInput.value='';
+  const btn = document.getElementById('diagnoseBtn');
+  if(btn) btn.disabled=false;
+  // 주소가 /r/{id}로 바뀐 상태라면 메인 주소로 되돌림
+  if(location.pathname !== '/'){
+    history.replaceState(null, '', '/');
+  }
   showStage('stage1');
 }
 
