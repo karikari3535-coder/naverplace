@@ -407,9 +407,12 @@ a { color: inherit; text-decoration: none; }
 .sc2-bar-pct{width:90px; text-align:right; font-size:28px; font-weight:800; color:#6100FF; flex-shrink:0;}
 
 .sc2-todos{display:flex; flex-direction:column; gap:16px;}
-.sc2-todo{display:flex; align-items:center; gap:20px; background:#fff; border:1px solid #ECE6FA; border-radius:20px; padding:22px 28px;}
+.sc2-todo{display:flex; align-items:flex-start; gap:20px; background:#fff; border:1px solid #ECE6FA; border-radius:20px; padding:22px 28px;}
 .sc2-todo-num{width:48px; height:48px; flex-shrink:0; background:#6100FF; color:#fff; border-radius:50%; font-size:28px; font-weight:800; display:flex; align-items:center; justify-content:center;}
-.sc2-todo-name{font-size:30px; font-weight:700;}
+.sc2-todo-body{flex:1; min-width:0;}
+.sc2-todo-name{font-size:30px; font-weight:700; line-height:1.3;}
+.sc2-todo-why{margin-top:10px; font-size:23px; line-height:1.5; color:#5A5048;}
+.sc2-todo-why-label{display:inline-block; font-size:20px; font-weight:700; color:#6100FF; background:#F0E9FF; border-radius:8px; padding:2px 12px; margin-right:8px; vertical-align:1px;}
 
 .sc2-footer{margin-top:auto; padding-top:32px; text-align:center; font-size:24px; color:#A39A8E;}
 `

@@ -508,8 +508,14 @@ function renderReport(result){
         '<div class="sc2-section-t">먼저 개선하면 좋아요</div>'+
         '<div class="sc2-todos">'+
           weak.map(function(it,i){
-            return '<div class="sc2-todo"><span class="sc2-todo-num">'+(i+1)+'</span>'+
-              '<span class="sc2-todo-name">'+escapeHtml(it.name)+'</span></div>';
+            var act=ACTIONS[it.key];
+            var why=act&&act.why?act.why:'';
+            return '<div class="sc2-todo">'+
+              '<span class="sc2-todo-num">'+(i+1)+'</span>'+
+              '<div class="sc2-todo-body">'+
+                '<div class="sc2-todo-name">'+escapeHtml(it.name)+'</div>'+
+                (why?'<div class="sc2-todo-why"><span class="sc2-todo-why-label">왜 먼저?</span> '+escapeHtml(why)+'</div>':'')+
+              '</div></div>';
           }).join('')+
         '</div>'+
         '<div class="sc2-footer">네이버 플레이스 26개 항목 무료 진단 · sellerlabs.co.kr</div>'+
