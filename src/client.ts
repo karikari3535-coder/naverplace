@@ -254,23 +254,87 @@ async function showResult(skipLoading){
   saveAndUpdateUrl(result);
 }
 
-/* ===================== 결과 저장 & 공유 URL ===================== */
-let sharedUrl = null;  // shareScore가 우선 사용할 영구 링크
+/* ===================== 결과 저장 & 공유 URL & 재진단 비교 ===================== */
+let sharedUrl = null;
 
 async function saveAndUpdateUrl(result){
+  const placeId = (apiData && apiData.id) || null;
+
+  // 1) 같은 매장의 직전 진단을 먼저 조회 → 있으면 비교 배지 갱신
+  if(placeId){
+    try{
+      const pr = await fetch('/api/prev?placeId=' + encodeURIComponent(placeId)
+        + '&before=' + Date.now());
+      if(pr.ok){
+        const { prev } = await pr.json();
+        if(prev && prev.score != null){
+          result.__compare = {
+            prevScore: prev.score,
+            prevCompleteness: prev.completeness,
+            curScore: result.displayScore,
+            curCompleteness: result.profileCompleteness,
+            prevAt: prev.createdAt
+          };
+          renderCompareBadge(result.__compare);  // 게이지 옆에 배지 삽입
+        }
+      }
+    }catch(e){ /* 비교 실패는 무시 */ }
+  }
+
+  // 2) 결과 저장 → /r/{id} 주소 갱신 (compare 포함해서 저장 → 공유 링크에서도 배지 유지)
   try{
-    const placeId = (apiData && apiData.id) || null;
     const res = await fetch('/api/save', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ placeId, result })
     });
-    if(!res.ok) return;            // 저장 실패해도 화면은 그대로
+    if(!res.ok) return;
     const { id } = await res.json();
     if(!id) return;
     sharedUrl = location.origin + '/r/' + id;
-    history.replaceState(null, '', '/r/' + id);  // 주소창만 갱신(새로고침 유지용)
-  }catch(e){ /* 저장 실패는 조용히 무시 */ }
+    history.replaceState(null, '', '/r/' + id);
+  }catch(e){ /* 저장 실패는 무시 */ }
+}
+
+/* 비교 배지를 점수 게이지 근처에 삽입 */
+function renderCompareBadge(cmp){
+  if(!cmp) return;
+  const sec = document.querySelector('.score-section');
+  if(!sec) return;
+  if(document.getElementById('compareBadge')) return; // 중복 방지
+
+  const diff = Math.round((cmp.curScore - cmp.prevScore) * 10) / 10;
+  const days = daysAgoLabel(cmp.prevAt);
+
+  let arrow = '→', cls = 'cmp-same', diffTxt = '변화 없음';
+  if(diff > 0){ arrow='▲'; cls='cmp-up';   diffTxt='+'+diff+'점'; }
+  else if(diff < 0){ arrow='▼'; cls='cmp-down'; diffTxt=diff+'점'; }
+
+  // 완성도 변화(둘 다 있을 때만)
+  let compHTML = '';
+  if(cmp.prevCompleteness != null && cmp.curCompleteness != null){
+    const cd = cmp.curCompleteness - cmp.prevCompleteness;
+    const cTxt = cd>0 ? ('+'+cd+'%p') : (cd<0 ? (cd+'%p') : '동일');
+    compHTML = '<span class="cmp-sub">운영 완성도 '+cTxt+'</span>';
+  }
+
+  const el = document.createElement('div');
+  el.id = 'compareBadge';
+  el.className = 'compare-badge ' + cls;
+  el.innerHTML =
+    '<span class="cmp-line">지난 진단 '+cmp.prevScore+'점 '+arrow+' 이번 '+cmp.curScore+'점 '
+      + '<b>'+diffTxt+'</b></span>'
+    + '<span class="cmp-meta">'+days+'</span>'
+    + compHTML;
+  sec.appendChild(el);
+}
+
+function daysAgoLabel(ms){
+  if(!ms) return '';
+  const d = Math.floor((Date.now()-ms)/86400000);
+  if(d<=0) return '오늘 진단 대비';
+  if(d===1) return '어제 진단 대비';
+  return d+'일 전 진단 대비';
 }
 
 function restart(){
@@ -287,6 +351,7 @@ function bootShared(){
   lastResult = shared;
   sharedUrl = location.href.split('#')[0];
   renderReport(shared);   // 이 시점엔 RENDER_REPORT가 이미 로드됨
+  if(shared.__compare) renderCompareBadge(shared.__compare);  // 공유 링크에서도 비교 배지 유지
 }
 // 모든 함수 정의(엔진/리포트 포함)가 끝난 뒤 실행되도록 다음 틱으로 미룬다
 setTimeout(bootShared, 0);

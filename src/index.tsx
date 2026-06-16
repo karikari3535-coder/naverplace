@@ -65,6 +65,39 @@ app.post('/api/save', async (c) => {
 })
 
 /**
+ * GET /api/prev?placeId=...&before=<created_at ms>
+ * 같은 place_id의 "그 시점보다 이전" 가장 최근 레코드 1건 반환.
+ * before를 안 주면 가장 최근(현재 저장 직전) 레코드를 본다.
+ * → 재진단 비교용. 없으면 { prev: null }
+ */
+app.get('/api/prev', async (c) => {
+  const placeId = c.req.query('placeId')
+  if (!placeId) return c.json({ prev: null })
+  const before = Number(c.req.query('before') || Date.now())
+
+  const row = await c.env.DB.prepare(
+    `SELECT score, result_json, created_at
+       FROM diagnoses
+      WHERE place_id = ? AND created_at < ?
+      ORDER BY created_at DESC
+      LIMIT 1`
+  ).bind(placeId, before).first<{ score: number; result_json: string; created_at: number }>()
+
+  if (!row) return c.json({ prev: null })
+
+  let completeness = null
+  try { completeness = JSON.parse(row.result_json)?.profileCompleteness ?? null } catch {}
+
+  return c.json({
+    prev: {
+      score: row.score,
+      completeness,
+      createdAt: row.created_at,
+    },
+  })
+})
+
+/**
  * GET /api/r/:id
  * → 저장된 result JSON 반환 (없으면 404)
  */
@@ -100,6 +133,57 @@ app.get('/r/:id', async (c) => {
   } catch {
     return c.html(renderShareFallback(origin), 500)
   }
+})
+
+/**
+ * GET /admin/stats?token=...
+ * 총 진단 수 / 최근 7일 추이 / 업종 Top N.
+ * 토큰 불일치 시 401.
+ */
+app.get('/admin/stats', async (c) => {
+  const token = c.req.query('token')
+  const expected = c.env.ADMIN_TOKEN
+  if (!expected || token !== expected) {
+    return c.json({ error: 'unauthorized' }, 401)
+  }
+
+  const since7d = Date.now() - 7 * 86400000
+
+  const total = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM diagnoses`
+  ).first<{ n: number }>()
+
+  const last7 = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM diagnoses WHERE created_at >= ?`
+  ).bind(since7d).first<{ n: number }>()
+
+  // 날짜별 추이(최근 7일) — epoch ms를 일 단위로 그룹
+  const daily = await c.env.DB.prepare(
+    `SELECT date(created_at / 1000, 'unixepoch', 'localtime') AS d,
+            COUNT(*) AS n
+       FROM diagnoses
+      WHERE created_at >= ?
+      GROUP BY d ORDER BY d ASC`
+  ).bind(since7d).all<{ d: string; n: number }>()
+
+  // 업종 Top N
+  const byIndustry = await c.env.DB.prepare(
+    `SELECT COALESCE(industry, '미분류') AS industry, COUNT(*) AS n
+       FROM diagnoses
+      GROUP BY industry ORDER BY n DESC LIMIT 10`
+  ).all<{ industry: string; n: number }>()
+
+  const avgScore = await c.env.DB.prepare(
+    `SELECT ROUND(AVG(score), 1) AS avg FROM diagnoses WHERE score IS NOT NULL`
+  ).first<{ avg: number }>()
+
+  return c.json({
+    total: total?.n ?? 0,
+    last7days: last7?.n ?? 0,
+    avgScore: avgScore?.avg ?? null,
+    daily: daily.results ?? [],
+    topIndustries: byIndustry.results ?? [],
+  })
 })
 
 // 메인 페이지 (단일 HTML)

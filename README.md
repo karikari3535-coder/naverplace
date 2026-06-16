@@ -28,6 +28,8 @@ Cloudflare Pages + Hono 기반 웹앱입니다.
 | `POST` | `/api/save` | body: `{ placeId?, result }` (JSON) | 진단 결과를 D1에 저장하고 짧은 공유 ID 반환 `{ id }` |
 | `GET` | `/api/r/:id` | path: `id` (필수, 저장 시 발급된 공유 ID) | 저장된 진단 결과 조회 `{ result, createdAt }` · 없으면 404 `{ error: "not_found" }` |
 | `GET` | `/r/:id` | path: `id` (필수, 공유 ID) | 영구 공유 페이지(SSR). OG 메타에 매장명·점수·등급 주입, 결과를 서버에서 직접 주입해 즉시 리포트 렌더 (카톡/크롤러 미리보기 대응) · 없으면 404 안내 페이지 |
+| `GET` | `/api/prev` | `placeId` (필수), `before` (선택, epoch ms) | 같은 매장의 직전 진단 1건 반환 `{ prev: { score, completeness, createdAt } }` · 없으면 `{ prev: null }` (재진단 비교용) |
+| `GET` | `/admin/stats` | `token` (필수, `ADMIN_TOKEN` 일치) | 관리자 통계 JSON(총 진단수·최근7일·평균점수·일별추이·업종 Top10) · 토큰 불일치 시 401 |
 
 `/api/place` 응답 예시(요약):
 ```json
@@ -65,8 +67,11 @@ curl .../api/r/jtblqpLYb8
   - 테이블 스키마(`migrations/0001_init.sql`): `id`(TEXT PK, Web Crypto 10자리 ID) · `place_id` · `name` ·
     `category` · `industry` · `score`(REAL) · `grade` · `result_json`(TEXT, 전체 결과 JSON) · `created_at`(INTEGER, epoch ms)
   - 인덱스: `idx_diag_place(place_id, created_at DESC)`, `idx_diag_created(created_at DESC)`
+  - 인덱스 `idx_diag_place`는 `/api/prev`(같은 매장 직전 진단 조회)를 가속
   - 바인딩: `wrangler.jsonc` `d1_databases` → 바인딩명 `DB`, DB명 `naverplace-db`
     (Genspark 호스팅 배포 시 D1 프로비저닝 및 마이그레이션 자동 적용)
+- **관리자 토큰**: `/admin/stats`는 `ADMIN_TOKEN` 환경변수로 보호. 로컬은 `wrangler.jsonc`의 `vars.ADMIN_TOKEN`,
+  배포 환경은 시크릿으로 주입 권장(평문 vars 대신). 토큰 불일치 시 401.
 - **데이터 흐름**:
   1. 사용자가 URL 입력 → `GET /api/place?url=...`
   2. 서버: 단축링크 해제 → placeId 추출 → 여러 type 경로 시도 → APOLLO_STATE 추출 → 필드 조립(`PlaceData`)
@@ -75,6 +80,7 @@ curl .../api/r/jtblqpLYb8
   5. `renderReport(result)`가 Stage3 리포트 HTML 렌더링
   6. 결과 화면 진입 즉시 `POST /api/save` 자동 저장 → 공유 ID 발급 → 주소창을 `/r/{id}`로 갱신(`history.replaceState`)
   7. `/r/{id}` 직접 접속 시 서버가 OG 메타(매장명·점수·등급)와 함께 SSR하고 `window.__SHARED_RESULT`로 결과를 주입 → 클라이언트가 추가 fetch 없이 즉시 `renderReport`. "내 점수 공유하기"는 이 영구 링크를 우선 사용해 카톡 미리보기(OG) 노출
+  8. (재진단 비교) 저장 직전 `GET /api/prev`로 같은 매장의 직전 진단을 조회 → 있으면 게이지 아래 비교 배지("지난 진단 NN점 → 이번 NN점 / N일 전 진단 대비 / 운영 완성도 ±N%p") 렌더. 점수의 ~92%가 인기도(거의 불변)라 점수 변화와 함께 **운영 완성도(profileCompleteness) 변화**를 같이 보여줘 체감을 높임. `__compare`는 result에 포함 저장되어 공유 링크에서도 배지 유지
 
 ### 진단 항목 (26개 표기, 4카테고리, 가중 배점)
 

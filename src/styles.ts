@@ -346,4 +346,17 @@ a { color: inherit; text-decoration: none; }
 .share-card-grade { font-size: 44px; font-weight: 800; color: #fff; padding: 16px 48px; border-radius: 999px; margin: 16px 0 40px; }
 .share-card-persona { font-size: 38px; font-weight: 700; color: #5B3FBF; }
 .share-card-footer { margin-top: auto; font-size: 26px; color: #A39A8E; }
+
+/* ===== 재진단 비교 배지 (T5) ===== */
+.compare-badge{display:flex;flex-direction:column;align-items:center;gap:2px;
+  margin:14px auto 0;padding:10px 16px;border-radius:14px;max-width:340px;
+  font-size:14px;text-align:center;line-height:1.4;}
+.compare-badge .cmp-line b{font-weight:800;}
+.compare-badge .cmp-meta{font-size:12px;color:#A39A8E;}
+.compare-badge .cmp-sub{font-size:12px;font-weight:700;margin-top:2px;}
+.compare-badge.cmp-up{background:#EAF7EE;color:#1F8B4C;}
+.compare-badge.cmp-up .cmp-sub{color:#1F8B4C;}
+.compare-badge.cmp-down{background:#FDEEEE;color:#C0392B;}
+.compare-badge.cmp-down .cmp-sub{color:#C0392B;}
+.compare-badge.cmp-same{background:#F2EEE7;color:#7A7266;}
 `
