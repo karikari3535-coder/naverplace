@@ -542,8 +542,10 @@ function analyzePlaceData(api, user){
 
   // 정규화(0~1) 후 가중 합산 → 0~92 스케일의 raw 인기도, 이후 스프레드 보정.
   // 가중치는 5개 실측 매장(참조 사이트 점수)에 맞춰 캘리브레이션한 값.
-  const revN = _tot > 0 ? Math.min(1, Math.log10(_tot) / Math.log10(4800)) : 0;        // 4,800건+ 만점
-  const blogN = _blog > 0 ? Math.min(1, Math.log10(_blog + 1) / Math.log10(6500)) : 0; // 6,500건+ 만점
+  // 만점 기준 현실화: 4,800/6,500은 전국 최상위 기준이라 지역 강자가 부당하게 낮게 나옴.
+  // "잘하는 동네 1등" 수준(리뷰 1,500 / 블로그 2,000)으로 낮춰 지역 강자가 제 점수를 받게 한다.
+  const revN = _tot > 0 ? Math.min(1, Math.log10(_tot) / Math.log10(1500)) : 0;        // 1,500건+ 만점
+  const blogN = _blog > 0 ? Math.min(1, Math.log10(_blog + 1) / Math.log10(2000)) : 0; // 2,000건+ 만점
   const photoN = Math.min(1, _photoRt / 70);                                           // 70%+ 만점
   const starN = (() => {
     const sv = _star == null ? 4.0 : _star; // 별점 비공개면 4.0 기준값(과한 페널티 방지)
