@@ -415,4 +415,12 @@ a { color: inherit; text-decoration: none; }
 .sc2-todo-why-label{display:inline-block; font-size:20px; font-weight:700; color:#6100FF; background:#F0E9FF; border-radius:8px; padding:2px 12px; margin-right:8px; vertical-align:1px;}
 
 .sc2-footer{margin-top:auto; padding-top:32px; text-align:center; font-size:24px; color:#A39A8E;}
+
+/* 점수 한계 안내(게이지 바로 아래): 점수=검색순위 오해 방지. 점수 신뢰는 깎지 않고 한계만 짚음 */
+.score-disclaimer{
+  max-width:520px; margin:4px auto 0; padding:12px 18px;
+  background:#F6F3FF; border:1px solid #E6E0F7; border-radius:14px;
+  color:#6B635A; font-size:13px; line-height:1.6; text-align:center;
+}
+.score-disclaimer b{ color:#4A443C; font-weight:700; }
 `

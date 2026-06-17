@@ -422,6 +422,12 @@ function renderReport(result){
       '</div>'+
     '</div>'+
 
+    '<div class="score-disclaimer">'+
+      '이 점수는 <b>검색 노출 순위가 아니라</b> 플레이스 운영·인기 완성도를 종합한 지표예요. '+
+      '실제 노출 순위는 광고(place+), 검색 위치·개인화, 키워드 적합도, 클릭률 등 '+
+      '여기서 측정할 수 없는 요소에 따라 달라질 수 있어요.'+
+    '</div>'+
+
     '<div class="main-bubble-wrap"><div class="bubble-logo"><img src="/static/sellerlabs-bird.svg" alt="셀러랩스"></div>'+
       '<div class="speech-bubble">'+escapeHtml(result.gradeComment)+'</div></div>'+
 
