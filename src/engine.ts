@@ -573,8 +573,20 @@ function analyzePlaceData(api, user){
   // 26개 항목 진단의 카테고리별 세부 분석·개선 코멘트와 총점이 동떨어지지 않게 한다.
   const POP_WEIGHT = 0.92;
   const blended = rawSum * (1 - POP_WEIGHT) + popScore * POP_WEIGHT;
+
+  // ── 치명적 공백 페널티 ──
+  // 특정 영역이 "평가 가능한데도(0이 아닌 N/A가 아님)" 달성률 0%면,
+  // 인기도로 가려진 명백한 공백을 총점에 반영한다.
+  // catRatio[cat]가 null이면 '평가 불가(N/A)'이므로 페널티 대상에서 제외한다.
+  // ※ penalty 값(5/4/3)은 임시 캘리브레이션 값 — 실측 후 조정 가능.
+  let penalty = 0;
+  if (catRatio.system === 0)  penalty += 5;   // 시스템&결제 완전 공백
+  if (catRatio.content === 0) penalty += 4;   // 콘텐츠&운영 완전 공백
+  if (catRatio.basic === 0)   penalty += 3;   // 기본정보 완전 공백
+  // 리뷰(review)는 인기도와 직결되므로 별도 페널티를 주지 않는다.
+
   // 0.5점 단위 표기 (참조 사이트와 동일)
-  const displayScore = Math.round(blended * 2) / 2;
+  const displayScore = Math.round(Math.max(0, blended - penalty) * 2) / 2;
 
   // 기존 변수 유지 (naMaxScore 안내 등 다른 곳에서 참조)
   const rawMax = items.reduce((a,i)=>a+(i.na?0:i.max),0);
