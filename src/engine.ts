@@ -561,8 +561,10 @@ function analyzePlaceData(api, user){
   const popRaw =
     (revN * PW_REV + blogN * PW_BLOG + photoN * PW_PHOTO + starN * PW_STAR + activeN * PW_ACTIVE) /
     PW_SUM * 100;
-  // 스프레드 보정: (raw - 20) * 1.26 → 상·하위 매장 간격을 참조 사이트와 비슷하게 벌림
-  const popScore = Math.min(100, Math.max(0, (Math.min(100, popRaw) - 20) * 1.26));
+  // 스프레드 보정: (raw - 10) * 1.15 → 상·하위 매장 간격을 벌리되 중위권이 0으로 깔리지 않게 완화.
+  // (구버전 -20*1.26은 popRaw 20 이하를 0으로 깔아, 지역·키워드 1위지만 전국 절대량이 적은 매장이
+  //  부당하게 폭락했음. -10*1.15로 바닥 구간을 완화하고 상위 매장 서열은 그대로 유지.)
+  const popScore = Math.min(100, Math.max(0, (Math.min(100, popRaw) - 10) * 1.15));
 
   // 운영관리 점수(rawSum)와 인기도 점수(popScore)를 블렌딩.
   // 참조 사이트(절대 지표 기반)와 점수 경향을 맞추되, 운영 점수(rawSum)도 8% 반영해
