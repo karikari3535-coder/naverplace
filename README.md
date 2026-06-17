@@ -177,4 +177,10 @@ curl http://localhost:3000        # 동작 확인
 - **플랫폼**: Cloudflare Pages (Genspark 호스팅)
 - **상태**: ✅ 프로덕션 배포 완료
 - **기술 스택**: Hono + Vite + Cloudflare Pages
-- **최종 업데이트**: 2026-06-15 (진단 항목 26개 통일 + 신규 로고 적용 + 모바일 안정성 개선 + 카카오톡/SNS OG 카드 추가)
+- **최종 업데이트**: 2026-06-17 (popScore 상단압축해제+동적가중 / 치명적 공백 페널티 / 점수 한계 안내 / 공유카드 '왜 먼저?' )
+
+## 협업 규칙 (중요)
+- **GitHub 자동 동기화 기본 ON**: 모든 작업(코드 수정/빌드/배포)이 끝나면 **항상 로컬 main을 GitHub origin(`karikari3535-coder/naverplace`)에 push**한다.
+  - 이 프로젝트는 원격이 둘이다: `genspark`(턴 종료 자동 백업) / `origin`(GitHub, 자동 push 안 됨).
+  - 따라서 작업 후 반드시 `bash scripts/push-github.sh` 를 실행해 GitHub origin/main 을 로컬과 동기화한다.
+  - 목표 상태: **GitHub = 로컬 = 라이브 배포** 세 곳이 항상 같은 커밋 기준.
