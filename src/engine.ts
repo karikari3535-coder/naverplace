@@ -563,15 +563,37 @@ function analyzePlaceData(api, user){
   const popRaw =
     (revN * PW_REV + blogN * PW_BLOG + photoN * PW_PHOTO + starN * PW_STAR + activeN * PW_ACTIVE) /
     PW_SUM * 100;
-  // 스프레드 보정: (raw - 10) * 1.15 → 상·하위 매장 간격을 벌리되 중위권이 0으로 깔리지 않게 완화.
-  // (구버전 -20*1.26은 popRaw 20 이하를 0으로 깔아, 지역·키워드 1위지만 전국 절대량이 적은 매장이
-  //  부당하게 폭락했음. -10*1.15로 바닥 구간을 완화하고 상위 매장 서열은 그대로 유지.)
-  const popScore = Math.min(100, Math.max(0, (Math.min(100, popRaw) - 10) * 1.15));
+  // ── 스프레드 보정 + 상단 압축 해제(천장 뭉침 해결) ──
+  // 기본 스프레드: (raw - 10) * 1.15 → 바닥은 완화(중위권이 0으로 깔리지 않게),
+  //   상위 서열은 유지. (구버전 -20*1.26은 popRaw 20 이하를 0으로 깔던 문제를 보정한 값)
+  //
+  // [개선A 2026-06] 31개 실측 매장 분석: 만점기준(리뷰 1,500/블로그 2,000)이 현실화되면서
+  //   리뷰 2,000건↑ 매장의 popRaw가 86↑로 몰리고, 6,000건↑은 popRaw 98.5에서 포화돼
+  //   popScore가 100 천장에 뭉친다(느루·이철·빌라·온즈·톤트·코브가 전부 100).
+  //   → popRaw _KNEE(=85, 리뷰 약 2,000건 상당)를 분기점으로:
+  //     · KNEE 미만: 기존 식 그대로 → 학원·양양·카페(하단/중단) 분포 100% 보존
+  //     · KNEE 이상: 기울기를 0.55로 완만하게 → 상단을 펼쳐 변별력 회복
+  //   (분기점 연속성: KNEE에서 기본식 값과 정확히 이어붙여 점프 없음)
+  const _baseSpread = (v) => Math.max(0, (Math.min(100, v) - 10) * 1.15);
+  const _KNEE = 85; // popRaw 분기점(리뷰 약 2,000건 상당). 상단이 여전히 뭉치면 낮추고, 과하면 올림.
+  let popScore;
+  if (popRaw <= _KNEE) {
+    popScore = _baseSpread(popRaw);
+  } else {
+    popScore = _baseSpread(_KNEE) + (popRaw - _KNEE) * 0.55; // 상단 기울기 완화(0.55)
+  }
+  popScore = Math.min(100, Math.max(0, popScore));
 
-  // 운영관리 점수(rawSum)와 인기도 점수(popScore)를 블렌딩.
-  // 참조 사이트(절대 지표 기반)와 점수 경향을 맞추되, 운영 점수(rawSum)도 8% 반영해
-  // 26개 항목 진단의 카테고리별 세부 분석·개선 코멘트와 총점이 동떨어지지 않게 한다.
-  const POP_WEIGHT = 0.92;
+  // ── 운영관리 점수(rawSum)와 인기도 점수(popScore) 블렌딩 ──
+  // [개선B 2026-06] 순위 역전 해결: 고정 POP_WEIGHT(0.92) 대신 rawSum이 높을수록
+  //   운영 비중을 키운다(인기도 의존을 낮춤).
+  //     · rawSum <= 60: 0.92 유지 → 하단/중단(학원·양양) 분포 그대로 보존
+  //     · rawSum >= 80: 0.72까지 하락 → 운영 최상위인데 리뷰 적은 매장(그램·아뜰랑)이
+  //       popScore에 눌려 추락하던 역전을 회복
+  //     · 그 사이: 선형 감소(하드코딩 보정이 아니라 rawSum 연동 함수)
+  // ※ _wDrop 상한 0.20, 분기 60/80은 31곳 캘리브레이션 값 — 실측 후 조정 가능.
+  const _wDrop = Math.min(0.20, Math.max(0, (rawSum - 60) / 100)); // 0 ~ 0.20
+  const POP_WEIGHT = 0.92 - _wDrop;
   const blended = rawSum * (1 - POP_WEIGHT) + popScore * POP_WEIGHT;
 
   // ── 치명적 공백 페널티 ──
