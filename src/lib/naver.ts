@@ -40,7 +40,7 @@ export interface PlaceData {
   microIntro: string
   keywords: string[]
   hasBooking: boolean
-  hasNPay: boolean
+  hasNaverOrder: boolean
   hasCoupon: boolean
   hasBusinessHours: boolean
   hasCheckInOut: boolean
@@ -926,12 +926,28 @@ function assemble(
   // ── 결제/편의 ──
   const conveniences: string[] = Array.isArray(base.conveniences) ? base.conveniences : []
   const paymentInfo: string[] = Array.isArray(base.paymentInfo) ? base.paymentInfo : []
-  // 네이버페이 연동 판정: 네이버 플레이스는 실제 네이버페이가 연동된 매장만
-  // paymentInfo 결제수단 목록에 정확히 "네이버페이"를 노출한다.
-  // (예) 연동 매장: ["제로페이","네이버페이",...] / 미연동 매장: ["간편결제","제로페이",...]
-  // ⚠️ "간편결제"는 일반 결제수단 안내일 뿐 네이버페이가 아니므로 매칭하면 오판이 난다.
-  //    따라서 "네이버페이"(공백 제거 후 비교)만 정확히 매칭한다.
-  const hasNPay = paymentInfo.some((p) => /네이버\s*페이/.test(String(p)))
+  // 네이버 주문(스마트주문·포장·배달·테이블주문) 연동 판정.
+  //   ⚠️ 기존엔 paymentInfo에서 "네이버페이"를 찾았으나, paymentInfo는 점주가 입력한
+  //      결제 안내 문구(제로페이/카드 등)일 뿐 실제 연동 신호가 아니어서 거의 항상 false였다.
+  //   실측(서오릉피자=O / 금돼지·쇼미더크랩=X) 결과, 아래 세 신호가 정확히 일치한다:
+  //     1) placeDetail.naverOrder.items 에 주문 메뉴가 1개 이상 있다
+  //     2) naverOrder.isPickup/isTableOrder/isPreOrder/isDelivery 중 하나라도 true
+  //     3) placeDetail.buttons 에 key==="order" 또는 "delivery" 버튼이 있다
+  //   → 셋 중 하나라도 충족하면 네이버 주문 연동으로 판정.
+  const naverOrderObj = (detail && detail.naverOrder) || base.naverOrder || null
+  const orderItems = naverOrderObj && Array.isArray(naverOrderObj.items) ? naverOrderObj.items.length : 0
+  const orderFlags = !!(
+    naverOrderObj &&
+    (naverOrderObj.isPickup ||
+      naverOrderObj.isTableOrder ||
+      naverOrderObj.isPreOrder ||
+      naverOrderObj.isDelivery)
+  )
+  const orderButtons =
+    detail && Array.isArray(detail.buttons)
+      ? detail.buttons.some((b: any) => b && (b.key === 'order' || b.key === 'delivery'))
+      : false
+  const hasNaverOrder = orderItems > 0 || orderFlags || orderButtons
 
   // ── 영업시간 ──
   // placeDetail.newBusinessHours({...})[] 가 있으면 등록된 것으로 판단.
@@ -1130,7 +1146,7 @@ function assemble(
     microIntro,
     keywords,
     hasBooking,
-    hasNPay,
+    hasNaverOrder,
     hasCoupon,
     hasBusinessHours,
     hasCheckInOut,

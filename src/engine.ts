@@ -208,12 +208,12 @@ function analyzePlaceData(api, user){
   /* ── 시스템 & 결제 ── */
 
   if(isAccommodation){
-    // 숙박업: 참조 사이트와 동일하게 네이버 페이(3) + 숙박 예약 연결(3) = 6점 만점
-    // #7 네이버 페이 (3)
+    // 숙박업: 참조 사이트와 동일하게 네이버 주문(3) + 숙박 예약 연결(3) = 6점 만점
+    // #7 네이버 주문 (3)
     {
-      const has=!!api.hasNPay; const s=has?3:0;
-      const c=has?'네이버 페이가 연결되어 있습니다. 결제 데이터가 쌓이면 노출에도 도움이 됩니다.':'네이버 페이를 연결하면 결제가 편리해지고 노출에도 도움이 됩니다.';
-      items.push({key:'npay',name:'네이버 페이',cat:'system',max:3,score:s,detail:has?'활성':'미사용',comment:c});
+      const has=!!api.hasNaverOrder; const s=has?3:0;
+      const c=has?'네이버 주문이 연결되어 있습니다. 주문 데이터가 쌓이면 노출에도 도움이 됩니다.':'네이버 주문을 연결하면 포장·예약주문이 편리해지고 노출에도 도움이 됩니다.';
+      items.push({key:'npay',name:'네이버 주문',cat:'system',max:3,score:s,detail:has?'활성':'미사용',comment:c});
     }
     // #8 숙박 예약 연결 (3)
     {
@@ -222,7 +222,7 @@ function analyzePlaceData(api, user){
       items.push({key:'booking',name:'숙박 예약 연결',cat:'system',max:3,score:s,detail:has?'연결됨':'미연결',comment:c});
     }
   } else {
-    // 참조 사이트와 동일: 시스템&결제 = 네이버 예약(6) + 네이버 페이(3) + 쿠폰(2)
+    // 참조 사이트와 동일: 시스템&결제 = 네이버 예약(6) + 네이버 주문(3) + 쿠폰(2)
     //   (스마트콜·톡톡은 콘텐츠&운영 영역으로 이동)
 
     // #8 네이버 예약 (6)
@@ -233,11 +233,11 @@ function analyzePlaceData(api, user){
       items.push({key:'booking',name:'네이버 예약',cat:'system',max:6,score:s,detail:has?'활성':'미활성',comment:c});
     }
 
-    // #9 네이버 페이 (3)
+    // #9 네이버 주문 (3)
     {
-      const has=!!api.hasNPay; const s=has?3:0;
-      const c=has?'네이버 페이가 연결되어 있습니다. 결제 데이터가 쌓일수록 AI 추천에 유리하게 작용합니다.':'네이버 페이를 연동하면 결제 데이터가 AI 추천의 중요한 근거가 됩니다.';
-      items.push({key:'npay',name:'네이버 페이',cat:'system',max:3,score:s,detail:has?'활성':'미활성',comment:c});
+      const has=!!api.hasNaverOrder; const s=has?3:0;
+      const c=has?'네이버 주문이 연결되어 있습니다. 주문 데이터가 쌓일수록 AI 추천에 유리하게 작용합니다.':'네이버 주문(포장·예약주문)을 연동하면 주문 데이터가 AI 추천의 중요한 근거가 됩니다.';
+      items.push({key:'npay',name:'네이버 주문',cat:'system',max:3,score:s,detail:has?'활성':'미활성',comment:c});
     }
 
     // #11 쿠폰 (2) — 의료기관은 환자 유인 광고 금지로 N/A
@@ -660,8 +660,7 @@ function analyzePlaceData(api, user){
   var hasConvenience = Array.isArray(api.conveniences) && api.conveniences.length>0;
   var hasIntro = !!((api.microIntro&&api.microIntro.length) || (api.description&&api.description.length));
   var hasMainImage = (api.imageCount||0)>0;
-  // 스마트주문(네이버페이 OR 스마트콜) 혼합 판정은 라벨과 실제값이 어긋나 혼란을 줬다.
-  // 네이버페이는 아래 '네이버페이 연결' 칸에서 따로 표시되므로, 이 칸은 스마트콜 기준으로 일치시킨다.
+  // 스마트주문은 아래 '네이버 주문 연결' 칸에서 따로 표시되므로, 이 칸은 스마트콜 기준으로 일치시킨다.
   var profileChecklist = [
     {label:'영업시간 등록', done:!!api.hasBusinessHours},
     {label:'메뉴/사진 등록', done:hasMenuPhoto},
@@ -672,11 +671,11 @@ function analyzePlaceData(api, user){
     {label:'한줄평(소개)',   done:hasIntro},
     {label:'대표 이미지',    done:hasMainImage}
   ];
-  // 네이버페이·쿠폰은 점수(items)에 이미 반영돼 있으므로, 채점 결과를 그대로 체크리스트로 노출.
+  // 네이버 주문·쿠폰은 점수(items)에 이미 반영돼 있으므로, 채점 결과를 그대로 체크리스트로 노출.
   // 업종상 진단 제외(N/A)된 항목은 체크리스트에서도 빼서 일관성 유지(예: 의료기관 쿠폰).
   var npayItem   = items.find(function(i){return i.key==='npay';});
   var couponItem = items.find(function(i){return i.key==='coupon';});
-  if (npayItem && !npayItem.na)   profileChecklist.push({label:'네이버페이 연결', done:npayItem.score>0});
+  if (npayItem && !npayItem.na)   profileChecklist.push({label:'네이버 주문 연결', done:npayItem.score>0});
   if (couponItem && !couponItem.na) profileChecklist.push({label:'쿠폰 적용', done:couponItem.score>0});
   var profileDone = profileChecklist.filter(function(x){return x.done;}).length;
   var profileCompleteness = Math.round(profileDone/profileChecklist.length*100);

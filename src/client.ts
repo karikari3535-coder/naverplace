@@ -141,7 +141,7 @@ function buildAnalyzeDetail(idx,d){
     return '메뉴 '+(d.totalMenus||0)+'개 · 사진 '+(d.imageCount||0)+'장 · 편의 '+conv+'종';
   }
   if(idx===2) return '방문자 '+(d.totalReviewCount||0).toLocaleString()+'건 · 블로그 '+(d.blogCafeReviewCount||0).toLocaleString()+'건';
-  if(idx===3){ const t=[]; if(d.hasBooking)t.push('예약'); if(d.hasSmartCallAuto)t.push('스마트콜'); if(d.hasNPay)t.push('N페이'); if(d.hasTalkTalkAuto)t.push('톡톡'); return t.length?t.join(' + ')+' 확인':'기능 점검 완료'; }
+  if(idx===3){ const t=[]; if(d.hasBooking)t.push('예약'); if(d.hasSmartCallAuto)t.push('스마트콜'); if(d.hasNaverOrder)t.push('주문'); if(d.hasTalkTalkAuto)t.push('톡톡'); return t.length?t.join(' + ')+' 확인':'기능 점검 완료'; }
   if(idx===4){
     const len=(d.description||'').length;
     const kw=(d.keywords&&d.keywords.length)||0;
